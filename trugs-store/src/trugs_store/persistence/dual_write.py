@@ -9,10 +9,13 @@ Read:  reads from PostgreSQL when PORT_DSN set. Raises on DB error (loud failure
 from __future__ import annotations
 
 import json
+import logging
 import os
 import sys
 from pathlib import Path
 from typing import Any, Dict, Optional
+
+logger = logging.getLogger(__name__)
 
 
 def write_trug(
@@ -47,10 +50,7 @@ def write_trug(
     try:
         _write_to_postgres(trug, path, dsn)
     except Exception as exc:
-        print(
-            f"[PORT dual-write] DB write failed for {path}: {exc}",
-            file=sys.stderr,
-        )
+        logger.warning("[PORT dual-write] DB write failed for %s: %s", path, exc)
 
 
 _schema_ensured: set[str] = set()  # DSNs where schema has been created
@@ -65,10 +65,9 @@ def _write_to_postgres(
     try:
         import psycopg
     except ImportError:
-        print(
+        logger.warning(
             "[PORT dual-write] psycopg3 not installed — skipping DB write. "
-            "Install with: pip install trugs-store[postgres]",
-            file=sys.stderr,
+            "Install with: pip install trugs-store[postgres]"
         )
         return
 

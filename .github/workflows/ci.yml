@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: pytest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install
+        run: |
+          pip install -e trugs-store[dev]
+
+      - name: Run tests
+        run: |
+          cd trugs-store
+          pytest tests/ -v --tb=short
+
+  typecheck:
+    runs-on: ubuntu-latest
+    name: mypy
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install
+        run: |
+          pip install -e trugs-store[dev]
+          pip install mypy
+
+      - name: Run mypy
+        run: |
+          cd trugs-store
+          mypy src/trugs_store --ignore-missing-imports
+        continue-on-error: true

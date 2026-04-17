@@ -1,34 +1,107 @@
-# TRUGS_STORE
+# trugs-store
 
-Canonical graph I/O for all `.trug.json` access — the single persistence layer for reading and writing TRUG graphs.
+**Graph storage backends for TRUGS specifications — InMemory, PostgreSQL, JSON file persistence.**
 
-## Purpose
+trugs-store is the shared persistence layer for all TRUGS tooling. Every tool that reads or writes `.trug.json` files goes through this package. It supports JSON file storage for development and PostgreSQL for production scale.
 
-trugs-store is the shared contract between Python tools (trugs-tools) and Go services (PORT). All graph persistence goes through this package. It supports JSON file storage now and PostgreSQL for production scale.
+## Install
+
+```bash
+pip install trugs-store
+
+# With PostgreSQL support:
+pip install trugs-store[postgres]
+```
+
+## Quick Example
+
+```python
+from trugs_store import InMemoryGraphStore, JsonFilePersistence
+
+# Load a .trug.json file
+persistence = JsonFilePersistence()
+store = persistence.load("folder.trug.json")
+
+# Query
+print(store.node_count())
+print(store.find_nodes(type="FUNCTION"))
+
+# Validate against TRUGS CORE rules
+violations = store.validate_graph()
+for v in violations:
+    print(f"{v.severity}: {v.rule} — {v.message}")
+```
 
 ## Architecture
 
-- **GraphStore protocol** — abstract interface for graph persistence
-- **JSON backend** — file-based storage for development and small deployments
-- **PostgreSQL backend** — relational storage for 10K+ nodes, concurrent writers, PORT
-- **Dual-write bridge** — writes to both JSON and PostgreSQL during migration
+| Component | What it does |
+|---|---|
+| `GraphStore` protocol | PEP 544 structural interface — 22 methods across 8 categories |
+| `InMemoryGraphStore` | Dict-backed store — O(1) node lookup, O(degree) edge access |
+| `PostgresGraphStore` | SQL-backed store — indexed queries, transactional writes, COPY bulk insert |
+| `JsonFilePersistence` | Load/save `.trug.json` files to/from `InMemoryGraphStore` |
+| `PostgresPersistence` | Load/save graphs to/from PostgreSQL |
+| Dual-write bridge | `write_trug()` / `read_trug()` — writes JSON + optionally PostgreSQL |
 
-## Key Files
+## Basic Usage
 
-| File | Purpose |
-|------|---------|
-| `trugs-store/src/trugs_store/graph_store.py` | GraphStore protocol definition |
-| `trugs-store/src/trugs_store/persistence/json_store.py` | JSON file backend |
-| `trugs-store/src/trugs_store/persistence/pg_store.py` | PostgreSQL backend |
-| `trugs-store/src/trugs_store/persistence/dual_write.py` | Dual-write bridge |
-| `SPEC_844_graphstore_protocol.py` | Protocol specification |
+### Load and query a TRUG
 
-## Installation
+```python
+from trugs_store import JsonFilePersistence
 
-```bash
-pip install -e TRUGS_STORE/trugs-store/
+p = JsonFilePersistence()
+store = p.load("folder.trug.json")
+
+# Find all FUNCTION nodes
+functions = store.find_nodes(type="FUNCTION")
+
+# Traverse outgoing edges from a node
+for node, edge, depth in store.traverse("root", direction="outgoing", max_depth=2):
+    print(f"  {'  ' * depth}{node['id']} via {edge['relation']}")
 ```
+
+### Create a graph in memory
+
+```python
+from trugs_store import InMemoryGraphStore
+
+store = InMemoryGraphStore()
+store.set_metadata("name", "my_graph")
+store.set_metadata("version", "1.0.0")
+
+store.add_node({"id": "root", "type": "FOLDER", "properties": {},
+                "parent_id": None, "contains": [], "metric_level": "KILO_FOLDER",
+                "dimension": "main"})
+store.add_node({"id": "child", "type": "DOCUMENT", "properties": {},
+                "parent_id": None, "contains": [], "metric_level": "BASE_DOCUMENT",
+                "dimension": "main"}, parent_id="root")
+store.add_edge({"from_id": "root", "to_id": "child", "relation": "REFERENCES"})
+
+print(store.node_count())  # 2
+print(store.get_children("root"))  # [child node]
+```
+
+### Validate a graph
+
+```python
+violations = store.validate_graph()
+if violations:
+    for v in violations:
+        print(f"{v.severity}: {v.rule} on {v.node_id} — {v.message}")
+else:
+    print("Graph is valid.")
+```
+
+## Documentation
+
+- **TRUGS Specification:** [TRUGS-LLC/TRUGS](https://github.com/TRUGS-LLC/TRUGS) — protocol, language, validator
+- **GraphStore Protocol:** [SPEC_844_graphstore_protocol.py](SPEC_844_graphstore_protocol.py) — full PEP 544 interface
+- **TRUG Graph Index:** [folder.trug.json](folder.trug.json) — machine-readable structure of this repo
+- **Dark Code Standard:** [TRUGS-LLC/TRUGS/REFERENCE/STANDARD_dark_code_compliance.md](https://github.com/TRUGS-LLC/TRUGS/blob/main/REFERENCE/STANDARD_dark_code_compliance.md)
 
 ## Status
 
-CODING — JSON and PostgreSQL backends shipped, dual-write bridge active, nightly GitHub mirror exports (Phase 6 complete).
+**Version:** 0.1.0
+**Phase:** Beta
+**License:** Apache 2.0 — [TRUGS LLC](https://github.com/TRUGS-LLC)
