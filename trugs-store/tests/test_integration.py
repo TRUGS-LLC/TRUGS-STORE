@@ -27,46 +27,46 @@ class TestLoadSampleTrug:
         with open(_SAMPLE) as f:
             self.raw = json.load(f)
 
-    # AGENT SHALL VALIDATE DATA integration.
+    # PROCESS load SHALL PRESERVE RECORD node count FROM DATA json file.
     def test_node_count_matches(self):
         assert self.store.node_count() == len(self.raw["nodes"])
 
-    # AGENT SHALL VALIDATE DATA integration.
+    # PROCESS load SHALL PRESERVE RECORD edge count FROM DATA json file.
     def test_edge_count_matches(self):
         assert self.store.edge_count() == len(self.raw["edges"])
 
-    # AGENT SHALL VALIDATE DATA integration.
+    # PROCESS load SHALL PRESERVE RECORD metadata name FROM DATA json file.
     def test_metadata_name(self):
         assert self.store.get_metadata()["name"] == self.raw["name"]
 
-    # AGENT SHALL VALIDATE DATA integration.
+    # PROCESS find_nodes SHALL FILTER RECORD node BY DATA type FROM loaded graph.
     def test_find_nodes_by_type(self):
         specs = self.store.find_nodes(type="SPECIFICATION")
         assert "child_b" in {n["id"] for n in specs}
 
-    # AGENT SHALL VALIDATE DATA integration.
+    # PROCESS get_children SHALL RETURN RECORD children FROM loaded RECORD parent.
     def test_get_children(self):
         children = self.store.get_children("root")
         assert {c["id"] for c in children} == {"child_a", "child_b"}
 
-    # AGENT SHALL VALIDATE DATA integration.
+    # PROCESS get_children SHALL RETURN RECORD children AT nested depth.
     def test_get_children_nested(self):
         children = self.store.get_children("child_b")
         assert {c["id"] for c in children} == {"grandchild"}
 
-    # AGENT SHALL VALIDATE DATA integration.
+    # PROCESS validate_graph SHALL RETURN NO error RECORD violation FOR sample graph.
     def test_validate_graph(self):
         errors = [v for v in self.store.validate_graph() if v.severity == "error"]
         assert len(errors) == 0, f"Unexpected errors: {errors}"
 
-    # AGENT SHALL VALIDATE DATA integration.
+    # PROCESS traverse SHALL RETURN RECORD neighbor FROM RECORD root outgoing.
     def test_traverse_from_root(self):
         neighbors = list(self.store.traverse("root", direction="outgoing", max_depth=1))
         neighbor_ids = {n["id"] for n, e, d in neighbors}
         assert "child_a" in neighbor_ids
         assert "child_b" in neighbor_ids
 
-    # AGENT SHALL VALIDATE DATA integration.
+    # PROCESS find_nodes SHALL FILTER RECORD node BY type TASK.
     def test_find_tasks(self):
         tasks = self.store.find_nodes(type="TASK")
         assert len(tasks) == 1
@@ -74,7 +74,7 @@ class TestLoadSampleTrug:
 
 
 class TestRoundTrip:
-    # AGENT SHALL VALIDATE DATA integration.
+    # PROCESS save AND load SHALL PRESERVE ALL RECORD node AND RECORD edge AND RECORD metadata.
     def test_round_trip_preserves_data(self, persistence):
         s1 = persistence.load(str(_SAMPLE))
         with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
@@ -88,7 +88,7 @@ class TestRoundTrip:
         assert s1.get_metadata() == s2.get_metadata()
         Path(tmp).unlink()
 
-    # AGENT SHALL VALIDATE DATA integration.
+    # PROCESS save SHALL PERSIST RECORD mutation AFTER add_node AND mark_stale.
     def test_mutate_and_save(self, persistence):
         with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
             tmp = f.name
@@ -106,7 +106,7 @@ class TestRoundTrip:
         assert s2.get_node("test_node")["properties"]["stale"] is True
         Path(tmp).unlink()
 
-    # AGENT SHALL VALIDATE DATA integration.
+    # PROCESS save SHALL WRITE VALID RECORD json WITH nodes AND edges arrays.
     def test_save_creates_valid_json(self, persistence):
         store = persistence.load(str(_SAMPLE))
         with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:

@@ -43,7 +43,7 @@ This repo follows the [Dark Code compliance standard](https://github.com/TRUGS-L
 - Every public `def`/`class` has a function-level TRUG/L comment above it
 - Every test function has an `AGENT SHALL VALIDATE ...` comment
 - `folder.trug.json` validates against TRUGS CORE rules
-- When writing TRUG/L in prose, use "TRUG/L" (not "TRL")
+- When writing TRUG/L in prose, always spell it "TRUG/L" — never abbreviate
 
 ## Branching
 
