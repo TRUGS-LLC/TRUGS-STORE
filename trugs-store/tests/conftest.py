@@ -23,6 +23,7 @@ def _make_node(nid, ntype="ITEM", dimension="test_dim", metric_level="BASE_ITEM"
     }
 
 
+# AGENT claude SHALL DEFINE RECORD store AS A RECORD fixture.
 @pytest.fixture(params=_BACKENDS)
 def store(request):
     """Yield a fresh empty GraphStore for each backend."""
@@ -53,6 +54,7 @@ def store(request):
         conn.close()
 
 
+# AGENT claude SHALL DEFINE RECORD populated_store AS A RECORD fixture.
 @pytest.fixture
 def populated_store(store):
     store.set_metadata("name", "test_graph")

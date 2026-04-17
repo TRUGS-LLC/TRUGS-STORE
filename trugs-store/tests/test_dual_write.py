@@ -10,6 +10,7 @@ import pytest
 from trugs_store.persistence.dual_write import write_trug, read_trug, export_trug, import_trug
 
 
+# AGENT claude SHALL DEFINE RECORD sample_trug AS A RECORD fixture.
 @pytest.fixture
 def sample_trug():
     """A minimal valid TRUG dict."""
@@ -53,6 +54,7 @@ def sample_trug():
 class TestWriteTrugJsonOnly:
     """Tests for JSON write path (no DB)."""
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_writes_valid_json(self, tmp_path, sample_trug):
         out = tmp_path / "TEST_FOLDER" / "folder.trug.json"
         out.parent.mkdir()
@@ -66,6 +68,7 @@ class TestWriteTrugJsonOnly:
         assert len(loaded["nodes"]) == 2
         assert len(loaded["edges"]) == 1
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_json_matches_original_format(self, tmp_path, sample_trug):
         """Output must match json.dump(indent=2) + trailing newline."""
         out = tmp_path / "FOLDER" / "folder.trug.json"
@@ -75,6 +78,7 @@ class TestWriteTrugJsonOnly:
         expected = json.dumps(sample_trug, indent=2, ensure_ascii=False) + "\n"
         assert out.read_text() == expected
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_no_dsn_no_warning(self, tmp_path, sample_trug, capsys):
         """When PORT_DSN is unset, no warning should be printed."""
         out = tmp_path / "FOLDER" / "folder.trug.json"
@@ -87,6 +91,7 @@ class TestWriteTrugJsonOnly:
         captured = capsys.readouterr()
         assert "dual-write" not in captured.err
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_string_path(self, tmp_path, sample_trug):
         """Path can be a string."""
         out = tmp_path / "FOLDER" / "folder.trug.json"
@@ -98,6 +103,7 @@ class TestWriteTrugJsonOnly:
 class TestWriteTrugWithPostgres:
     """Tests for dual-write with real PostgreSQL."""
 
+    # AGENT claude SHALL DEFINE RECORD dsn AS A RECORD fixture.
     @pytest.fixture
     def dsn(self):
         dsn = os.environ.get("TEST_DSN")
@@ -105,6 +111,7 @@ class TestWriteTrugWithPostgres:
             pytest.skip("TEST_DSN not set — skipping PostgreSQL tests")
         return dsn
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_dual_write_populates_db(self, tmp_path, sample_trug, dsn):
         import psycopg
         from trugs_store.persistence.postgres import PostgresPersistence
@@ -135,6 +142,7 @@ class TestWriteTrugWithPostgres:
         finally:
             conn.close()
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_graph_id_from_parent_folder(self, tmp_path, sample_trug, dsn):
         import psycopg
         from trugs_store.persistence.postgres import PostgresPersistence
@@ -155,6 +163,7 @@ class TestWriteTrugWithPostgres:
         finally:
             conn.close()
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_overwrite_replaces_graph(self, tmp_path, sample_trug, dsn):
         import psycopg
         from trugs_store.persistence.postgres import PostgresPersistence
@@ -192,6 +201,7 @@ class TestWriteTrugWithPostgres:
 class TestWriteTrugResilience:
     """Tests for error resilience."""
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_bad_dsn_logs_warning_json_still_written(self, tmp_path, sample_trug, caplog):
         import logging
         out = tmp_path / "FOLDER" / "folder.trug.json"
@@ -207,6 +217,7 @@ class TestWriteTrugResilience:
         # Warning should be logged via logging (not print)
         assert any("dual-write" in r.message.lower() or "DB write failed" in r.message for r in caplog.records)
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_env_var_dsn(self, tmp_path, sample_trug):
         """PORT_DSN env var is read when db_dsn kwarg is None."""
         out = tmp_path / "FOLDER" / "folder.trug.json"
@@ -222,6 +233,7 @@ class TestWriteTrugResilience:
 class TestReadTrugJsonOnly:
     """Tests for JSON-only read path (no DB)."""
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_reads_from_json(self, tmp_path, sample_trug):
         out = tmp_path / "FOLDER" / "folder.trug.json"
         out.parent.mkdir()
@@ -232,6 +244,7 @@ class TestReadTrugJsonOnly:
         assert len(result["nodes"]) == 2
         assert len(result["edges"]) == 1
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_no_dsn_reads_json(self, tmp_path, sample_trug, capsys):
         out = tmp_path / "FOLDER" / "folder.trug.json"
         out.parent.mkdir()
@@ -245,6 +258,7 @@ class TestReadTrugJsonOnly:
         captured = capsys.readouterr()
         assert "PORT read" not in captured.err
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_file_not_found_raises(self, tmp_path):
         missing = tmp_path / "FOLDER" / "folder.trug.json"
         with pytest.raises(FileNotFoundError):
@@ -254,6 +268,7 @@ class TestReadTrugJsonOnly:
 class TestReadTrugWithPostgres:
     """Tests for reading from PostgreSQL."""
 
+    # AGENT claude SHALL DEFINE RECORD dsn AS A RECORD fixture.
     @pytest.fixture
     def dsn(self):
         dsn = os.environ.get("TEST_DSN")
@@ -261,6 +276,7 @@ class TestReadTrugWithPostgres:
             pytest.skip("TEST_DSN not set — skipping PostgreSQL tests")
         return dsn
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_read_from_db(self, tmp_path, sample_trug, dsn):
         """Write to DB, then read back — result matches original."""
         out = tmp_path / "READ_TEST" / "folder.trug.json"
@@ -285,6 +301,7 @@ class TestReadTrugWithPostgres:
         conn.commit()
         conn.close()
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_read_preserves_metadata(self, tmp_path, sample_trug, dsn):
         """Metadata fields (dimensions, capabilities) survive round-trip."""
         sample_trug["dimensions"] = {
@@ -312,6 +329,7 @@ class TestReadTrugWithPostgres:
         conn.commit()
         conn.close()
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_db_json_output_identical(self, tmp_path, sample_trug, dsn):
         """DB read and JSON read produce identical node/edge data."""
         out = tmp_path / "COMPARE_TEST" / "folder.trug.json"
@@ -348,6 +366,7 @@ class TestReadTrugWithPostgres:
 class TestReadTrugResilience:
     """Tests for read error resilience — loud failure when PORT_DSN set."""
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_bad_dsn_raises(self, tmp_path, sample_trug):
         """When PORT_DSN is set and DB fails → raise, don't silently fall back."""
         out = tmp_path / "FOLDER" / "folder.trug.json"
@@ -357,6 +376,7 @@ class TestReadTrugResilience:
         with pytest.raises(Exception):
             read_trug(out, db_dsn="host=localhost port=99999 dbname=nonexistent")
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_missing_graph_raises(self, tmp_path, sample_trug):
         """Graph not in DB → raises KeyError (loud failure)."""
         dsn = os.environ.get("TEST_DSN")
@@ -370,6 +390,7 @@ class TestReadTrugResilience:
         with pytest.raises(KeyError):
             read_trug(out, db_dsn=dsn)
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_env_var_dsn_raises_on_failure(self, tmp_path, sample_trug):
         """PORT_DSN env var is used — bad DSN raises instead of fallback."""
         out = tmp_path / "FOLDER" / "folder.trug.json"
@@ -380,6 +401,7 @@ class TestReadTrugResilience:
             with pytest.raises(Exception):
                 read_trug(out)
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_no_dsn_reads_json_not_error(self, tmp_path, sample_trug):
         """No PORT_DSN = JSON-only mode, not an error (ADR-5)."""
         out = tmp_path / "FOLDER" / "folder.trug.json"
@@ -392,6 +414,7 @@ class TestReadTrugResilience:
 
         assert result["name"] == "Test Folder"
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_json_missing_db_has_graph(self, tmp_path, sample_trug):
         """JSON file doesn't exist but DB has the graph → reads from DB."""
         dsn = os.environ.get("TEST_DSN")
@@ -417,6 +440,7 @@ class TestReadTrugResilience:
         conn.commit()
         conn.close()
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_json_missing_no_db_raises(self, tmp_path):
         """JSON file doesn't exist and no DB → raises FileNotFoundError."""
         missing = tmp_path / "NOWHERE" / "folder.trug.json"
@@ -428,6 +452,7 @@ class TestReadTrugResilience:
 class TestExportTrug:
     """Tests for export_trug — DB → JSON file."""
 
+    # AGENT claude SHALL DEFINE RECORD dsn AS A RECORD fixture.
     @pytest.fixture
     def dsn(self):
         dsn = os.environ.get("TEST_DSN")
@@ -435,6 +460,7 @@ class TestExportTrug:
             pytest.skip("TEST_DSN not set")
         return dsn
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_export_writes_json(self, tmp_path, sample_trug, dsn):
         out = tmp_path / "EXPORT_TEST" / "folder.trug.json"
         out.parent.mkdir()
@@ -458,6 +484,7 @@ class TestExportTrug:
         conn.commit()
         conn.close()
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_export_missing_graph_returns_false(self, tmp_path, dsn):
         out = tmp_path / "NOT_IN_DB" / "folder.trug.json"
         out.parent.mkdir()
@@ -466,6 +493,7 @@ class TestExportTrug:
         assert result is False
         assert not out.exists()
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_export_no_dsn_raises(self, tmp_path):
         out = tmp_path / "FOLDER" / "folder.trug.json"
         out.parent.mkdir()
@@ -474,6 +502,7 @@ class TestExportTrug:
             with pytest.raises(RuntimeError, match="PORT_DSN not set"):
                 export_trug(out)
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_export_bad_dsn_raises_runtime_error(self, tmp_path, sample_trug):
         out = tmp_path / "FOLDER" / "folder.trug.json"
         out.parent.mkdir()
@@ -484,6 +513,7 @@ class TestExportTrug:
 class TestImportTrug:
     """Tests for import_trug — JSON file → DB."""
 
+    # AGENT claude SHALL DEFINE RECORD dsn AS A RECORD fixture.
     @pytest.fixture
     def dsn(self):
         dsn = os.environ.get("TEST_DSN")
@@ -491,6 +521,7 @@ class TestImportTrug:
             pytest.skip("TEST_DSN not set")
         return dsn
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_import_populates_db(self, tmp_path, sample_trug, dsn):
         out = tmp_path / "IMPORT_TEST" / "folder.trug.json"
         out.parent.mkdir()
@@ -515,6 +546,7 @@ class TestImportTrug:
         conn.commit()
         conn.close()
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_import_no_dsn_raises(self, tmp_path, sample_trug):
         out = tmp_path / "FOLDER" / "folder.trug.json"
         out.parent.mkdir()
@@ -526,6 +558,7 @@ class TestImportTrug:
             with pytest.raises(RuntimeError, match="PORT_DSN not set"):
                 import_trug(out)
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_import_missing_file_raises(self, tmp_path):
         missing = tmp_path / "FOLDER" / "folder.trug.json"
         missing.parent.mkdir()
@@ -535,6 +568,7 @@ class TestImportTrug:
         with pytest.raises(FileNotFoundError):
             import_trug(missing, db_dsn=dsn)
 
+    # AGENT SHALL VALIDATE DATA dual_write.
     def test_import_export_round_trip(self, tmp_path, sample_trug, dsn):
         """Import JSON → export from DB → JSON matches original."""
         out = tmp_path / "ROUNDTRIP" / "folder.trug.json"

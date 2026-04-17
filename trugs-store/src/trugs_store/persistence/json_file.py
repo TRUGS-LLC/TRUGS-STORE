@@ -11,9 +11,11 @@ from trugs_store.memory import InMemoryGraphStore
 _METADATA_SKIP = {"nodes", "edges"}
 
 
+# AGENT claude SHALL DEFINE RECORD JsonFilePersistence AS A RECORD persistence.
 class JsonFilePersistence:
     """Load and save .trug.json files to/from InMemoryGraphStore."""
 
+    # PROCESS load SHALL READ RECORD file THEN RETURN RECORD store.
     def load(self, source: str) -> InMemoryGraphStore:
         path = Path(source)
         with open(path, "r", encoding="utf-8") as fh:
@@ -29,6 +31,7 @@ class JsonFilePersistence:
         store._rebuild_edge_indexes()
         return store
 
+    # PROCESS save SHALL WRITE RECORD store TO DATA file.
     def save(self, store: InMemoryGraphStore, destination: str) -> None:
         path = Path(destination)
         data: Dict[str, Any] = {}

@@ -20,6 +20,7 @@ from trugs_store.types import Edge, Node
 _MAX_ANCESTOR_DEPTH = 100
 
 
+# AGENT claude SHALL DEFINE RECORD PostgresGraphStore AS A RECORD store.
 class PostgresGraphStore:
     """PostgreSQL-backed GraphStore — indexed queries, transactional writes.
 
@@ -35,6 +36,7 @@ class PostgresGraphStore:
 
     # === Node Read ===
 
+    # PROCESS get_node SHALL READ RECORD node THEN RETURN RECORD result.
     def get_node(self, node_id: str) -> Optional[Node]:
         with self._conn.cursor(row_factory=dict_row) as cur:
             cur.execute(
@@ -45,6 +47,7 @@ class PostgresGraphStore:
             row = cur.fetchone()
             return _row_to_node(row) if row else None
 
+    # PROCESS get_children SHALL FILTER ALL RECORD node THEN RETURN RECORD result.
     def get_children(self, parent_id: str) -> List[Node]:
         with self._conn.cursor(row_factory=dict_row) as cur:
             cur.execute(
@@ -54,6 +57,7 @@ class PostgresGraphStore:
             )
             return [_row_to_node(r) for r in cur.fetchall()]
 
+    # PROCESS find_nodes SHALL FILTER ALL RECORD node THEN RETURN RECORD result.
     def find_nodes(
         self,
         *,
@@ -87,6 +91,7 @@ class PostgresGraphStore:
             )
             return [_row_to_node(r) for r in cur.fetchall()]
 
+    # PROCESS node_count SHALL AGGREGATE EACH RECORD node TO INTEGER DATA count.
     def node_count(self) -> int:
         with self._conn.cursor() as cur:
             cur.execute("SELECT COUNT(*) FROM nodes WHERE graph_id = %s", (self._graph_id,))
@@ -94,6 +99,7 @@ class PostgresGraphStore:
 
     # === Node Write ===
 
+    # PROCESS add_node SHALL WRITE RECORD node TO DATA store.
     def add_node(self, node: Node, *, parent_id: Optional[str] = None) -> None:
         nid = node["id"]
         with self._conn.transaction():
@@ -166,6 +172,7 @@ class PostgresGraphStore:
                     ),
                 )
 
+    # PROCESS update_node SHALL WRITE RECORD properties TO DATA node.
     def update_node(self, node_id: str, properties: Dict[str, Any]) -> None:
         with self._conn.cursor() as cur:
             cur.execute(
@@ -177,9 +184,11 @@ class PostgresGraphStore:
                 raise KeyError(f"Node {node_id!r} does not exist")
         self._conn.commit()
 
+    # PROCESS mark_stale SHALL WRITE RECORD stale TO DATA node.
     def mark_stale(self, node_id: str, reason: str) -> None:
         self.update_node(node_id, {"stale": True, "stale_reason": reason})
 
+    # PROCESS clear_stale SHALL WRITE RECORD stale TO DATA node.
     def clear_stale(self, node_id: str) -> None:
         with self._conn.cursor() as cur:
             cur.execute(
@@ -191,6 +200,7 @@ class PostgresGraphStore:
                 raise KeyError(f"Node {node_id!r} does not exist")
         self._conn.commit()
 
+    # PROCESS delete_node SHALL REJECT RECORD node.
     def delete_node(self, node_id: str, *, cascade: bool = False) -> None:
         with self._conn.transaction():
             with self._conn.cursor() as cur:
@@ -247,6 +257,7 @@ class PostgresGraphStore:
 
     # === Edge Read ===
 
+    # PROCESS get_edges SHALL FILTER ALL RECORD edge THEN RETURN RECORD result.
     def get_edges(
         self,
         *,
@@ -273,12 +284,15 @@ class PostgresGraphStore:
             )
             return [_row_to_edge(r) for r in cur.fetchall()]
 
+    # PROCESS get_outgoing SHALL READ RECORD edge THEN RETURN RECORD result.
     def get_outgoing(self, node_id: str) -> List[Edge]:
         return self.get_edges(from_id=node_id)
 
+    # PROCESS get_incoming SHALL READ RECORD edge THEN RETURN RECORD result.
     def get_incoming(self, node_id: str) -> List[Edge]:
         return self.get_edges(to_id=node_id)
 
+    # PROCESS edge_count SHALL AGGREGATE EACH RECORD edge TO INTEGER DATA count.
     def edge_count(self) -> int:
         with self._conn.cursor() as cur:
             cur.execute("SELECT COUNT(*) FROM edges WHERE graph_id = %s", (self._graph_id,))
@@ -286,6 +300,7 @@ class PostgresGraphStore:
 
     # === Edge Write ===
 
+    # PROCESS add_edge SHALL WRITE RECORD edge TO DATA store.
     def add_edge(self, edge: Edge) -> None:
         fid, tid, rel = edge["from_id"], edge["to_id"], edge["relation"]
 
@@ -311,6 +326,7 @@ class PostgresGraphStore:
             )
         self._conn.commit()
 
+    # PROCESS update_edge SHALL WRITE RECORD properties TO DATA edge.
     def update_edge(
         self,
         from_id: str,
@@ -342,6 +358,7 @@ class PostgresGraphStore:
                 raise KeyError(f"Edge ({from_id!r}, {to_id!r}, {relation!r}) does not exist")
         self._conn.commit()
 
+    # PROCESS remove_edge SHALL REJECT RECORD edge.
     def remove_edge(self, from_id: str, to_id: str, relation: str) -> bool:
         with self._conn.cursor() as cur:
             cur.execute(
@@ -355,6 +372,7 @@ class PostgresGraphStore:
 
     # === Traversal ===
 
+    # PROCESS traverse SHALL READ RECORD node THEN RETURN ALL RECORD neighbor.
     def traverse(
         self,
         start_id: str,
@@ -395,11 +413,13 @@ class PostgresGraphStore:
                 yield (neighbor, edge, depth + 1)
                 queue.append((neighbor_id, depth + 1))
 
+    # PROCESS get_neighbors SHALL READ RECORD node THEN RETURN ALL RECORD neighbor.
     def get_neighbors(self, node_id: str, *, direction: str = "both") -> List[Node]:
         return [node for node, _e, _d in self.traverse(node_id, direction=direction, max_depth=1)]
 
     # === Subgraph ===
 
+    # PROCESS extract_subgraph SHALL FILTER ALL RECORD node THEN RETURN RECORD result.
     def extract_subgraph(self, node_ids: List[str]) -> "GraphStore":
         """Extract subgraph into an InMemoryGraphStore (subgraphs are small)."""
         from trugs_store.memory import InMemoryGraphStore
@@ -430,6 +450,7 @@ class PostgresGraphStore:
 
     # === Metadata ===
 
+    # PROCESS get_metadata SHALL READ RECORD metadata THEN RETURN RECORD result.
     def get_metadata(self) -> Dict[str, Any]:
         with self._conn.cursor(row_factory=dict_row) as cur:
             cur.execute(
@@ -454,6 +475,7 @@ class PostgresGraphStore:
         "description": "UPDATE graphs SET description = %s WHERE graph_id = %s",
     }
 
+    # PROCESS set_metadata SHALL WRITE RECORD metadata TO DATA store.
     def set_metadata(self, key: str, value: Any) -> None:
         # Top-level graph columns — use pre-built SQL (no f-string interpolation)
         if key in self._GRAPH_COLUMNS:
@@ -471,6 +493,7 @@ class PostgresGraphStore:
 
     # === Validation ===
 
+    # PROCESS validate_graph SHALL VALIDATE RECORD graph.
     def validate_graph(self) -> List[Violation]:
         """Validate by loading into memory and delegating.
 

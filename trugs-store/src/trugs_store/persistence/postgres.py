@@ -17,6 +17,7 @@ from trugs_store.postgres import PostgresGraphStore
 from trugs_store.types import Node
 
 
+# AGENT claude SHALL DEFINE RECORD PostgresPersistence AS A RECORD persistence.
 class PostgresPersistence:
     """Load and save TRUGS graphs to/from PostgreSQL.
 
@@ -26,6 +27,7 @@ class PostgresPersistence:
     def __init__(self, conn: "psycopg.Connection") -> None:
         self._conn = conn
 
+    # PROCESS ensure_schema SHALL WRITE RECORD schema TO DATA database.
     def ensure_schema(self) -> None:
         """Create tables and indexes if they don't exist. Idempotent."""
         schema_sql = (
@@ -37,6 +39,7 @@ class PostgresPersistence:
             cur.execute(schema_sql)
         self._conn.commit()
 
+    # PROCESS load SHALL READ RECORD graph THEN RETURN RECORD store.
     def load(self, graph_id: str) -> PostgresGraphStore:
         """Load a graph by graph_id. Returns a PostgresGraphStore scoped to it.
 
@@ -48,6 +51,7 @@ class PostgresPersistence:
                 raise KeyError(f"Graph {graph_id!r} does not exist")
         return PostgresGraphStore(self._conn, graph_id)
 
+    # PROCESS save SHALL WRITE RECORD store TO DATA database.
     def save(self, store: Any, graph_id: str) -> None:
         """Persist a GraphStore's state to PostgreSQL under graph_id.
 
@@ -117,12 +121,14 @@ class PostgresPersistence:
                                 Json(edge.get("properties", {})),
                             ))
 
+    # PROCESS list_graphs SHALL FILTER ALL RECORD graph THEN RETURN RECORD result.
     def list_graphs(self) -> list[dict]:
         """Return all graphs with graph_id, name, version."""
         with self._conn.cursor() as cur:
             cur.execute("SELECT graph_id, name, version FROM graphs ORDER BY graph_id")
             return [{"graph_id": r[0], "name": r[1], "version": r[2]} for r in cur.fetchall()]
 
+    # PROCESS delete_graph SHALL REJECT RECORD graph.
     def delete_graph(self, graph_id: str) -> bool:
         """Delete a graph and all its nodes/edges. Returns True if existed."""
         with self._conn.cursor() as cur:
