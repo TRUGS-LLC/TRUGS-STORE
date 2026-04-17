@@ -105,7 +105,7 @@ def pg_store_10k(pg_conn, pg_persistence):
 
 
 class TestGetNodeLatency:
-    # AGENT SHALL VALIDATE DATA benchmarks.
+    # PROCESS get_node SHALL RETURN RECORD node WITHIN 0.5ms AT p95 ON 10K graph.
     def test_get_node_p95_under_500us(self, pg_store_10k):
         """get_node p95 < 0.5 ms on 10K-node graph."""
         node_ids = [n["id"] for n in pg_store_10k.find_nodes()]
@@ -123,7 +123,7 @@ class TestGetNodeLatency:
 
 
 class TestTraverseLatency:
-    # AGENT SHALL VALIDATE DATA benchmarks.
+    # PROCESS traverse SHALL RETURN ALL RECORD neighbor WITHIN 10ms AT p95 AT depth 10.
     def test_traverse_depth_10_p95_under_10ms(self, pg_store_10k):
         """traverse depth 10 p95 < 10 ms."""
         node_ids = [n["id"] for n in pg_store_10k.find_nodes()]
@@ -141,7 +141,7 @@ class TestTraverseLatency:
 
 
 class TestBulkLoadPerformance:
-    # AGENT SHALL VALIDATE DATA benchmarks.
+    # PROCESS save SHALL WRITE 100K RECORD node TO DATA database WITHIN 1 second.
     def test_bulk_load_100k_under_1s(self, pg_conn, pg_persistence):
         """Bulk load 100K nodes via COPY in < 1 second."""
         from trugs_store.memory import InMemoryGraphStore
@@ -175,7 +175,7 @@ class TestBulkLoadPerformance:
 
 
 class TestValidatePerformance:
-    # AGENT SHALL VALIDATE DATA benchmarks.
+    # PROCESS validate_graph SHALL VALIDATE 10K RECORD node WITHIN 500ms.
     def test_validate_10k_under_500ms(self, pg_store_10k):
         """validate_graph on 10K nodes < 500 ms."""
         t0 = time.perf_counter()
