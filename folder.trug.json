@@ -15,7 +15,7 @@
   "name": "TRUGS_STORE Folder",
   "version": "1.0.0",
   "type": "PROJECT",
-  "description": "Graph storage backends for TRUGS specifications \u2014 InMemoryGraphStore, PostgresGraphStore, JsonFilePersistence",
+  "description": "Graph storage backends for TRUGS specifications — InMemoryGraphStore, PostgresGraphStore, JsonFilePersistence",
   "nodes": [
     {
       "id": "trugs_store_folder",
@@ -36,7 +36,9 @@
         "doc_readme",
         "doc_agent",
         "doc_changelog",
-        "doc_notice"
+        "doc_notice",
+        "doc_license",
+        "doc_folder_trug"
       ],
       "dimension": "folder_structure"
     },
@@ -46,7 +48,7 @@
       "properties": {
         "name": "SPEC_844_graphstore_protocol.py",
         "format": "python",
-        "purpose": "GraphStore Protocol (PEP 544) \u2014 22 methods, canonical interface",
+        "purpose": "GraphStore Protocol (PEP 544) — 22 methods, canonical interface",
         "github_issue": 844
       },
       "metric_level": "BASE_SPECIFICATION",
@@ -60,23 +62,10 @@
       "properties": {
         "file": "trugs-store/",
         "name": "trugs-store",
-        "purpose": "Python package \u2014 InMemoryGraphStore, PostgresGraphStore, JsonFilePersistence",
+        "purpose": "Python package — InMemoryGraphStore, PostgresGraphStore, JsonFilePersistence",
         "github_issue": 844
       },
       "metric_level": "DEKA_COMPONENT",
-      "parent_id": "trugs_store_folder",
-      "contains": [],
-      "dimension": "folder_structure"
-    },
-    {
-      "id": "doc_architecture",
-      "type": "DOCUMENT",
-      "properties": {
-        "name": "ARCHITECTURE.md",
-        "format": "markdown",
-        "purpose": "Auto-generated architecture documentation"
-      },
-      "metric_level": "BASE_DOCUMENT",
       "parent_id": "trugs_store_folder",
       "contains": [],
       "dimension": "folder_structure"
@@ -157,43 +146,68 @@
       "parent_id": "trugs_store_folder",
       "contains": [],
       "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_license",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "LICENSE",
+        "purpose": "Apache License 2.0 full text"
+      },
+      "metric_level": "BASE_DOCUMENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_folder_trug",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "folder.trug.json",
+        "format": "json",
+        "purpose": "Machine-readable graph index of this repository"
+      },
+      "metric_level": "BASE_DOCUMENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
     }
   ],
   "edges": [
     {
       "from_id": "trugs_store_folder",
       "to_id": "spec_graphstore_protocol",
-      "relation": "contains",
+      "relation": "CONTAINS",
       "weight": 1.0
     },
     {
       "from_id": "trugs_store_folder",
       "to_id": "comp_trugs_store_package",
-      "relation": "contains",
+      "relation": "CONTAINS",
       "weight": 1.0
     },
     {
       "from_id": "comp_trugs_store_package",
       "to_id": "spec_graphstore_protocol",
-      "relation": "implements",
+      "relation": "IMPLEMENTS",
       "weight": 1.0
     },
     {
       "from_id": "trugs_store_folder",
       "to_id": "comp_scripts",
-      "relation": "contains",
+      "relation": "CONTAINS",
       "weight": 1.0
     },
     {
       "from_id": "trugs_store_folder",
       "to_id": "comp_trugs_store",
-      "relation": "contains",
+      "relation": "CONTAINS",
       "weight": 1.0
     },
     {
       "from_id": "trugs_store_folder",
       "to_id": "TRUGS_EPIC:epic_tooling",
-      "relation": "implements",
+      "relation": "IMPLEMENTS",
       "weight": 1.0,
       "properties": {
         "description": "Implements EPIC project.trug.json"
@@ -202,7 +216,37 @@
     {
       "from_id": "trugs_store_folder",
       "to_id": "doc_readme",
-      "relation": "contains",
+      "relation": "CONTAINS",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "doc_agent",
+      "relation": "CONTAINS",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "doc_changelog",
+      "relation": "CONTAINS",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "doc_notice",
+      "relation": "CONTAINS",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "doc_license",
+      "relation": "CONTAINS",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "doc_folder_trug",
+      "relation": "CONTAINS",
       "weight": 1.0
     }
   ]
