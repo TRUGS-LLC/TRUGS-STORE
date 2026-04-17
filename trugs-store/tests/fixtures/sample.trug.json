@@ -1,0 +1,66 @@
+{
+  "name": "Sample Graph",
+  "version": "1.0.0",
+  "type": "PROJECT",
+  "description": "Test fixture for integration tests",
+  "dimensions": {
+    "test_dim": {
+      "description": "Test dimension",
+      "base_level": "BASE"
+    }
+  },
+  "nodes": [
+    {
+      "id": "root",
+      "type": "FOLDER",
+      "properties": {"name": "root", "status": "ACTIVE"},
+      "parent_id": null,
+      "contains": ["child_a", "child_b"],
+      "metric_level": "KILO_FOLDER",
+      "dimension": "test_dim"
+    },
+    {
+      "id": "child_a",
+      "type": "DOCUMENT",
+      "properties": {"name": "doc_a", "format": "markdown"},
+      "parent_id": "root",
+      "contains": [],
+      "metric_level": "BASE_DOCUMENT",
+      "dimension": "test_dim"
+    },
+    {
+      "id": "child_b",
+      "type": "SPECIFICATION",
+      "properties": {"name": "spec_b", "lines": 100},
+      "parent_id": "root",
+      "contains": ["grandchild"],
+      "metric_level": "BASE_SPECIFICATION",
+      "dimension": "test_dim"
+    },
+    {
+      "id": "grandchild",
+      "type": "COMPONENT",
+      "properties": {"name": "component_c"},
+      "parent_id": "child_b",
+      "contains": [],
+      "metric_level": "DEKA_COMPONENT",
+      "dimension": "test_dim"
+    },
+    {
+      "id": "task_1",
+      "type": "TASK",
+      "properties": {"name": "do something", "status": "TODO"},
+      "parent_id": null,
+      "contains": [],
+      "metric_level": "BASE_ITEM",
+      "dimension": "test_dim"
+    }
+  ],
+  "edges": [
+    {"from_id": "root", "to_id": "child_a", "relation": "CONTAINS"},
+    {"from_id": "root", "to_id": "child_b", "relation": "CONTAINS"},
+    {"from_id": "child_b", "to_id": "grandchild", "relation": "CONTAINS"},
+    {"from_id": "child_a", "to_id": "child_b", "relation": "REFERENCES"},
+    {"from_id": "task_1", "to_id": "child_b", "relation": "IMPLEMENTS"}
+  ]
+}

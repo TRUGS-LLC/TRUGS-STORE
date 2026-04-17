@@ -5,17 +5,39 @@ build-backend = "hatchling.build"
 [project]
 name = "trugs-store"
 version = "0.1.0"
-description = "Graph storage backends for TRUGS specifications"
+description = "Graph storage backends for TRUGS specifications — InMemory, PostgreSQL, JSON file persistence"
+readme = "README.md"
+license = {text = "Apache-2.0"}
 requires-python = ">=3.11"
 dependencies = []
+authors = [
+    {name = "TRUGS LLC"},
+]
+keywords = ["trugs", "graph", "storage", "json", "postgresql", "persistence"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Database",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.urls]
+Homepage = "https://github.com/TRUGS-LLC/TRUGS-STORE"
+Repository = "https://github.com/TRUGS-LLC/TRUGS-STORE"
+Issues = "https://github.com/TRUGS-LLC/TRUGS-STORE/issues"
+Specification = "https://github.com/TRUGS-LLC/TRUGS"
 
 [project.optional-dependencies]
 postgres = [
     "psycopg[binary]>=3.1",
-    "sqlalchemy>=2.0",
 ]
 dev = [
     "pytest>=7.0",
+    "coverage>=7.0",
 ]
 
 [tool.hatch.build.targets.wheel]

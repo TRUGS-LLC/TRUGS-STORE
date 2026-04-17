@@ -192,19 +192,20 @@ class TestWriteTrugWithPostgres:
 class TestWriteTrugResilience:
     """Tests for error resilience."""
 
-    def test_bad_dsn_logs_warning_json_still_written(self, tmp_path, sample_trug, capsys):
+    def test_bad_dsn_logs_warning_json_still_written(self, tmp_path, sample_trug, caplog):
+        import logging
         out = tmp_path / "FOLDER" / "folder.trug.json"
         out.parent.mkdir()
-        write_trug(sample_trug, out, db_dsn="host=localhost port=99999 dbname=nonexistent")
+        with caplog.at_level(logging.WARNING):
+            write_trug(sample_trug, out, db_dsn="host=localhost port=99999 dbname=nonexistent")
 
         # JSON should still be written
         assert out.exists()
         loaded = json.loads(out.read_text())
         assert loaded["name"] == "Test Folder"
 
-        # Warning should be logged
-        captured = capsys.readouterr()
-        assert "dual-write" in captured.err.lower() or "DB write failed" in captured.err
+        # Warning should be logged via logging (not print)
+        assert any("dual-write" in r.message.lower() or "DB write failed" in r.message for r in caplog.records)
 
     def test_env_var_dsn(self, tmp_path, sample_trug):
         """PORT_DSN env var is read when db_dsn kwarg is None."""
