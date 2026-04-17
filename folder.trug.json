@@ -1,0 +1,181 @@
+{
+  "dimensions": {
+    "folder_structure": {
+      "base_level": "BASE",
+      "description": "TRUGS_STORE components and structure"
+    }
+  },
+  "capabilities": {
+    "profiles": [],
+    "extensions": [],
+    "vocabularies": [
+      "project_v1"
+    ]
+  },
+  "name": "TRUGS_STORE Folder",
+  "version": "1.0.0",
+  "type": "PROJECT",
+  "description": "Graph storage backends for TRUGS specifications \u2014 InMemoryGraphStore, PostgresGraphStore, JsonFilePersistence",
+  "nodes": [
+    {
+      "id": "trugs_store_folder",
+      "type": "FOLDER",
+      "properties": {
+        "name": "TRUGS_STORE",
+        "status": "IN_PROGRESS",
+        "purpose": "Graph storage backends for TRUGS specifications",
+        "github_issue": 844
+      },
+      "metric_level": "KILO_FOLDER",
+      "parent_id": null,
+      "contains": [
+        "spec_graphstore_protocol",
+        "doc_analysis_graphstore_validation",
+        "doc_report_property_size_profile",
+        "comp_trugs_store_package",
+        "doc_architecture",
+        "doc_analysis_845_graphstore_validation",
+        "doc_report_852_property_size_profile",
+        "comp_scripts",
+        "comp_trugs_store",
+        "doc_readme"
+      ],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "spec_graphstore_protocol",
+      "type": "SPECIFICATION",
+      "properties": {
+        "name": "SPEC_844_graphstore_protocol.py",
+        "format": "python",
+        "purpose": "GraphStore Protocol (PEP 544) \u2014 22 methods, canonical interface",
+        "github_issue": 844
+      },
+      "metric_level": "BASE_SPECIFICATION",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_trugs_store_package",
+      "type": "COMPONENT",
+      "properties": {
+        "file": "trugs-store/",
+        "name": "trugs-store",
+        "purpose": "Python package \u2014 InMemoryGraphStore, PostgresGraphStore, JsonFilePersistence",
+        "github_issue": 844
+      },
+      "metric_level": "DEKA_COMPONENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_architecture",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "ARCHITECTURE.md",
+        "format": "markdown",
+        "purpose": "Auto-generated architecture documentation"
+      },
+      "metric_level": "BASE_DOCUMENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_scripts",
+      "type": "COMPONENT",
+      "properties": {
+        "loc": 163,
+        "name": "scripts",
+        "purpose": "Scripts component",
+        "file_count": 1
+      },
+      "metric_level": "DEKA_COMPONENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_trugs_store",
+      "type": "COMPONENT",
+      "properties": {
+        "loc": 1221,
+        "name": "trugs-store",
+        "purpose": "Trugs-Store component",
+        "file_count": 10
+      },
+      "metric_level": "DEKA_COMPONENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_readme",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "README.md",
+        "format": "markdown",
+        "purpose": "Human quickstart and motivation"
+      },
+      "metric_level": "BASE_DOCUMENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "spec_graphstore_protocol",
+      "relation": "contains",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "comp_trugs_store_package",
+      "relation": "contains",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "doc_architecture",
+      "relation": "contains",
+      "weight": 1.0
+    },
+    {
+      "from_id": "comp_trugs_store_package",
+      "to_id": "spec_graphstore_protocol",
+      "relation": "implements",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "comp_scripts",
+      "relation": "contains",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "comp_trugs_store",
+      "relation": "contains",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "TRUGS_EPIC:epic_tooling",
+      "relation": "implements",
+      "weight": 1.0,
+      "properties": {
+        "description": "Implements EPIC project.trug.json"
+      }
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "doc_readme",
+      "relation": "contains",
+      "weight": 1.0
+    }
+  ]
+}

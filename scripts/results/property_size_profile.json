@@ -1,0 +1,108 @@
+{
+  "toast_threshold_bytes": 2048,
+  "trugs_scanned": 108,
+  "nodes_profiled": 1952,
+  "statistics": {
+    "count": 1952,
+    "min": 2,
+    "max": 21203,
+    "mean": 258.6,
+    "median": 160.0,
+    "p90": 513,
+    "p95": 674,
+    "p99": 1630
+  },
+  "verdict": "GO",
+  "oversized_nodes": [
+    {
+      "file": ".github/agent_instructions.trug.json",
+      "node_id": "tutorial_what_is_a_trug",
+      "node_type": "STANDARD",
+      "byte_size": 3079
+    },
+    {
+      "file": ".github/agent_instructions.trug.json",
+      "node_id": "workflow_maintenance",
+      "node_type": "WORKFLOW",
+      "byte_size": 2294
+    },
+    {
+      "file": "TRUGS_EPIC/epics/epic_mvp.trug.json",
+      "node_id": "epic_mvp",
+      "node_type": "EPIC",
+      "byte_size": 4705
+    },
+    {
+      "file": "TRUGS_EPIC/epics/epic_trug_port.trug.json",
+      "node_id": "epic_trug_port",
+      "node_type": "EPIC",
+      "byte_size": 2334
+    },
+    {
+      "file": "TRUGS_EPIC/project.trug.json",
+      "node_id": "epic_mvp",
+      "node_type": "EPIC",
+      "byte_size": 4824
+    },
+    {
+      "file": "TRUGS_EPIC/project.trug.json",
+      "node_id": "epic_trug_port",
+      "node_type": "EPIC",
+      "byte_size": 2459
+    },
+    {
+      "file": "conversation.trug.json",
+      "node_id": "msg-012",
+      "node_type": "CONCEPT",
+      "byte_size": 3872
+    },
+    {
+      "file": "conversation.trug.json",
+      "node_id": "msg-014",
+      "node_type": "CONCEPT",
+      "byte_size": 2141
+    },
+    {
+      "file": "conversation.trug.json",
+      "node_id": "msg-016",
+      "node_type": "CONCEPT",
+      "byte_size": 2787
+    },
+    {
+      "file": "conversation.trug.json",
+      "node_id": "msg-018",
+      "node_type": "CONCEPT",
+      "byte_size": 3555
+    },
+    {
+      "file": "conversation.trug.json",
+      "node_id": "msg-024",
+      "node_type": "CONCEPT",
+      "byte_size": 2254
+    },
+    {
+      "file": "conversation.trug.json",
+      "node_id": "msg-054",
+      "node_type": "CONCEPT",
+      "byte_size": 2193
+    },
+    {
+      "file": "conversation.trug.json",
+      "node_id": "msg-056",
+      "node_type": "CONCEPT",
+      "byte_size": 2197
+    },
+    {
+      "file": "conversation.trug.json",
+      "node_id": "msg-060",
+      "node_type": "CONCEPT",
+      "byte_size": 2942
+    },
+    {
+      "file": "conversation.trug.json",
+      "node_id": "msg-062",
+      "node_type": "CONCEPT",
+      "byte_size": 21203
+    }
+  ]
+}
