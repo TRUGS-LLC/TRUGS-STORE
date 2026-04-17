@@ -59,6 +59,7 @@ def _generate_edges(nodes: list[dict], avg_per_node: float = 2.5, seed: int = 42
     return edges
 
 
+# AGENT claude SHALL DEFINE RECORD pg_conn AS A RECORD fixture.
 @pytest.fixture(scope="module")
 def pg_conn():
     import psycopg
@@ -67,6 +68,7 @@ def pg_conn():
     conn.close()
 
 
+# AGENT claude SHALL DEFINE RECORD pg_persistence AS A RECORD fixture.
 @pytest.fixture(scope="module")
 def pg_persistence(pg_conn):
     from trugs_store.persistence.postgres import PostgresPersistence
@@ -75,6 +77,7 @@ def pg_persistence(pg_conn):
     return p
 
 
+# AGENT claude SHALL DEFINE RECORD pg_store_10k AS A RECORD fixture.
 @pytest.fixture(scope="module")
 def pg_store_10k(pg_conn, pg_persistence):
     """A 10K-node graph loaded into PostgreSQL."""
@@ -102,6 +105,7 @@ def pg_store_10k(pg_conn, pg_persistence):
 
 
 class TestGetNodeLatency:
+    # AGENT SHALL VALIDATE DATA benchmarks.
     def test_get_node_p95_under_500us(self, pg_store_10k):
         """get_node p95 < 0.5 ms on 10K-node graph."""
         node_ids = [n["id"] for n in pg_store_10k.find_nodes()]
@@ -119,6 +123,7 @@ class TestGetNodeLatency:
 
 
 class TestTraverseLatency:
+    # AGENT SHALL VALIDATE DATA benchmarks.
     def test_traverse_depth_10_p95_under_10ms(self, pg_store_10k):
         """traverse depth 10 p95 < 10 ms."""
         node_ids = [n["id"] for n in pg_store_10k.find_nodes()]
@@ -136,6 +141,7 @@ class TestTraverseLatency:
 
 
 class TestBulkLoadPerformance:
+    # AGENT SHALL VALIDATE DATA benchmarks.
     def test_bulk_load_100k_under_1s(self, pg_conn, pg_persistence):
         """Bulk load 100K nodes via COPY in < 1 second."""
         from trugs_store.memory import InMemoryGraphStore
@@ -169,6 +175,7 @@ class TestBulkLoadPerformance:
 
 
 class TestValidatePerformance:
+    # AGENT SHALL VALIDATE DATA benchmarks.
     def test_validate_10k_under_500ms(self, pg_store_10k):
         """validate_graph on 10K nodes < 500 ms."""
         t0 = time.perf_counter()

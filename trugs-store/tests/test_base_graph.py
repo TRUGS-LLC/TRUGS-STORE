@@ -31,15 +31,18 @@ SAMPLE_TRUG = {
 
 
 class TestBaseGraphFactory:
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_from_dict(self):
         g = BaseGraph.from_dict(SAMPLE_TRUG)
         assert len(g.get_all_nodes()) == 3
         assert len(g.get_all_edges()) == 3
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_from_json(self):
         g = BaseGraph.from_json(json.dumps(SAMPLE_TRUG))
         assert len(g.get_all_nodes()) == 3
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_from_file(self):
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(SAMPLE_TRUG, f)
@@ -50,6 +53,7 @@ class TestBaseGraphFactory:
         finally:
             Path(path).unlink()
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_from_dict_normalizes_edge_keys(self):
         trug = {**SAMPLE_TRUG, "edges": [
             {"from_node": "root", "to_node": "child1", "relation": "contains"},
@@ -64,45 +68,56 @@ class TestBaseGraphAccessors:
     def setup_method(self):
         self.g = BaseGraph.from_dict(SAMPLE_TRUG)
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_get_node(self):
         node = self.g.get_node("root")
         assert node is not None
         assert node["type"] == "FOLDER"
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_get_node_missing(self):
         assert self.g.get_node("nonexistent") is None
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_get_all_nodes(self):
         nodes = self.g.get_all_nodes()
         assert len(nodes) == 3
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_get_nodes_by_type(self):
         docs = self.g.get_nodes_by_type("DOC")
         assert len(docs) == 2
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_node_ids(self):
         ids = self.g.node_ids()
         assert ids == {"root", "child1", "child2"}
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_get_all_edges(self):
         edges = self.g.get_all_edges()
         assert len(edges) == 3
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_store_property(self):
         assert isinstance(self.g.store, InMemoryGraphStore)
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_edge_from(self):
         edge = {"from_id": "a", "to_id": "b"}
         assert BaseGraph.edge_from(edge) == "a"
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_edge_from_legacy(self):
         edge = {"from_node": "a", "to_node": "b"}
         assert BaseGraph.edge_from(edge) == "a"
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_edge_to(self):
         edge = {"from_id": "a", "to_id": "b"}
         assert BaseGraph.edge_to(edge) == "b"
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_edge_to_legacy(self):
         edge = {"from_node": "a", "to_node": "b"}
         assert BaseGraph.edge_to(edge) == "b"
@@ -111,6 +126,7 @@ class TestBaseGraphAccessors:
 class TestBaseGraphSubclassing:
     """Verify subclasses get factory methods that return the subclass type."""
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_subclass_from_dict(self):
         class MyGraph(BaseGraph):
             pass
@@ -119,6 +135,7 @@ class TestBaseGraphSubclassing:
         assert isinstance(g, MyGraph)
         assert len(g.get_all_nodes()) == 3
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_subclass_from_json(self):
         class MyGraph(BaseGraph):
             pass
@@ -126,6 +143,7 @@ class TestBaseGraphSubclassing:
         g = MyGraph.from_json(json.dumps(SAMPLE_TRUG))
         assert isinstance(g, MyGraph)
 
+    # AGENT SHALL VALIDATE DATA base_graph.
     def test_subclass_from_file(self):
         class MyGraph(BaseGraph):
             pass

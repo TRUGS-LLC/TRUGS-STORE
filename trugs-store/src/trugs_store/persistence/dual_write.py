@@ -18,6 +18,7 @@ from typing import Any, Dict, Optional
 logger = logging.getLogger(__name__)
 
 
+# PROCESS write_trug SHALL WRITE RECORD trug TO DATA file.
 def write_trug(
     trug: Dict[str, Any],
     path: str | Path,
@@ -100,6 +101,7 @@ def _write_to_postgres(
         conn.close()
 
 
+# PROCESS read_trug SHALL READ RECORD trug THEN RETURN RECORD result.
 def read_trug(
     path: str | Path,
     *,
@@ -160,6 +162,7 @@ def _read_from_postgres(path: Path, dsn: str) -> Dict[str, Any]:
         conn.close()
 
 
+# PROCESS export_trug SHALL READ RECORD graph THEN WRITE RECORD trug TO DATA file.
 def export_trug(
     path: str | Path,
     *,
@@ -198,6 +201,7 @@ def export_trug(
     return True
 
 
+# PROCESS import_trug SHALL READ RECORD file THEN WRITE RECORD trug TO DATA database.
 def import_trug(
     path: str | Path,
     *,

@@ -17,6 +17,7 @@ from pathlib import Path
 from trugs_store.memory import InMemoryGraphStore
 
 
+# AGENT claude SHALL DEFINE RECORD BaseGraph AS A RECORD graph.
 class BaseGraph:
     """Shared base class for TRUG graph models.
 
@@ -29,6 +30,7 @@ class BaseGraph:
 
     # ── Factory methods ──────────────────────────────────────────────────
 
+    # PROCESS from_dict SHALL READ RECORD trug THEN RETURN RECORD graph.
     @classmethod
     def from_dict(cls, trug: dict) -> "BaseGraph":
         """Build graph from a parsed TRUG dictionary."""
@@ -47,11 +49,13 @@ class BaseGraph:
         store._rebuild_edge_indexes()
         return cls(store)
 
+    # PROCESS from_json SHALL READ RECORD json THEN RETURN RECORD graph.
     @classmethod
     def from_json(cls, json_string: str) -> "BaseGraph":
         """Build graph from a JSON string."""
         return cls.from_dict(json.loads(json_string))
 
+    # PROCESS from_file SHALL READ RECORD file THEN RETURN RECORD graph.
     @classmethod
     def from_file(cls, path: str) -> "BaseGraph":
         """Build graph from a .trug.json file."""
@@ -59,40 +63,48 @@ class BaseGraph:
 
     # ── Node accessors ───────────────────────────────────────────────────
 
+    # PROCESS get_node SHALL READ RECORD node THEN RETURN RECORD result.
     def get_node(self, node_id: str) -> dict | None:
         """Get a node by ID, or None if not found."""
         return self._store.get_node(node_id)
 
+    # PROCESS get_all_nodes SHALL READ ALL RECORD node THEN RETURN RECORD result.
     def get_all_nodes(self) -> list[dict]:
         """Get all nodes in the graph."""
         return list(self._store._nodes.values())
 
+    # PROCESS get_nodes_by_type SHALL FILTER ALL RECORD node THEN RETURN RECORD result.
     def get_nodes_by_type(self, node_type: str) -> list[dict]:
         """Get all nodes of a given type."""
         return self._store.find_nodes(type=node_type)
 
+    # PROCESS node_ids SHALL READ ALL RECORD node THEN RETURN RECORD result.
     def node_ids(self) -> set[str]:
         """Get the set of all node IDs."""
         return set(self._store._nodes.keys())
 
     # ── Edge accessors ───────────────────────────────────────────────────
 
+    # PROCESS get_all_edges SHALL READ ALL RECORD edge THEN RETURN RECORD result.
     def get_all_edges(self) -> list[dict]:
         """Get all edges in the graph."""
         return list(self._store._edges)
 
     # ── Metadata ─────────────────────────────────────────────────────────
 
+    # PROCESS store SHALL READ RECORD store THEN RETURN RECORD result.
     @property
     def store(self) -> InMemoryGraphStore:
         """Access the underlying InMemoryGraphStore."""
         return self._store
 
+    # PROCESS edge_from SHALL READ RECORD edge THEN RETURN RECORD result.
     @staticmethod
     def edge_from(edge: dict) -> str:
         """Get source node ID from an edge dict."""
         return edge.get("from_id") or edge.get("from_node", "")
 
+    # PROCESS edge_to SHALL READ RECORD edge THEN RETURN RECORD result.
     @staticmethod
     def edge_to(edge: dict) -> str:
         """Get target node ID from an edge dict."""

@@ -30,15 +30,13 @@
       "parent_id": null,
       "contains": [
         "spec_graphstore_protocol",
-        "doc_analysis_graphstore_validation",
-        "doc_report_property_size_profile",
         "comp_trugs_store_package",
-        "doc_architecture",
-        "doc_analysis_845_graphstore_validation",
-        "doc_report_852_property_size_profile",
         "comp_scripts",
         "comp_trugs_store",
-        "doc_readme"
+        "doc_readme",
+        "doc_agent",
+        "doc_changelog",
+        "doc_notice"
       ],
       "dimension": "folder_structure"
     },
@@ -123,6 +121,42 @@
       "parent_id": "trugs_store_folder",
       "contains": [],
       "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_agent",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "AGENT.md",
+        "purpose": "Agent instructions — TRUG/L conventions, repo navigation, development commands"
+      },
+      "metric_level": "BASE_DOCUMENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_changelog",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "CHANGELOG.md",
+        "purpose": "Version history — 0.1.0 initial release"
+      },
+      "metric_level": "BASE_DOCUMENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_notice",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "NOTICE",
+        "purpose": "Apache 2.0 attribution notice — TRUGS LLC copyright"
+      },
+      "metric_level": "BASE_DOCUMENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
     }
   ],
   "edges": [
@@ -135,12 +169,6 @@
     {
       "from_id": "trugs_store_folder",
       "to_id": "comp_trugs_store_package",
-      "relation": "contains",
-      "weight": 1.0
-    },
-    {
-      "from_id": "trugs_store_folder",
-      "to_id": "doc_architecture",
       "relation": "contains",
       "weight": 1.0
     },
