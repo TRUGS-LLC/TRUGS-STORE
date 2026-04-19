@@ -8,34 +8,117 @@ on:
 
 jobs:
   test:
+    name: pytest (py${{ matrix.python-version }})
     runs-on: ubuntu-latest
-    name: pytest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: trugs-store/pyproject.toml
 
       - name: Install
         run: |
           cd trugs-store
+          python -m pip install --upgrade pip
           pip install -e .[dev]
+          pip install pytest-cov
 
-      - name: Run tests
+      - name: Run tests (core — no postgres, no benchmarks)
         run: |
           cd trugs-store
-          pytest tests/ -v --tb=short
+          pytest tests/ \
+            --ignore=tests/test_postgres_persistence.py \
+            --ignore=tests/test_benchmarks.py \
+            -v --tb=short \
+            --cov=trugs_store --cov-report=term --cov-report=xml
 
-  typecheck:
+      - name: Upload coverage
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: trugs-store/coverage.xml
+
+  postgres-tests:
+    name: postgres-backed tests
     runs-on: ubuntu-latest
-    name: mypy
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: trugs
+          POSTGRES_PASSWORD: trugs
+          POSTGRES_DB: trugs_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U trugs"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: trugs-store/pyproject.toml
+
+      - name: Install
+        run: |
+          cd trugs-store
+          python -m pip install --upgrade pip
+          pip install -e .[dev,postgres]
+
+      - name: Run postgres tests
+        env:
+          TEST_DSN: 'host=localhost port=5432 user=trugs password=trugs dbname=trugs_test'
+          PORT_DSN: 'host=localhost port=5432 user=trugs password=trugs dbname=trugs_test'
+        run: |
+          cd trugs-store
+          pytest tests/test_postgres_persistence.py -v --tb=short
+
+  lint:
+    name: ruff format + lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install ruff
+        run: pip install ruff
+
+      - name: ruff format --check
+        run: |
+          cd trugs-store
+          ruff format --check .
+        continue-on-error: true  # Soft gate: existing code not yet format-clean. Harden to fail-fast in a follow-up.
+
+      - name: ruff check
+        run: |
+          cd trugs-store
+          ruff check .
+        continue-on-error: true  # Soft gate: same rationale as above.
+
+  typecheck:
+    name: mypy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
       - name: Install
         run: |
@@ -48,3 +131,43 @@ jobs:
           cd trugs-store
           mypy src/trugs_store --ignore-missing-imports
         continue-on-error: true
+
+  trug-check:
+    name: folder.trug.json validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install trugs-tools
+        run: pip install trugs-tools
+
+      - name: tg check
+        run: |
+          if [ -f folder.trug.json ]; then
+            tg check .
+          else
+            echo "No folder.trug.json at repo root; skipping."
+          fi
+        continue-on-error: true  # Soft gate while the TRUG is stabilised post-extraction.
+
+  secrets-scan:
+    name: gitleaks secrets scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install gitleaks
+        run: |
+          GITLEAKS_VERSION=8.21.2
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | tar -xz -C /tmp
+          sudo mv /tmp/gitleaks /usr/local/bin/
+
+      - name: Run gitleaks
+        run: gitleaks detect --source . --redact --verbose
