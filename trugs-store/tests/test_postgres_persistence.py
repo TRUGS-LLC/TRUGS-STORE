@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """Tests for PostgresPersistence — requires TRUGS_TEST_DSN."""
 
 import os
@@ -13,6 +16,7 @@ pytestmark = pytest.mark.skipif(not _PG_DSN, reason="TRUGS_TEST_DSN not set")
 @pytest.fixture
 def pg_conn():
     import psycopg
+
     conn = psycopg.connect(_PG_DSN, autocommit=True)
     yield conn
     conn.close()
@@ -22,6 +26,7 @@ def pg_conn():
 @pytest.fixture
 def persistence(pg_conn):
     from trugs_store.persistence.postgres import PostgresPersistence
+
     p = PostgresPersistence(pg_conn)
     p.ensure_schema()
     return p
@@ -32,16 +37,37 @@ def persistence(pg_conn):
 def sample_mem_store():
     """An InMemoryGraphStore with sample data."""
     from trugs_store import InMemoryGraphStore
+
     s = InMemoryGraphStore()
     s.set_metadata("name", "test_pg_graph")
     s.set_metadata("version", "2.0.0")
     s.set_metadata("dimensions", {"d": {"description": "test dim"}})
-    s.add_node({"id": "root", "type": "ROOT", "properties": {"status": "active"},
-                "parent_id": None, "contains": [], "metric_level": "KILO_ROOT", "dimension": "d"})
-    s.add_node({"id": "child", "type": "CHILD", "properties": {},
-                "parent_id": None, "contains": [], "metric_level": "BASE_CHILD", "dimension": "d"},
-               parent_id="root")
-    s.add_edge({"from_id": "root", "to_id": "child", "relation": "LINKS", "weight": 0.9})
+    s.add_node(
+        {
+            "id": "root",
+            "type": "ROOT",
+            "properties": {"status": "active"},
+            "parent_id": None,
+            "contains": [],
+            "metric_level": "KILO_ROOT",
+            "dimension": "d",
+        }
+    )
+    s.add_node(
+        {
+            "id": "child",
+            "type": "CHILD",
+            "properties": {},
+            "parent_id": None,
+            "contains": [],
+            "metric_level": "BASE_CHILD",
+            "dimension": "d",
+        },
+        parent_id="root",
+    )
+    s.add_edge(
+        {"from_id": "root", "to_id": "child", "relation": "LINKS", "weight": 0.9}
+    )
     return s
 
 
@@ -52,6 +78,7 @@ class TestPostgresPersistence:
         persistence.save(sample_mem_store, gid)
 
         from trugs_store.postgres import PostgresGraphStore
+
         loaded = PostgresGraphStore(pg_conn, gid)
         assert loaded.node_count() == sample_mem_store.node_count()
         assert loaded.edge_count() == sample_mem_store.edge_count()
@@ -65,13 +92,14 @@ class TestPostgresPersistence:
         from trugs_store import JsonFilePersistence
 
         json_p = JsonFilePersistence()
-        repo = Path(__file__).parent.parent.parent.parent
-        mem_store = json_p.load(str(repo / "TRUGS_STORE" / "folder.trug.json"))
+        repo = Path(__file__).parent.parent.parent
+        mem_store = json_p.load(str(repo / "folder.trug.json"))
 
         gid = f"test_rt_{uuid.uuid4().hex[:8]}"
         persistence.save(mem_store, gid)
 
         from trugs_store.postgres import PostgresGraphStore
+
         pg_store = PostgresGraphStore(pg_conn, gid)
         assert pg_store.node_count() == mem_store.node_count()
         assert pg_store.edge_count() == mem_store.edge_count()
@@ -89,11 +117,21 @@ class TestPostgresPersistence:
         persistence.save(sample_mem_store, gid)
 
         # Modify and re-save
-        sample_mem_store.add_node({"id": "new", "type": "NEW", "properties": {},
-                                   "parent_id": None, "contains": [], "metric_level": "BASE", "dimension": "d"})
+        sample_mem_store.add_node(
+            {
+                "id": "new",
+                "type": "NEW",
+                "properties": {},
+                "parent_id": None,
+                "contains": [],
+                "metric_level": "BASE",
+                "dimension": "d",
+            }
+        )
         persistence.save(sample_mem_store, gid)
 
         from trugs_store.postgres import PostgresGraphStore
+
         loaded = PostgresGraphStore(pg_conn, gid)
         assert loaded.node_count() == 3  # root + child + new
         assert loaded.get_node("new") is not None

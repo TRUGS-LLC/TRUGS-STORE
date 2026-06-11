@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """GraphStore Protocol — PEP 544 structural interface for TRUGS graph storage.
 
 See TRUGS_STORE/SPEC_graphstore_protocol.py for full design rationale.
@@ -10,9 +13,13 @@ from typing import Any, Dict, Iterator, List, Optional, Protocol, runtime_checka
 from trugs_store.types import Edge, Node
 
 
-# AGENT claude SHALL DEFINE RECORD Violation AS A RECORD validation.
 class Violation:
-    """A single TRUGS CORE validation violation."""
+    """A single TRUGS CORE validation violation.
+
+    <trl>
+    AGENT claude SHALL DEFINE RECORD Violation AS A RECORD validation.
+    </trl>
+    """
 
     __slots__ = ("node_id", "rule", "message", "severity")
 
@@ -32,7 +39,6 @@ class Violation:
         return f"Violation({self.severity}: {self.rule} on {self.node_id!r})"
 
 
-# AGENT claude SHALL DEFINE RECORD GraphStore AS A RECORD protocol.
 @runtime_checkable
 class GraphStore(Protocol):
     """Structural protocol for TRUGS graph storage backends.
@@ -40,6 +46,10 @@ class GraphStore(Protocol):
     22 methods across 8 categories: Node Read (4), Node Write (5),
     Edge Read (4), Edge Write (3), Traversal (2), Subgraph (1),
     Metadata (2), Validation (1).
+
+    <trl>
+    AGENT claude SHALL DEFINE RECORD GraphStore AS A RECORD protocol.
+    </trl>
     """
 
     # Node Read
@@ -48,7 +58,14 @@ class GraphStore(Protocol):
     # PROCESS get_children SHALL FILTER ALL RECORD node THEN RETURN RECORD result.
     def get_children(self, parent_id: str) -> List[Node]: ...
     # PROCESS find_nodes SHALL FILTER ALL RECORD node THEN RETURN RECORD result.
-    def find_nodes(self, *, type: Optional[str] = None, status: Optional[str] = None, stale: Optional[bool] = None, dimension: Optional[str] = None) -> List[Node]: ...
+    def find_nodes(
+        self,
+        *,
+        type: Optional[str] = None,
+        status: Optional[str] = None,
+        stale: Optional[bool] = None,
+        dimension: Optional[str] = None,
+    ) -> List[Node]: ...
     # PROCESS node_count SHALL AGGREGATE EACH RECORD node TO INTEGER DATA count.
     def node_count(self) -> int: ...
 
@@ -66,7 +83,13 @@ class GraphStore(Protocol):
 
     # Edge Read
     # PROCESS get_edges SHALL FILTER ALL RECORD edge THEN RETURN RECORD result.
-    def get_edges(self, *, from_id: Optional[str] = None, to_id: Optional[str] = None, relation: Optional[str] = None) -> List[Edge]: ...
+    def get_edges(
+        self,
+        *,
+        from_id: Optional[str] = None,
+        to_id: Optional[str] = None,
+        relation: Optional[str] = None,
+    ) -> List[Edge]: ...
     # PROCESS get_outgoing SHALL READ RECORD edge THEN RETURN RECORD result.
     def get_outgoing(self, node_id: str) -> List[Edge]: ...
     # PROCESS get_incoming SHALL READ RECORD edge THEN RETURN RECORD result.
@@ -78,13 +101,28 @@ class GraphStore(Protocol):
     # PROCESS add_edge SHALL WRITE RECORD edge TO DATA store.
     def add_edge(self, edge: Edge) -> None: ...
     # PROCESS update_edge SHALL WRITE RECORD properties TO DATA edge.
-    def update_edge(self, from_id: str, to_id: str, relation: str, *, properties: Optional[Dict[str, Any]] = None, weight: Optional[float] = None) -> None: ...
+    def update_edge(
+        self,
+        from_id: str,
+        to_id: str,
+        relation: str,
+        *,
+        properties: Optional[Dict[str, Any]] = None,
+        weight: Optional[float] = None,
+    ) -> None: ...
     # PROCESS remove_edge SHALL REJECT RECORD edge.
     def remove_edge(self, from_id: str, to_id: str, relation: str) -> bool: ...
 
     # Traversal
     # PROCESS traverse SHALL READ RECORD node THEN RETURN ALL RECORD neighbor.
-    def traverse(self, start_id: str, *, direction: str = "outgoing", relation: Optional[str] = None, max_depth: int = 1) -> Iterator[tuple[Node, Edge, int]]: ...
+    def traverse(
+        self,
+        start_id: str,
+        *,
+        direction: str = "outgoing",
+        relation: Optional[str] = None,
+        max_depth: int = 1,
+    ) -> Iterator[tuple[Node, Edge, int]]: ...
     # PROCESS get_neighbors SHALL READ RECORD node THEN RETURN ALL RECORD neighbor.
     def get_neighbors(self, node_id: str, *, direction: str = "both") -> List[Node]: ...
 
@@ -103,10 +141,14 @@ class GraphStore(Protocol):
     def validate_graph(self) -> List[Violation]: ...
 
 
-# AGENT claude SHALL DEFINE RECORD PersistenceAdapter AS A RECORD protocol.
 @runtime_checkable
 class PersistenceAdapter(Protocol):
-    """Separate protocol for loading/saving graph data (Sans-IO)."""
+    """Separate protocol for loading/saving graph data (Sans-IO).
+
+    <trl>
+    AGENT claude SHALL DEFINE RECORD PersistenceAdapter AS A RECORD protocol.
+    </trl>
+    """
 
     # PROCESS load SHALL READ RECORD graph THEN RETURN RECORD result.
     def load(self, source: str) -> GraphStore: ...

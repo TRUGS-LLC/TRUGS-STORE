@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """Shared fixtures for trugs-store tests."""
 
 import os
@@ -15,10 +18,16 @@ if _PG_DSN:
     _BACKENDS.append("postgres")
 
 
-def _make_node(nid, ntype="ITEM", dimension="test_dim", metric_level="BASE_ITEM", **extra_props):
+def _make_node(
+    nid, ntype="ITEM", dimension="test_dim", metric_level="BASE_ITEM", **extra_props
+):
     return {
-        "id": nid, "type": ntype, "properties": extra_props,
-        "parent_id": None, "contains": [], "metric_level": metric_level,
+        "id": nid,
+        "type": ntype,
+        "properties": extra_props,
+        "parent_id": None,
+        "contains": [],
+        "metric_level": metric_level,
         "dimension": dimension,
     }
 
@@ -59,10 +68,23 @@ def store(request):
 def populated_store(store):
     store.set_metadata("name", "test_graph")
     store.set_metadata("version", "1.0.0")
-    store.set_metadata("dimensions", {"test_dim": {"description": "Test dimension", "base_level": "BASE"}})
+    store.set_metadata(
+        "dimensions",
+        {"test_dim": {"description": "Test dimension", "base_level": "BASE"}},
+    )
     store.add_node(_make_node("root", "ROOT", metric_level="KILO_ROOT"))
     for i in range(3):
-        store.add_node(_make_node(f"child_{i}", "CHILD", status=f"status_{i}"), parent_id="root")
+        store.add_node(
+            _make_node(f"child_{i}", "CHILD", status=f"status_{i}"), parent_id="root"
+        )
     store.add_edge({"from_id": "child_0", "to_id": "child_1", "relation": "DEPENDS_ON"})
-    store.add_edge({"from_id": "child_1", "to_id": "child_2", "relation": "DEPENDS_ON", "weight": 0.8, "properties": {"note": "important"}})
+    store.add_edge(
+        {
+            "from_id": "child_1",
+            "to_id": "child_2",
+            "relation": "DEPENDS_ON",
+            "weight": 0.8,
+            "properties": {"note": "important"},
+        }
+    )
     return store

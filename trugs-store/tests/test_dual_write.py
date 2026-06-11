@@ -1,13 +1,20 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """Tests for dual I/O persistence — JSON + optional PostgreSQL."""
 
 import json
 import os
-from pathlib import Path
 from unittest.mock import patch
 
 import pytest
 
-from trugs_store.persistence.dual_write import write_trug, read_trug, export_trug, import_trug
+from trugs_store.persistence.dual_write import (
+    write_trug,
+    read_trug,
+    export_trug,
+    import_trug,
+)
 
 
 # AGENT claude SHALL DEFINE RECORD sample_trug AS A RECORD fixture.
@@ -175,15 +182,17 @@ class TestWriteTrugWithPostgres:
         write_trug(sample_trug, out, db_dsn=dsn)
 
         # Second write with different data
-        sample_trug["nodes"].append({
-            "id": "child2",
-            "type": "DOCUMENT",
-            "parent_id": "root",
-            "properties": {"name": "SPEC.md"},
-            "contains": [],
-            "metric_level": "BASE_DOCUMENT",
-            "dimension": "folder_structure",
-        })
+        sample_trug["nodes"].append(
+            {
+                "id": "child2",
+                "type": "DOCUMENT",
+                "parent_id": "root",
+                "properties": {"name": "SPEC.md"},
+                "contains": [],
+                "metric_level": "BASE_DOCUMENT",
+                "dimension": "folder_structure",
+            }
+        )
         write_trug(sample_trug, out, db_dsn=dsn)
 
         conn = psycopg.connect(dsn)
@@ -202,12 +211,17 @@ class TestWriteTrugResilience:
     """Tests for error resilience."""
 
     # PROCESS write_trug SHALL WRITE RECORD json THEN LOG warning WHEN DATA database FAILS.
-    def test_bad_dsn_logs_warning_json_still_written(self, tmp_path, sample_trug, caplog):
+    def test_bad_dsn_logs_warning_json_still_written(
+        self, tmp_path, sample_trug, caplog
+    ):
         import logging
+
         out = tmp_path / "FOLDER" / "folder.trug.json"
         out.parent.mkdir()
         with caplog.at_level(logging.WARNING):
-            write_trug(sample_trug, out, db_dsn="host=localhost port=99999 dbname=nonexistent")
+            write_trug(
+                sample_trug, out, db_dsn="host=localhost port=99999 dbname=nonexistent"
+            )
 
         # JSON should still be written
         assert out.exists()
@@ -215,7 +229,10 @@ class TestWriteTrugResilience:
         assert loaded["name"] == "Test Folder"
 
         # Warning should be logged via logging (not print)
-        assert any("dual-write" in r.message.lower() or "DB write failed" in r.message for r in caplog.records)
+        assert any(
+            "dual-write" in r.message.lower() or "DB write failed" in r.message
+            for r in caplog.records
+        )
 
     # PROCESS write_trug SHALL READ DATA PORT_DSN FROM environment WHEN DATA dsn EQUALS NONE.
     def test_env_var_dsn(self, tmp_path, sample_trug):
@@ -223,7 +240,9 @@ class TestWriteTrugResilience:
         out = tmp_path / "FOLDER" / "folder.trug.json"
         out.parent.mkdir()
 
-        with patch.dict(os.environ, {"PORT_DSN": "host=localhost port=99999 dbname=nonexistent"}):
+        with patch.dict(
+            os.environ, {"PORT_DSN": "host=localhost port=99999 dbname=nonexistent"}
+        ):
             write_trug(sample_trug, out)
 
         # JSON still written despite bad DSN
@@ -296,6 +315,7 @@ class TestReadTrugWithPostgres:
         # Cleanup
         import psycopg
         from trugs_store.persistence.postgres import PostgresPersistence
+
         conn = psycopg.connect(dsn)
         PostgresPersistence(conn).delete_graph("READ_TEST")
         conn.commit()
@@ -308,7 +328,9 @@ class TestReadTrugWithPostgres:
             "folder_structure": {"base_level": "BASE", "description": "test"}
         }
         sample_trug["capabilities"] = {
-            "extensions": [], "vocabularies": ["project_v1"], "profiles": []
+            "extensions": [],
+            "vocabularies": ["project_v1"],
+            "profiles": [],
         }
 
         out = tmp_path / "META_TEST" / "folder.trug.json"
@@ -324,6 +346,7 @@ class TestReadTrugWithPostgres:
         # Cleanup
         import psycopg
         from trugs_store.persistence.postgres import PostgresPersistence
+
         conn = psycopg.connect(dsn)
         PostgresPersistence(conn).delete_graph("META_TEST")
         conn.commit()
@@ -350,13 +373,18 @@ class TestReadTrugWithPostgres:
             assert db_nodes[nid]["parent_id"] == json_nodes[nid]["parent_id"]
 
         # Compare edges
-        db_edges = {(e["from_id"], e["to_id"], e["relation"]) for e in db_result["edges"]}
-        json_edges = {(e["from_id"], e["to_id"], e["relation"]) for e in json_result["edges"]}
+        db_edges = {
+            (e["from_id"], e["to_id"], e["relation"]) for e in db_result["edges"]
+        }
+        json_edges = {
+            (e["from_id"], e["to_id"], e["relation"]) for e in json_result["edges"]
+        }
         assert db_edges == json_edges
 
         # Cleanup
         import psycopg
         from trugs_store.persistence.postgres import PostgresPersistence
+
         conn = psycopg.connect(dsn)
         PostgresPersistence(conn).delete_graph("COMPARE_TEST")
         conn.commit()
@@ -397,7 +425,9 @@ class TestReadTrugResilience:
         out.parent.mkdir()
         write_trug(sample_trug, out)
 
-        with patch.dict(os.environ, {"PORT_DSN": "host=localhost port=99999 dbname=nonexistent"}):
+        with patch.dict(
+            os.environ, {"PORT_DSN": "host=localhost port=99999 dbname=nonexistent"}
+        ):
             with pytest.raises(Exception):
                 read_trug(out)
 
@@ -479,6 +509,7 @@ class TestExportTrug:
         # Cleanup
         import psycopg
         from trugs_store.persistence.postgres import PostgresPersistence
+
         conn = psycopg.connect(dsn)
         PostgresPersistence(conn).delete_graph("EXPORT_TEST")
         conn.commit()
@@ -536,6 +567,7 @@ class TestImportTrug:
         # Verify DB has the data
         import psycopg
         from trugs_store.persistence.postgres import PostgresPersistence
+
         conn = psycopg.connect(dsn)
         pg = PostgresPersistence(conn)
         store = pg.load("IMPORT_TEST")
@@ -591,13 +623,18 @@ class TestImportTrug:
         exp_ids = {n["id"] for n in exp_data["nodes"]}
         assert orig_ids == exp_ids
 
-        orig_edges = {(e["from_id"], e["to_id"], e["relation"]) for e in orig_data["edges"]}
-        exp_edges = {(e["from_id"], e["to_id"], e["relation"]) for e in exp_data["edges"]}
+        orig_edges = {
+            (e["from_id"], e["to_id"], e["relation"]) for e in orig_data["edges"]
+        }
+        exp_edges = {
+            (e["from_id"], e["to_id"], e["relation"]) for e in exp_data["edges"]
+        }
         assert orig_edges == exp_edges
 
         # Cleanup
         import psycopg
         from trugs_store.persistence.postgres import PostgresPersistence
+
         conn = psycopg.connect(dsn)
         PostgresPersistence(conn).delete_graph("ROUNDTRIP")
         conn.commit()

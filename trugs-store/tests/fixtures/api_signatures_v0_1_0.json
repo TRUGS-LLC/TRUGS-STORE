@@ -1,0 +1,148 @@
+{
+  "GraphStore": {
+    "add_edge": [
+      "self",
+      "edge"
+    ],
+    "add_node": [
+      "self",
+      "node",
+      "parent_id"
+    ],
+    "clear_stale": [
+      "self",
+      "node_id"
+    ],
+    "delete_node": [
+      "self",
+      "node_id",
+      "cascade"
+    ],
+    "edge_count": [
+      "self"
+    ],
+    "extract_subgraph": [
+      "self",
+      "node_ids"
+    ],
+    "find_nodes": [
+      "self",
+      "type",
+      "status",
+      "stale",
+      "dimension"
+    ],
+    "get_children": [
+      "self",
+      "parent_id"
+    ],
+    "get_edges": [
+      "self",
+      "from_id",
+      "to_id",
+      "relation"
+    ],
+    "get_incoming": [
+      "self",
+      "node_id"
+    ],
+    "get_metadata": [
+      "self"
+    ],
+    "get_neighbors": [
+      "self",
+      "node_id",
+      "direction"
+    ],
+    "get_node": [
+      "self",
+      "node_id"
+    ],
+    "get_outgoing": [
+      "self",
+      "node_id"
+    ],
+    "mark_stale": [
+      "self",
+      "node_id",
+      "reason"
+    ],
+    "node_count": [
+      "self"
+    ],
+    "remove_edge": [
+      "self",
+      "from_id",
+      "to_id",
+      "relation"
+    ],
+    "set_metadata": [
+      "self",
+      "key",
+      "value"
+    ],
+    "traverse": [
+      "self",
+      "start_id",
+      "direction",
+      "relation",
+      "max_depth"
+    ],
+    "update_edge": [
+      "self",
+      "from_id",
+      "to_id",
+      "relation",
+      "properties",
+      "weight"
+    ],
+    "update_node": [
+      "self",
+      "node_id",
+      "properties"
+    ],
+    "validate_graph": [
+      "self"
+    ]
+  },
+  "classes": {
+    "BaseGraph": [
+      "self",
+      "store"
+    ],
+    "GraphStore": [
+      "self",
+      "args",
+      "kwargs"
+    ],
+    "InMemoryGraphStore": [
+      "self"
+    ],
+    "JsonFilePersistence": [
+      "self",
+      "args",
+      "kwargs"
+    ],
+    "PersistenceAdapter": [
+      "self",
+      "args",
+      "kwargs"
+    ],
+    "PostgresGraphStore": [
+      "self",
+      "conn",
+      "graph_id"
+    ],
+    "PostgresPersistence": [
+      "self",
+      "conn"
+    ],
+    "Violation": [
+      "self",
+      "node_id",
+      "rule",
+      "message",
+      "severity"
+    ]
+  }
+}

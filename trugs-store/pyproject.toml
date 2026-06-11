@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "trugs-store"
-version = "0.1.0"
-description = "Graph storage backends for TRUGS specifications — InMemory, PostgreSQL, JSON file persistence"
+version = "0.2.0"
+description = "Graph storage backends for TRUGS specifications — InMemory, PostgreSQL, JSON file persistence. Native TRUGS 2.0 (core_v2.0.0) support: LEVEL_PREFIX hierarchy validation, inheritance stamping, canonical re-emit."
 readme = "README.md"
 license = {text = "Apache-2.0"}
 requires-python = ">=3.11"
@@ -38,6 +38,7 @@ postgres = [
 dev = [
     "pytest>=7.0",
     "coverage>=7.0",
+    "pyyaml>=6.0",  # test_ci_meta.py parses .github/workflows/ci.yml (store-dev#16 guard)
 ]
 
 [tool.hatch.build.targets.wheel]

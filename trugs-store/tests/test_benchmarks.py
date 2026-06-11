@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """Performance benchmarks for PostgreSQL backend.
 
 Requires TRUGS_TEST_DSN environment variable.
@@ -21,24 +24,29 @@ def _generate_nodes(count: int, seed: int = 42) -> list[dict]:
     rng = random.Random(seed)
     nodes = []
     for i in range(count):
-        nodes.append({
-            "id": f"node_{i:06d}",
-            "type": rng.choice(["TASK", "DOCUMENT", "COMPONENT", "SPEC", "FOLDER"]),
-            "properties": {
-                "name": f"Node {i}",
-                "status": rng.choice(["OPEN", "IN_PROGRESS", "DONE", "BACKLOG"]),
-                "description": f"Description for node {i} with some payload " * rng.randint(1, 5),
-                "priority": rng.choice(["P1", "P2", "P3"]),
-            },
-            "metric_level": "BASE_ITEM",
-            "parent_id": None,
-            "contains": [],
-            "dimension": "test_dim",
-        })
+        nodes.append(
+            {
+                "id": f"node_{i:06d}",
+                "type": rng.choice(["TASK", "DOCUMENT", "COMPONENT", "SPEC", "FOLDER"]),
+                "properties": {
+                    "name": f"Node {i}",
+                    "status": rng.choice(["OPEN", "IN_PROGRESS", "DONE", "BACKLOG"]),
+                    "description": f"Description for node {i} with some payload "
+                    * rng.randint(1, 5),
+                    "priority": rng.choice(["P1", "P2", "P3"]),
+                },
+                "metric_level": "BASE_ITEM",
+                "parent_id": None,
+                "contains": [],
+                "dimension": "test_dim",
+            }
+        )
     return nodes
 
 
-def _generate_edges(nodes: list[dict], avg_per_node: float = 2.5, seed: int = 42) -> list[dict]:
+def _generate_edges(
+    nodes: list[dict], avg_per_node: float = 2.5, seed: int = 42
+) -> list[dict]:
     """Generate random edges between nodes."""
     rng = random.Random(seed)
     ids = [n["id"] for n in nodes]
@@ -55,7 +63,14 @@ def _generate_edges(nodes: list[dict], avg_per_node: float = 2.5, seed: int = 42
         if key in seen:
             continue
         seen.add(key)
-        edges.append({"from_id": fid, "to_id": tid, "relation": rel, "weight": round(rng.random(), 2)})
+        edges.append(
+            {
+                "from_id": fid,
+                "to_id": tid,
+                "relation": rel,
+                "weight": round(rng.random(), 2),
+            }
+        )
     return edges
 
 
@@ -63,6 +78,7 @@ def _generate_edges(nodes: list[dict], avg_per_node: float = 2.5, seed: int = 42
 @pytest.fixture(scope="module")
 def pg_conn():
     import psycopg
+
     conn = psycopg.connect(_PG_DSN, autocommit=True)
     yield conn
     conn.close()
@@ -72,6 +88,7 @@ def pg_conn():
 @pytest.fixture(scope="module")
 def pg_persistence(pg_conn):
     from trugs_store.persistence.postgres import PostgresPersistence
+
     p = PostgresPersistence(pg_conn)
     p.ensure_schema()
     return p
@@ -118,7 +135,9 @@ class TestGetNodeLatency:
             t1 = time.perf_counter_ns()
             times_ms.append((t1 - t0) / 1_000_000)
         p95 = sorted(times_ms)[int(len(times_ms) * 0.95)]
-        print(f"\n  get_node: p50={statistics.median(times_ms):.3f}ms p95={p95:.3f}ms mean={statistics.mean(times_ms):.3f}ms")
+        print(
+            f"\n  get_node: p50={statistics.median(times_ms):.3f}ms p95={p95:.3f}ms mean={statistics.mean(times_ms):.3f}ms"
+        )
         assert p95 < 0.5, f"get_node p95 = {p95:.3f} ms (target < 0.5 ms)"
 
 
@@ -136,7 +155,9 @@ class TestTraverseLatency:
             t1 = time.perf_counter_ns()
             times_ms.append((t1 - t0) / 1_000_000)
         p95 = sorted(times_ms)[int(len(times_ms) * 0.95)]
-        print(f"\n  traverse d=10: p50={statistics.median(times_ms):.3f}ms p95={p95:.3f}ms mean={statistics.mean(times_ms):.3f}ms")
+        print(
+            f"\n  traverse d=10: p50={statistics.median(times_ms):.3f}ms p95={p95:.3f}ms mean={statistics.mean(times_ms):.3f}ms"
+        )
         assert p95 < 10, f"traverse p95 = {p95:.3f} ms (target < 10 ms)"
 
 
@@ -163,10 +184,13 @@ class TestBulkLoadPerformance:
         t0 = time.perf_counter()
         pg_persistence.save(mem, graph_id)
         elapsed = time.perf_counter() - t0
-        print(f"\n  bulk load 100K: {elapsed:.2f}s ({len(nodes)} nodes, {len(edges)} edges)")
+        print(
+            f"\n  bulk load 100K: {elapsed:.2f}s ({len(nodes)} nodes, {len(edges)} edges)"
+        )
 
         # Verify data landed
         from trugs_store.postgres import PostgresGraphStore
+
         store = PostgresGraphStore(pg_conn, graph_id)
         assert store.node_count() == len(nodes)
 
