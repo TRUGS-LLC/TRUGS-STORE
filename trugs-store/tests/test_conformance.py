@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """Conformance test suite for GraphStore implementations."""
 
 import pytest
@@ -15,7 +18,11 @@ class TestNodeRead:
 
     # PROCESS get_children SHALL RETURN ALL RECORD node FROM RECORD parent.
     def test_get_children(self, populated_store):
-        assert {c["id"] for c in populated_store.get_children("root")} == {"child_0", "child_1", "child_2"}
+        assert {c["id"] for c in populated_store.get_children("root")} == {
+            "child_0",
+            "child_1",
+            "child_2",
+        }
 
     # PROCESS get_children SHALL RETURN NONE WHEN RECORD parent CONTAINS NO RECORD node.
     def test_get_children_empty(self, populated_store):
@@ -150,11 +157,17 @@ class TestNodeWrite:
 class TestEdgeRead:
     # PROCESS get_edges SHALL FILTER RECORD edge BY DATA from_id.
     def test_get_edges_by_from_id(self, populated_store):
-        assert any(e["to_id"] == "child_1" for e in populated_store.get_edges(from_id="child_0"))
+        assert any(
+            e["to_id"] == "child_1"
+            for e in populated_store.get_edges(from_id="child_0")
+        )
 
     # PROCESS get_edges SHALL FILTER RECORD edge BY DATA to_id.
     def test_get_edges_by_to_id(self, populated_store):
-        assert any(e["from_id"] == "child_0" for e in populated_store.get_edges(to_id="child_1"))
+        assert any(
+            e["from_id"] == "child_0"
+            for e in populated_store.get_edges(to_id="child_1")
+        )
 
     # PROCESS get_edges SHALL FILTER RECORD edge BY DATA relation.
     def test_get_edges_by_relation(self, populated_store):
@@ -162,7 +175,10 @@ class TestEdgeRead:
 
     # PROCESS get_edges SHALL FILTER RECORD edge BY MULTIPLE DATA criteria.
     def test_get_edges_and_semantics(self, populated_store):
-        assert len(populated_store.get_edges(from_id="child_0", relation="DEPENDS_ON")) == 1
+        assert (
+            len(populated_store.get_edges(from_id="child_0", relation="DEPENDS_ON"))
+            == 1
+        )
 
     # PROCESS get_edges SHALL RETURN ALL RECORD edge WHEN NO FILTER EXISTS.
     def test_get_edges_no_filters_returns_all(self, populated_store):
@@ -171,11 +187,16 @@ class TestEdgeRead:
     # PROCESS get_edges SHALL RETURN RECORD edge WITH DATA weight AND DATA properties.
     def test_get_edges_includes_weight_and_properties(self, populated_store):
         edges = populated_store.get_edges(from_id="child_1", relation="DEPENDS_ON")
-        assert edges[0]["weight"] == 0.8 and edges[0]["properties"]["note"] == "important"
+        assert (
+            edges[0]["weight"] == 0.8 and edges[0]["properties"]["note"] == "important"
+        )
 
     # PROCESS get_outgoing SHALL RETURN ALL RECORD edge FROM RECORD node.
     def test_get_outgoing(self, populated_store):
-        assert any(e["relation"] == "DEPENDS_ON" for e in populated_store.get_outgoing("child_0"))
+        assert any(
+            e["relation"] == "DEPENDS_ON"
+            for e in populated_store.get_outgoing("child_0")
+        )
 
     # PROCESS get_incoming SHALL RETURN ALL RECORD edge TO RECORD node.
     def test_get_incoming(self, populated_store):
@@ -199,7 +220,15 @@ class TestEdgeWrite:
     def test_add_edge_with_weight_and_properties(self, store):
         store.add_node(_make_node("a"))
         store.add_node(_make_node("b"))
-        store.add_edge({"from_id": "a", "to_id": "b", "relation": "X", "weight": 0.5, "properties": {"n": 1}})
+        store.add_edge(
+            {
+                "from_id": "a",
+                "to_id": "b",
+                "relation": "X",
+                "weight": 0.5,
+                "properties": {"n": 1},
+            }
+        )
         e = store.get_edges(from_id="a")[0]
         assert e["weight"] == 0.5 and e["properties"]["n"] == 1
 
@@ -235,7 +264,9 @@ class TestEdgeWrite:
     def test_update_edge_properties(self, store):
         store.add_node(_make_node("a"))
         store.add_node(_make_node("b"))
-        store.add_edge({"from_id": "a", "to_id": "b", "relation": "X", "properties": {}})
+        store.add_edge(
+            {"from_id": "a", "to_id": "b", "relation": "X", "properties": {}}
+        )
         store.update_edge("a", "b", "X", properties={"k": "v"})
         assert store.get_edges(from_id="a")[0]["properties"] == {"k": "v"}
 
@@ -259,27 +290,52 @@ class TestEdgeWrite:
 class TestTraversal:
     # PROCESS traverse SHALL RETURN RECORD neighbor AT depth 1 WHEN direction EQUALS outgoing.
     def test_traverse_outgoing_depth_1(self, populated_store):
-        ids = {n["id"] for n, e, d in populated_store.traverse("child_0", direction="outgoing", max_depth=1)}
+        ids = {
+            n["id"]
+            for n, e, d in populated_store.traverse(
+                "child_0", direction="outgoing", max_depth=1
+            )
+        }
         assert "child_1" in ids
 
     # PROCESS traverse SHALL RETURN ALL RECORD neighbor WITHIN depth 3.
     def test_traverse_outgoing_depth_3(self, populated_store):
-        ids = {n["id"] for n, e, d in populated_store.traverse("child_0", direction="outgoing", max_depth=3)}
+        ids = {
+            n["id"]
+            for n, e, d in populated_store.traverse(
+                "child_0", direction="outgoing", max_depth=3
+            )
+        }
         assert "child_1" in ids and "child_2" in ids
 
     # PROCESS traverse SHALL RETURN RECORD neighbor WHEN direction EQUALS incoming.
     def test_traverse_incoming(self, populated_store):
-        ids = {n["id"] for n, e, d in populated_store.traverse("child_2", direction="incoming", max_depth=1)}
+        ids = {
+            n["id"]
+            for n, e, d in populated_store.traverse(
+                "child_2", direction="incoming", max_depth=1
+            )
+        }
         assert "child_1" in ids
 
     # PROCESS traverse SHALL RETURN RECORD neighbor WHEN direction EQUALS both.
     def test_traverse_both_directions(self, populated_store):
-        ids = {n["id"] for n, e, d in populated_store.traverse("child_1", direction="both", max_depth=1)}
+        ids = {
+            n["id"]
+            for n, e, d in populated_store.traverse(
+                "child_1", direction="both", max_depth=1
+            )
+        }
         assert len(ids) > 0
 
     # PROCESS traverse SHALL FILTER RECORD neighbor BY DATA relation.
     def test_traverse_with_relation_filter(self, populated_store):
-        ids = {n["id"] for n, e, d in populated_store.traverse("child_0", direction="outgoing", relation="DEPENDS_ON", max_depth=3)}
+        ids = {
+            n["id"]
+            for n, e, d in populated_store.traverse(
+                "child_0", direction="outgoing", relation="DEPENDS_ON", max_depth=3
+            )
+        }
         assert "child_1" in ids
 
     # PROCESS traverse SHALL RETURN lazy Iterator.
@@ -299,13 +355,18 @@ class TestTraversal:
 class TestSubgraph:
     # PROCESS extract_subgraph SHALL RETURN RECORD store WITH ONLY requested RECORD node.
     def test_extract_subgraph_nodes(self, populated_store):
-        assert populated_store.extract_subgraph(["child_0", "child_1"]).node_count() == 2
+        assert (
+            populated_store.extract_subgraph(["child_0", "child_1"]).node_count() == 2
+        )
 
     # PROCESS extract_subgraph SHALL FILTER RECORD edge TO requested RECORD node ONLY.
     def test_extract_subgraph_edges_filtered(self, populated_store):
         sub = populated_store.extract_subgraph(["child_0", "child_1"])
         for e in sub.get_edges():
-            assert e["from_id"] in ("child_0", "child_1") and e["to_id"] in ("child_0", "child_1")
+            assert e["from_id"] in ("child_0", "child_1") and e["to_id"] in (
+                "child_0",
+                "child_1",
+            )
 
     # PROCESS extract_subgraph SHALL RETURN RECORD GraphStore.
     def test_extract_subgraph_returns_graphstore(self, populated_store):
@@ -337,7 +398,10 @@ class TestMetadata:
 class TestValidation:
     # PROCESS validate_graph SHALL RETURN NO RECORD violation FOR VALID RECORD graph.
     def test_validate_clean_graph_no_violations(self, populated_store):
-        assert len([v for v in populated_store.validate_graph() if v.severity == "error"]) == 0
+        assert (
+            len([v for v in populated_store.validate_graph() if v.severity == "error"])
+            == 0
+        )
 
     # PROCESS validate_graph SHALL DETECT RECORD violation WHEN hierarchy bidirectional broken.
     def test_validate_broken_bidirectional(self, store):
@@ -371,7 +435,9 @@ class TestBidirectionalInvariant:
     def test_add_node_creates_contains_edge(self, store):
         store.add_node(_make_node("p", metric_level="KILO_P"))
         store.add_node(_make_node("c"), parent_id="p")
-        assert any(e["to_id"] == "c" for e in store.get_edges(from_id="p", relation="contains"))
+        assert any(
+            e["to_id"] == "c" for e in store.get_edges(from_id="p", relation="contains")
+        )
 
     # PROCESS add_node SHALL WRITE RECORD child TO RECORD parent contains array.
     def test_add_node_updates_parent_contains_list(self, store):

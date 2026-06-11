@@ -4,6 +4,8 @@
 
 trugs-store is the shared persistence layer for all TRUGS tooling. Every tool that reads or writes `.trug.json` files goes through this package. It supports JSON file storage for development and PostgreSQL for production scale.
 
+As of **0.2.0**, trugs-store natively supports **TRUGS 2.0** (`core_v2.0.0`): vocabulary dispatch on a TRUG's declared `capabilities.vocabularies`, LEVEL_PREFIX hierarchy validation, inheritance stamping, and canonical re-emit on save. v1 TRUGs (`core_v1.0.0`, `project_v1`) continue to validate unchanged — the upgrade is purely additive.
+
 ## Install
 
 ```bash
@@ -12,6 +14,8 @@ pip install trugs-store
 # With PostgreSQL support:
 pip install trugs-store[postgres]
 ```
+
+> 0.2.0 is **not yet published to PyPI** — internal consumers install from the source repository directly. See [TRUGS-STORE-dev README §"Pre-PyPI install (TRUGS 2.0)"](https://github.com/TRUGS-LLC/TRUGS-STORE-dev#pre-pypi-install-trugs-20).
 
 ## Quick Example
 
@@ -95,6 +99,7 @@ else:
 
 ## Documentation
 
+- **Package boundary:** [BOUNDARY.md](BOUNDARY.md) — what STORE owns vs what TRUGS-TOOLS owns, and the deliberate two-validator split (structural vs CORE-16)
 - **TRUGS Specification:** [TRUGS-LLC/TRUGS](https://github.com/TRUGS-LLC/TRUGS) — protocol, language, validator
 - **GraphStore Protocol:** [SPEC_844_graphstore_protocol.py](SPEC_844_graphstore_protocol.py) — full PEP 544 interface
 - **TRUG Graph Index:** [folder.trug.json](folder.trug.json) — machine-readable structure of this repo
@@ -102,6 +107,6 @@ else:
 
 ## Status
 
-**Version:** 0.1.0
+**Version:** 0.2.0 (TRUGS 2.0 native — first release with `core_v2.0.0` support)
 **Phase:** Beta
 **License:** Apache 2.0 — [TRUGS LLC](https://github.com/TRUGS-LLC)

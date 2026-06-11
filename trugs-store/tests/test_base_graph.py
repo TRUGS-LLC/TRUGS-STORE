@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """Tests for BaseGraph — shared graph model base class."""
 
 import json
@@ -15,17 +18,56 @@ SAMPLE_TRUG = {
     "dimensions": {},
     "capabilities": {"extensions": [], "vocabularies": ["test_v1"], "profiles": []},
     "nodes": [
-        {"id": "root", "type": "FOLDER", "parent_id": None, "contains": ["child1", "child2"],
-         "properties": {"name": "root"}, "metric_level": "KILO", "dimension": "test"},
-        {"id": "child1", "type": "DOC", "parent_id": "root", "contains": [],
-         "properties": {"name": "child1"}, "metric_level": "BASE", "dimension": "test"},
-        {"id": "child2", "type": "DOC", "parent_id": "root", "contains": [],
-         "properties": {"name": "child2"}, "metric_level": "BASE", "dimension": "test"},
+        {
+            "id": "root",
+            "type": "FOLDER",
+            "parent_id": None,
+            "contains": ["child1", "child2"],
+            "properties": {"name": "root"},
+            "metric_level": "KILO",
+            "dimension": "test",
+        },
+        {
+            "id": "child1",
+            "type": "DOC",
+            "parent_id": "root",
+            "contains": [],
+            "properties": {"name": "child1"},
+            "metric_level": "BASE",
+            "dimension": "test",
+        },
+        {
+            "id": "child2",
+            "type": "DOC",
+            "parent_id": "root",
+            "contains": [],
+            "properties": {"name": "child2"},
+            "metric_level": "BASE",
+            "dimension": "test",
+        },
     ],
     "edges": [
-        {"from_id": "root", "to_id": "child1", "relation": "contains", "weight": 1.0, "properties": {}},
-        {"from_id": "root", "to_id": "child2", "relation": "contains", "weight": 1.0, "properties": {}},
-        {"from_id": "child1", "to_id": "child2", "relation": "uses", "weight": 0.8, "properties": {}},
+        {
+            "from_id": "root",
+            "to_id": "child1",
+            "relation": "contains",
+            "weight": 1.0,
+            "properties": {},
+        },
+        {
+            "from_id": "root",
+            "to_id": "child2",
+            "relation": "contains",
+            "weight": 1.0,
+            "properties": {},
+        },
+        {
+            "from_id": "child1",
+            "to_id": "child2",
+            "relation": "uses",
+            "weight": 0.8,
+            "properties": {},
+        },
     ],
 }
 
@@ -55,9 +97,12 @@ class TestBaseGraphFactory:
 
     # PROCESS from_dict SHALL REPLACE DATA from_node WITH DATA from_id IN RECORD edge.
     def test_from_dict_normalizes_edge_keys(self):
-        trug = {**SAMPLE_TRUG, "edges": [
-            {"from_node": "root", "to_node": "child1", "relation": "contains"},
-        ]}
+        trug = {
+            **SAMPLE_TRUG,
+            "edges": [
+                {"from_node": "root", "to_node": "child1", "relation": "contains"},
+            ],
+        }
         g = BaseGraph.from_dict(trug)
         edge = g.get_all_edges()[0]
         assert edge["from_id"] == "root"

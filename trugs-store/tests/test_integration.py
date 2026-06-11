@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """Integration tests against real .trug.json files.
 
 Uses in-repo fixtures (tests/fixtures/) instead of external monorepo paths.
@@ -8,7 +11,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
-from trugs_store import InMemoryGraphStore, JsonFilePersistence
+from trugs_store import JsonFilePersistence
 
 _FIXTURES = Path(__file__).parent / "fixtures"
 _SAMPLE = _FIXTURES / "sample.trug.json"
@@ -94,11 +97,17 @@ class TestRoundTrip:
             tmp = f.name
         store = persistence.load(str(_SAMPLE))
         orig = store.node_count()
-        store.add_node({
-            "id": "test_node", "type": "TEST", "properties": {"x": 1},
-            "parent_id": None, "contains": [], "metric_level": "BASE_TEST",
-            "dimension": "test_dim",
-        })
+        store.add_node(
+            {
+                "id": "test_node",
+                "type": "TEST",
+                "properties": {"x": 1},
+                "parent_id": None,
+                "contains": [],
+                "metric_level": "BASE_TEST",
+                "dimension": "test_dim",
+            }
+        )
         store.mark_stale("test_node", "test")
         persistence.save(store, tmp)
         s2 = persistence.load(tmp)

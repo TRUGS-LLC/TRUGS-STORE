@@ -1,9 +1,12 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """PostgreSQL GraphStore implementation using psycopg3."""
 
 from __future__ import annotations
 
 from collections import deque
-from typing import Any, Dict, Iterator, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional
 
 try:
     import psycopg
@@ -17,10 +20,12 @@ except ImportError as e:
 from trugs_store.protocol import Violation
 from trugs_store.types import Edge, Node
 
+if TYPE_CHECKING:
+    from trugs_store.protocol import GraphStore
+
 _MAX_ANCESTOR_DEPTH = 100
 
 
-# AGENT claude SHALL DEFINE RECORD PostgresGraphStore AS A RECORD store.
 class PostgresGraphStore:
     """PostgreSQL-backed GraphStore — indexed queries, transactional writes.
 
@@ -28,6 +33,10 @@ class PostgresGraphStore:
     a graph_id filter so multiple graphs coexist in the same database.
 
     Each write method is a self-contained transaction (auto-commit).
+
+    <trl>
+    AGENT claude SHALL DEFINE RECORD PostgresGraphStore AS A RECORD store.
+    </trl>
     """
 
     def __init__(self, conn: "psycopg.Connection", graph_id: str) -> None:
@@ -36,8 +45,11 @@ class PostgresGraphStore:
 
     # === Node Read ===
 
-    # PROCESS get_node SHALL READ RECORD node THEN RETURN RECORD result.
     def get_node(self, node_id: str) -> Optional[Node]:
+        """<trl>
+        PROCESS get_node SHALL READ RECORD node THEN RETURN RECORD result.
+        </trl>
+        """
         with self._conn.cursor(row_factory=dict_row) as cur:
             cur.execute(
                 "SELECT id, type, properties, metric_level, parent_id, contains, dimension "
@@ -47,8 +59,11 @@ class PostgresGraphStore:
             row = cur.fetchone()
             return _row_to_node(row) if row else None
 
-    # PROCESS get_children SHALL FILTER ALL RECORD node THEN RETURN RECORD result.
     def get_children(self, parent_id: str) -> List[Node]:
+        """<trl>
+        PROCESS get_children SHALL FILTER ALL RECORD node THEN RETURN RECORD result.
+        </trl>
+        """
         with self._conn.cursor(row_factory=dict_row) as cur:
             cur.execute(
                 "SELECT id, type, properties, metric_level, parent_id, contains, dimension "
@@ -57,7 +72,6 @@ class PostgresGraphStore:
             )
             return [_row_to_node(r) for r in cur.fetchall()]
 
-    # PROCESS find_nodes SHALL FILTER ALL RECORD node THEN RETURN RECORD result.
     def find_nodes(
         self,
         *,
@@ -66,6 +80,10 @@ class PostgresGraphStore:
         stale: Optional[bool] = None,
         dimension: Optional[str] = None,
     ) -> List[Node]:
+        """<trl>
+        PROCESS find_nodes SHALL FILTER ALL RECORD node THEN RETURN RECORD result.
+        </trl>
+        """
         clauses = ["graph_id = %s"]
         params: list[Any] = [self._graph_id]
         if type is not None:
@@ -78,7 +96,9 @@ class PostgresGraphStore:
             if stale:
                 clauses.append("(properties->>'stale')::boolean IS TRUE")
             else:
-                clauses.append("(properties->>'stale' IS NULL OR (properties->>'stale')::boolean IS NOT TRUE)")
+                clauses.append(
+                    "(properties->>'stale' IS NULL OR (properties->>'stale')::boolean IS NOT TRUE)"
+                )
         if dimension is not None:
             clauses.append("dimension = %s")
             params.append(dimension)
@@ -91,16 +111,27 @@ class PostgresGraphStore:
             )
             return [_row_to_node(r) for r in cur.fetchall()]
 
-    # PROCESS node_count SHALL AGGREGATE EACH RECORD node TO INTEGER DATA count.
     def node_count(self) -> int:
+        """<trl>
+        PROCESS node_count SHALL AGGREGATE EACH RECORD node TO INTEGER DATA count.
+        </trl>
+        """
         with self._conn.cursor() as cur:
-            cur.execute("SELECT COUNT(*) FROM nodes WHERE graph_id = %s", (self._graph_id,))
-            return cur.fetchone()[0]
+            cur.execute(
+                "SELECT COUNT(*) FROM nodes WHERE graph_id = %s", (self._graph_id,)
+            )
+            row = cur.fetchone()
+            assert row is not None, "COUNT(*) always returns a row"
+            count: int = row[0]
+            return count
 
     # === Node Write ===
 
-    # PROCESS add_node SHALL WRITE RECORD node TO DATA store.
     def add_node(self, node: Node, *, parent_id: Optional[str] = None) -> None:
+        """<trl>
+        PROCESS add_node SHALL WRITE RECORD node TO DATA store.
+        </trl>
+        """
         nid = node["id"]
         with self._conn.transaction():
             with self._conn.cursor() as cur:
@@ -135,10 +166,18 @@ class PostgresGraphStore:
                         )
                         SELECT 1 FROM ancestors WHERE id = %s LIMIT 1
                         """,
-                        (self._graph_id, parent_id, self._graph_id, _MAX_ANCESTOR_DEPTH, nid),
+                        (
+                            self._graph_id,
+                            parent_id,
+                            self._graph_id,
+                            _MAX_ANCESTOR_DEPTH,
+                            nid,
+                        ),
                     )
                     if cur.fetchone():
-                        raise ValueError(f"Adding {nid!r} under {parent_id!r} would create a cycle")
+                        raise ValueError(
+                            f"Adding {nid!r} under {parent_id!r} would create a cycle"
+                        )
 
                     node["parent_id"] = parent_id
 
@@ -172,8 +211,11 @@ class PostgresGraphStore:
                     ),
                 )
 
-    # PROCESS update_node SHALL WRITE RECORD properties TO DATA node.
     def update_node(self, node_id: str, properties: Dict[str, Any]) -> None:
+        """<trl>
+        PROCESS update_node SHALL WRITE RECORD properties TO DATA node.
+        </trl>
+        """
         with self._conn.cursor() as cur:
             cur.execute(
                 "UPDATE nodes SET properties = properties || %s::jsonb "
@@ -184,12 +226,18 @@ class PostgresGraphStore:
                 raise KeyError(f"Node {node_id!r} does not exist")
         self._conn.commit()
 
-    # PROCESS mark_stale SHALL WRITE RECORD stale TO DATA node.
     def mark_stale(self, node_id: str, reason: str) -> None:
+        """<trl>
+        PROCESS mark_stale SHALL WRITE RECORD stale TO DATA node.
+        </trl>
+        """
         self.update_node(node_id, {"stale": True, "stale_reason": reason})
 
-    # PROCESS clear_stale SHALL WRITE RECORD stale TO DATA node.
     def clear_stale(self, node_id: str) -> None:
+        """<trl>
+        PROCESS clear_stale SHALL WRITE RECORD stale TO DATA node.
+        </trl>
+        """
         with self._conn.cursor() as cur:
             cur.execute(
                 "UPDATE nodes SET properties = properties - 'stale' - 'stale_reason' "
@@ -200,8 +248,11 @@ class PostgresGraphStore:
                 raise KeyError(f"Node {node_id!r} does not exist")
         self._conn.commit()
 
-    # PROCESS delete_node SHALL REJECT RECORD node.
     def delete_node(self, node_id: str, *, cascade: bool = False) -> None:
+        """<trl>
+        PROCESS delete_node SHALL REJECT RECORD node.
+        </trl>
+        """
         with self._conn.transaction():
             with self._conn.cursor() as cur:
                 # Check exists
@@ -215,7 +266,9 @@ class PostgresGraphStore:
 
                 contains, parent_id = row
                 if contains and not cascade:
-                    raise ValueError(f"Node {node_id!r} has children {contains}; use cascade=True")
+                    raise ValueError(
+                        f"Node {node_id!r} has children {contains}; use cascade=True"
+                    )
 
                 if cascade:
                     # Collect all descendants via recursive CTE
@@ -257,7 +310,6 @@ class PostgresGraphStore:
 
     # === Edge Read ===
 
-    # PROCESS get_edges SHALL FILTER ALL RECORD edge THEN RETURN RECORD result.
     def get_edges(
         self,
         *,
@@ -265,6 +317,10 @@ class PostgresGraphStore:
         to_id: Optional[str] = None,
         relation: Optional[str] = None,
     ) -> List[Edge]:
+        """<trl>
+        PROCESS get_edges SHALL FILTER ALL RECORD edge THEN RETURN RECORD result.
+        </trl>
+        """
         clauses = ["graph_id = %s"]
         params: list[Any] = [self._graph_id]
         if from_id is not None:
@@ -284,34 +340,57 @@ class PostgresGraphStore:
             )
             return [_row_to_edge(r) for r in cur.fetchall()]
 
-    # PROCESS get_outgoing SHALL READ RECORD edge THEN RETURN RECORD result.
     def get_outgoing(self, node_id: str) -> List[Edge]:
+        """<trl>
+        PROCESS get_outgoing SHALL READ RECORD edge THEN RETURN RECORD result.
+        </trl>
+        """
         return self.get_edges(from_id=node_id)
 
-    # PROCESS get_incoming SHALL READ RECORD edge THEN RETURN RECORD result.
     def get_incoming(self, node_id: str) -> List[Edge]:
+        """<trl>
+        PROCESS get_incoming SHALL READ RECORD edge THEN RETURN RECORD result.
+        </trl>
+        """
         return self.get_edges(to_id=node_id)
 
-    # PROCESS edge_count SHALL AGGREGATE EACH RECORD edge TO INTEGER DATA count.
     def edge_count(self) -> int:
+        """<trl>
+        PROCESS edge_count SHALL AGGREGATE EACH RECORD edge TO INTEGER DATA count.
+        </trl>
+        """
         with self._conn.cursor() as cur:
-            cur.execute("SELECT COUNT(*) FROM edges WHERE graph_id = %s", (self._graph_id,))
-            return cur.fetchone()[0]
+            cur.execute(
+                "SELECT COUNT(*) FROM edges WHERE graph_id = %s", (self._graph_id,)
+            )
+            row = cur.fetchone()
+            assert row is not None, "COUNT(*) always returns a row"
+            count: int = row[0]
+            return count
 
     # === Edge Write ===
 
-    # PROCESS add_edge SHALL WRITE RECORD edge TO DATA store.
     def add_edge(self, edge: Edge) -> None:
+        """<trl>
+        PROCESS add_edge SHALL WRITE RECORD edge TO DATA store.
+        </trl>
+        """
         fid, tid, rel = edge["from_id"], edge["to_id"], edge["relation"]
 
         with self._conn.cursor() as cur:
             # Validate local endpoints (skip cross-graph refs with ':')
             if ":" not in fid:
-                cur.execute("SELECT 1 FROM nodes WHERE graph_id = %s AND id = %s", (self._graph_id, fid))
+                cur.execute(
+                    "SELECT 1 FROM nodes WHERE graph_id = %s AND id = %s",
+                    (self._graph_id, fid),
+                )
                 if not cur.fetchone():
                     raise KeyError(f"from_id {fid!r} does not exist")
             if ":" not in tid:
-                cur.execute("SELECT 1 FROM nodes WHERE graph_id = %s AND id = %s", (self._graph_id, tid))
+                cur.execute(
+                    "SELECT 1 FROM nodes WHERE graph_id = %s AND id = %s",
+                    (self._graph_id, tid),
+                )
                 if not cur.fetchone():
                     raise KeyError(f"to_id {tid!r} does not exist")
 
@@ -319,14 +398,16 @@ class PostgresGraphStore:
                 "INSERT INTO edges (graph_id, from_id, to_id, relation, weight, properties) "
                 "VALUES (%s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING",
                 (
-                    self._graph_id, fid, tid, rel,
+                    self._graph_id,
+                    fid,
+                    tid,
+                    rel,
                     edge.get("weight", 1.0),
                     Json(edge.get("properties", {})),
                 ),
             )
         self._conn.commit()
 
-    # PROCESS update_edge SHALL WRITE RECORD properties TO DATA edge.
     def update_edge(
         self,
         from_id: str,
@@ -336,6 +417,10 @@ class PostgresGraphStore:
         properties: Optional[Dict[str, Any]] = None,
         weight: Optional[float] = None,
     ) -> None:
+        """<trl>
+        PROCESS update_edge SHALL WRITE RECORD properties TO DATA edge.
+        </trl>
+        """
         sets: list[str] = []
         params: list[Any] = []
         if properties is not None:
@@ -355,11 +440,16 @@ class PostgresGraphStore:
                 params,
             )
             if not cur.fetchone():
-                raise KeyError(f"Edge ({from_id!r}, {to_id!r}, {relation!r}) does not exist")
+                raise KeyError(
+                    f"Edge ({from_id!r}, {to_id!r}, {relation!r}) does not exist"
+                )
         self._conn.commit()
 
-    # PROCESS remove_edge SHALL REJECT RECORD edge.
     def remove_edge(self, from_id: str, to_id: str, relation: str) -> bool:
+        """<trl>
+        PROCESS remove_edge SHALL REJECT RECORD edge.
+        </trl>
+        """
         with self._conn.cursor() as cur:
             cur.execute(
                 "DELETE FROM edges WHERE graph_id = %s AND from_id = %s AND to_id = %s AND relation = %s "
@@ -372,7 +462,6 @@ class PostgresGraphStore:
 
     # === Traversal ===
 
-    # PROCESS traverse SHALL READ RECORD node THEN RETURN ALL RECORD neighbor.
     def traverse(
         self,
         start_id: str,
@@ -382,6 +471,10 @@ class PostgresGraphStore:
         max_depth: int = 1,
     ) -> Iterator[tuple[Node, Edge, int]]:
         # Verify start exists
+        """<trl>
+        PROCESS traverse SHALL READ RECORD node THEN RETURN ALL RECORD neighbor.
+        </trl>
+        """
         if self.get_node(start_id) is None:
             raise KeyError(f"Start node {start_id!r} does not exist")
 
@@ -403,7 +496,9 @@ class PostgresGraphStore:
             for edge in edges:
                 if relation is not None and edge["relation"] != relation:
                     continue
-                neighbor_id = edge["to_id"] if edge["from_id"] == current_id else edge["from_id"]
+                neighbor_id = (
+                    edge["to_id"] if edge["from_id"] == current_id else edge["from_id"]
+                )
                 if neighbor_id in visited:
                     continue
                 neighbor = self.get_node(neighbor_id)
@@ -413,15 +508,25 @@ class PostgresGraphStore:
                 yield (neighbor, edge, depth + 1)
                 queue.append((neighbor_id, depth + 1))
 
-    # PROCESS get_neighbors SHALL READ RECORD node THEN RETURN ALL RECORD neighbor.
     def get_neighbors(self, node_id: str, *, direction: str = "both") -> List[Node]:
-        return [node for node, _e, _d in self.traverse(node_id, direction=direction, max_depth=1)]
+        """<trl>
+        PROCESS get_neighbors SHALL READ RECORD node THEN RETURN ALL RECORD neighbor.
+        </trl>
+        """
+        return [
+            node
+            for node, _e, _d in self.traverse(node_id, direction=direction, max_depth=1)
+        ]
 
     # === Subgraph ===
 
-    # PROCESS extract_subgraph SHALL FILTER ALL RECORD node THEN RETURN RECORD result.
     def extract_subgraph(self, node_ids: List[str]) -> "GraphStore":
-        """Extract subgraph into an InMemoryGraphStore (subgraphs are small)."""
+        """Extract subgraph into an InMemoryGraphStore (subgraphs are small).
+
+        <trl>
+        PROCESS extract_subgraph SHALL FILTER ALL RECORD node THEN RETURN RECORD result.
+        </trl>
+        """
         from trugs_store.memory import InMemoryGraphStore
         from copy import deepcopy
 
@@ -450,8 +555,11 @@ class PostgresGraphStore:
 
     # === Metadata ===
 
-    # PROCESS get_metadata SHALL READ RECORD metadata THEN RETURN RECORD result.
     def get_metadata(self) -> Dict[str, Any]:
+        """<trl>
+        PROCESS get_metadata SHALL READ RECORD metadata THEN RETURN RECORD result.
+        </trl>
+        """
         with self._conn.cursor(row_factory=dict_row) as cur:
             cur.execute(
                 "SELECT name, version, type, description, metadata "
@@ -475,9 +583,12 @@ class PostgresGraphStore:
         "description": "UPDATE graphs SET description = %s WHERE graph_id = %s",
     }
 
-    # PROCESS set_metadata SHALL WRITE RECORD metadata TO DATA store.
     def set_metadata(self, key: str, value: Any) -> None:
         # Top-level graph columns — use pre-built SQL (no f-string interpolation)
+        """<trl>
+        PROCESS set_metadata SHALL WRITE RECORD metadata TO DATA store.
+        </trl>
+        """
         if key in self._GRAPH_COLUMNS:
             with self._conn.cursor() as cur:
                 cur.execute(self._GRAPH_COLUMN_SQL[key], (value, self._graph_id))
@@ -493,12 +604,15 @@ class PostgresGraphStore:
 
     # === Validation ===
 
-    # PROCESS validate_graph SHALL VALIDATE RECORD graph.
     def validate_graph(self) -> List[Violation]:
         """Validate by loading into memory and delegating.
 
         For v1, this is simpler and correct. Optimize with SQL queries
         in a future version if performance matters at scale.
+
+        <trl>
+        PROCESS validate_graph SHALL VALIDATE RECORD graph.
+        </trl>
         """
         from trugs_store.memory import InMemoryGraphStore
 
@@ -516,7 +630,8 @@ class PostgresGraphStore:
 # Row conversion helpers
 # ---------------------------------------------------------------------------
 
-def _row_to_node(row: dict) -> Node:
+
+def _row_to_node(row: Dict[str, Any]) -> Node:
     """Convert a psycopg dict_row to a TRUGS Node dict."""
     node: Node = {
         "id": row["id"],
@@ -530,7 +645,7 @@ def _row_to_node(row: dict) -> Node:
     return node
 
 
-def _row_to_edge(row: dict) -> Edge:
+def _row_to_edge(row: Dict[str, Any]) -> Edge:
     """Convert a psycopg dict_row to a TRUGS Edge dict."""
     edge: Edge = {
         "from_id": row["from_id"],

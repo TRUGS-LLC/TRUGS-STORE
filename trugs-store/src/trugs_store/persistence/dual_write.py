@@ -1,3 +1,6 @@
+# Copyright 2026 TRUGS LLC
+# SPDX-License-Identifier: Apache-2.0
+
 """Dual I/O persistence — JSON file + PostgreSQL.
 
 Write: every .trug.json write persists to both JSON and PostgreSQL (when PORT_DSN set).
@@ -17,7 +20,6 @@ from typing import Any, Dict, Optional
 logger = logging.getLogger(__name__)
 
 
-# PROCESS write_trug SHALL WRITE RECORD trug TO DATA file.
 def write_trug(
     trug: Dict[str, Any],
     path: str | Path,
@@ -34,6 +36,10 @@ def write_trug(
         trug: The TRUG dict (metadata + nodes + edges).
         path: Destination file path (e.g., folder.trug.json).
         db_dsn: PostgreSQL DSN. If None, reads PORT_DSN env var.
+
+    <trl>
+    PROCESS write_trug SHALL WRITE RECORD trug TO DATA file.
+    </trl>
     """
     path = Path(path)
 
@@ -100,7 +106,6 @@ def _write_to_postgres(
         conn.close()
 
 
-# PROCESS read_trug SHALL READ RECORD trug THEN RETURN RECORD result.
 def read_trug(
     path: str | Path,
     *,
@@ -121,6 +126,10 @@ def read_trug(
     Raises:
         FileNotFoundError: If JSON file doesn't exist (when reading JSON).
         RuntimeError: If DB read fails (when PORT_DSN is set).
+
+    <trl>
+    PROCESS read_trug SHALL READ RECORD trug THEN RETURN RECORD result.
+    </trl>
     """
     path = Path(path)
     dsn = db_dsn or os.environ.get("PORT_DSN")
@@ -130,7 +139,8 @@ def read_trug(
 
     # No DSN: read from JSON file (environments without DB)
     with open(path, "r", encoding="utf-8") as fh:
-        return json.load(fh)
+        data: Dict[str, Any] = json.load(fh)
+        return data
 
 
 def _read_from_postgres(path: Path, dsn: str) -> Dict[str, Any]:
@@ -161,7 +171,6 @@ def _read_from_postgres(path: Path, dsn: str) -> Dict[str, Any]:
         conn.close()
 
 
-# PROCESS export_trug SHALL READ RECORD graph THEN WRITE RECORD trug TO DATA file.
 def export_trug(
     path: str | Path,
     *,
@@ -181,6 +190,10 @@ def export_trug(
 
     Raises:
         RuntimeError: If PORT_DSN is not set.
+
+    <trl>
+    PROCESS export_trug SHALL READ RECORD graph THEN WRITE RECORD trug TO DATA file.
+    </trl>
     """
     path = Path(path)
     dsn = db_dsn or os.environ.get("PORT_DSN")
@@ -200,7 +213,6 @@ def export_trug(
     return True
 
 
-# PROCESS import_trug SHALL READ RECORD file THEN WRITE RECORD trug TO DATA database.
 def import_trug(
     path: str | Path,
     *,
@@ -220,6 +232,10 @@ def import_trug(
     Raises:
         RuntimeError: If PORT_DSN is not set.
         FileNotFoundError: If JSON file doesn't exist.
+
+    <trl>
+    PROCESS import_trug SHALL READ RECORD file THEN WRITE RECORD trug TO DATA database.
+    </trl>
     """
     path = Path(path)
     dsn = db_dsn or os.environ.get("PORT_DSN")
