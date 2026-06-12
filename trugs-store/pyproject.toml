@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "trugs-store"
-version = "0.2.0"
+version = "2.0.0"
 description = "Graph storage backends for TRUGS specifications — InMemory, PostgreSQL, JSON file persistence. Native TRUGS 2.0 (core_v2.0.0) support: LEVEL_PREFIX hierarchy validation, inheritance stamping, canonical re-emit."
 readme = "README.md"
 license = {text = "Apache-2.0"}
@@ -30,6 +30,8 @@ Homepage = "https://github.com/TRUGS-LLC/TRUGS-STORE"
 Repository = "https://github.com/TRUGS-LLC/TRUGS-STORE"
 Issues = "https://github.com/TRUGS-LLC/TRUGS-STORE/issues"
 Specification = "https://github.com/TRUGS-LLC/TRUGS"
+Documentation = "https://github.com/TRUGS-LLC/TRUGS/blob/main/GETTING_STARTED.md"
+Changelog = "https://github.com/TRUGS-LLC/TRUGS-STORE/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 postgres = [

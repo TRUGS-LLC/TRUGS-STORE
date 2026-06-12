@@ -4,6 +4,8 @@
 
 trugs-store is the shared persistence layer for all TRUGS tooling. Every tool that reads or writes `.trug.json` files goes through this package. It supports JSON file storage for development and PostgreSQL for production scale.
 
+It is the storage tier of the TRUGS 2.0 commons kit: the language CLI ([trugs-tools](https://github.com/TRUGS-LLC/TRUGS-TOOLS), binary `trug`) and the cartography tool (`trugs-folder`, binary `trug-a-folder`) both sit on it. New to TRUGS? Start with **[GETTING_STARTED.md](https://github.com/TRUGS-LLC/TRUGS/blob/main/GETTING_STARTED.md)**.
+
 ## Install
 
 ```bash
@@ -45,11 +47,11 @@ python -c "from trugs_store.vocabulary import classify_vocabulary; \
 Use when you are migrating a downstream consumer and want a pinned, reproducible version. Tag-based install survives worktree churn and is the recommended pattern for sister repos in the TRUGS portfolio.
 
 ```bash
-# Once a release tag (e.g. v0.2.0) is pushed to TRUGS-STORE-dev:
-pip install "git+https://github.com/TRUGS-LLC/TRUGS-STORE-dev.git@v0.2.0#subdirectory=trugs-store"
+# Once a release tag (e.g. v2.0.0) is pushed to TRUGS-STORE-dev:
+pip install "git+https://github.com/TRUGS-LLC/TRUGS-STORE-dev.git@v2.0.0#subdirectory=trugs-store"
 
 # With PostgreSQL extras:
-pip install "git+https://github.com/TRUGS-LLC/TRUGS-STORE-dev.git@v0.2.0#subdirectory=trugs-store[postgres]"
+pip install "git+https://github.com/TRUGS-LLC/TRUGS-STORE-dev.git@v2.0.0#subdirectory=trugs-store[postgres]"
 ```
 
 Pin the tag explicitly — never install from `@main` for production consumers, since `main` advances as further sub-phases land.
@@ -59,7 +61,7 @@ Pin the tag explicitly — never install from `@main` for production consumers, 
 Considered and rejected in AAA #1756 ADR-005:
 
 - **Test PyPI** pollutes the `trugs-store` namespace and breaks the rule that PyPI carries only released versions.
-- **Local wheels** (`pip install dist/trugs_store-0.2.0-py3-none-any.whl`) work mechanically but don't exercise the install-from-spec contract that downstream consumers actually use — they hide install-time mistakes that show up only over the network.
+- **Local wheels** (`pip install dist/trugs_store-2.0.0-py3-none-any.whl`) work mechanically but don't exercise the install-from-spec contract that downstream consumers actually use — they hide install-time mistakes that show up only over the network.
 
 Editable (Option A) gives a tight inner loop; tag install (Option B) gives a reproducible outer loop. Both exercise the real install path.
 
@@ -169,6 +171,6 @@ else:
 
 ## Status
 
-**Version:** 0.2.0 (TRUGS 2.0 native — first release with `core_v2.0.0` support)
+**Version:** 2.0.0 (TRUGS 2.0 native — first release with `core_v2.0.0` support; lockstep with `trugs-tools`/`trugs-folder` 2.0.0)
 **Phase:** Beta
 **License:** Apache 2.0 — [TRUGS LLC](https://github.com/TRUGS-LLC)
