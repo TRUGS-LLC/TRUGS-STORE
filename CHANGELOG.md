@@ -7,7 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.0.0] — 2026-06-12
+
 Tier-1 release polish for the TRUGS v2.0 launch — [TRUGS-DEVELOPMENT AAA #2330](https://github.com/Xepayac/TRUGS-DEVELOPMENT/blob/main/AAA/AAA_2330_phase7_trugs_store_tier1_polish.md) (Phase 7 Repo 3/4), Sub-phases 1–4 — L1 baseline, L2 structural cleanups, L3 TRL contracts, the STORE↔TOOLS boundary doc, and L4 self-validation. **No public-API change** (the `GraphStore` protocol, package name, and `schema.sql` are all unchanged). One small behavior change: the SI-prefix correctness fix below (`DECA` → `DEKA`).
+
+**Version note:** published as **2.0.0** in lockstep with `trugs-tools`/`trugs-folder` 2.0.0 (the TRUGS 2.0 commons kit, per the v2 package manifest). The `[0.2.0]` entry below was repo-internal and never published to PyPI; PyPI jumps 0.1.0 → 2.0.0.
+
+### Added
+- **Commons-kit metadata (TRUGS-DEVELOPMENT AAA #2416 SP5):** `Documentation` and
+  `Changelog` URL keys on the package metadata. `trugs-store` 2.0.0 ships as the
+  storage tier of the TRUGS 2.0 commons kit — `trugs-tools` 2.0 (`trug`) and
+  `trugs-folder` 2.0 (`trug-a-folder`) both sit on it.
 
 ### Fixed
 - **SI-prefix lexicon drift (`DECA` → `DEKA`, SP4):** `validation.py`'s `SI_PREFIX_ORDERING` spelled the 10^1 prefix `"DECA"`, while the canonical v2 lexicon and the CORE-16 validator use `"DEKA"`. Consequence: `prefix_of("DEKA_…")` returned `None`, so `validate_v2_hierarchy` **silently skipped** the hierarchy check on canonically-spelled nodes (and `_stamp_inherited_metric_levels` stamped `DECA_*`). Now the store recognizes `DEKA` and the shipped `folder.trug.json` validates **non-vacuously**. (Behavior change: nodes that previously passed by being skipped are now actually checked.)
