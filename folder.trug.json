@@ -1,0 +1,250 @@
+{
+  "dimensions": {
+    "folder_structure": {
+      "base_level": "BASE",
+      "description": "TRUGS_STORE components and structure"
+    }
+  },
+  "capabilities": {
+    "profiles": [],
+    "extensions": [],
+    "vocabularies": [
+      "project_v1",
+      "core_v2.0.0"
+    ]
+  },
+  "name": "TRUGS_STORE Folder",
+  "version": "1.0.0",
+  "type": "PROJECT",
+  "description": "Graph storage backends for TRUGS specifications \u2014 InMemoryGraphStore, PostgresGraphStore, JsonFilePersistence",
+  "level_directives": [
+    "KILO_FOLDER",
+    "DEKA_COMPONENT",
+    "BASE_SPECIFICATION",
+    "BASE_DOCUMENT"
+  ],
+  "nodes": [
+    {
+      "id": "trugs_store_folder",
+      "type": "FOLDER",
+      "properties": {
+        "name": "TRUGS_STORE",
+        "status": "IN_PROGRESS",
+        "purpose": "Graph storage backends for TRUGS specifications",
+        "github_issue": 844
+      },
+      "metric_level": "KILO_FOLDER",
+      "parent_id": null,
+      "contains": [
+        "comp_trugs_store_package",
+        "comp_trugs_store",
+        "doc_readme",
+        "doc_agent",
+        "doc_changelog",
+        "doc_notice",
+        "doc_license",
+        "doc_folder_trug",
+        "doc_contributing",
+        "doc_security"
+      ],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_trugs_store_package",
+      "type": "COMPONENT",
+      "properties": {
+        "file": "trugs-store/",
+        "name": "trugs-store",
+        "purpose": "Python package \u2014 InMemoryGraphStore, PostgresGraphStore, JsonFilePersistence",
+        "github_issue": 844
+      },
+      "metric_level": "DEKA_COMPONENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "comp_trugs_store",
+      "type": "COMPONENT",
+      "properties": {
+        "loc": 1221,
+        "name": "trugs-store",
+        "purpose": "Trugs-Store component",
+        "file_count": 10
+      },
+      "metric_level": "DEKA_COMPONENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_readme",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "README.md",
+        "format": "markdown",
+        "purpose": "Human quickstart and motivation"
+      },
+      "metric_level": "BASE_DOCUMENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_agent",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "AGENT.md",
+        "purpose": "Agent instructions \u2014 TRUG/L conventions, repo navigation, development commands"
+      },
+      "metric_level": "BASE_DOCUMENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_changelog",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "CHANGELOG.md",
+        "purpose": "Version history \u2014 0.1.0 initial release"
+      },
+      "metric_level": "BASE_DOCUMENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_notice",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "NOTICE",
+        "purpose": "Apache 2.0 attribution notice \u2014 TRUGS LLC copyright"
+      },
+      "metric_level": "BASE_DOCUMENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_license",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "LICENSE",
+        "purpose": "Apache License 2.0 full text"
+      },
+      "metric_level": "BASE_DOCUMENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_folder_trug",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "folder.trug.json",
+        "format": "json",
+        "purpose": "Machine-readable graph index of this repository"
+      },
+      "metric_level": "BASE_DOCUMENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_contributing",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "CONTRIBUTING.md",
+        "purpose": "Contribution guidelines (inbound=outbound Apache-2.0; patent carve-out per NOTICE)"
+      },
+      "metric_level": "BASE_DOCUMENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    },
+    {
+      "id": "doc_security",
+      "type": "DOCUMENT",
+      "properties": {
+        "name": "SECURITY.md",
+        "purpose": "Security policy / vulnerability disclosure"
+      },
+      "metric_level": "BASE_DOCUMENT",
+      "parent_id": "trugs_store_folder",
+      "contains": [],
+      "dimension": "folder_structure"
+    }
+  ],
+  "edges": [
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "comp_trugs_store_package",
+      "relation": "contains",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "comp_trugs_store",
+      "relation": "contains",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "TRUGS_EPIC:epic_tooling",
+      "relation": "implements",
+      "weight": 1.0,
+      "properties": {
+        "description": "Implements EPIC project.trug.json"
+      }
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "doc_readme",
+      "relation": "contains",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "doc_agent",
+      "relation": "contains",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "doc_changelog",
+      "relation": "contains",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "doc_notice",
+      "relation": "contains",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "doc_license",
+      "relation": "contains",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "doc_folder_trug",
+      "relation": "contains",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "doc_contributing",
+      "relation": "contains",
+      "weight": 1.0
+    },
+    {
+      "from_id": "trugs_store_folder",
+      "to_id": "doc_security",
+      "relation": "contains",
+      "weight": 1.0
+    }
+  ]
+}
