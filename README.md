@@ -15,72 +15,7 @@ pip install trugs-store
 pip install trugs-store[postgres]
 ```
 
-> The PyPI release tracks the **0.1.x** line. Internal consumers needing **TRUGS 2.0** (`core_v2.0.0`, LEVEL_PREFIX validation, canonical re-emit) install **0.2.x** directly from this repository — see [Pre-PyPI install (TRUGS 2.0)](#pre-pypi-install-trugs-20) below.
-
-## Pre-PyPI install (TRUGS 2.0)
-
-`trugs-store` **0.2.x** adds native `core_v2.0.0` support (per [AAA #1756](https://github.com/Xepayac/TRUGS-DEVELOPMENT/blob/main/AAA/AAA_1756_trugs_store_2_0_hierarchy_first_adoption.md)): vocabulary dispatch on `capabilities.vocabularies`, LEVEL_PREFIX hierarchy validation, inheritance stamping, and canonical re-emit on save. v1 TRUGs (`core_v1.0.0`, `project_v1`) continue to validate unchanged — the upgrade is purely additive.
-
-**PyPI release of 0.2.x is deferred** until in-house validation finishes (per AAA #1756 ADR-005 / HITM 2026-05-11). During that window, internal consumers install from this repository directly:
-
-### Option A — Editable install from a worktree (plan-author dev, first-canary)
-
-Use when you are iterating on `trugs-store` itself or running the first-canary consumer migration. Fast feedback loop; no tag ceremony.
-
-```bash
-# 1. Clone (or `git worktree add`) into a sibling directory:
-git clone https://github.com/TRUGS-LLC/TRUGS-STORE-dev.git
-cd TRUGS-STORE-dev
-git checkout feat/1756-hierarchy-first-adoption  # the AAA #1756 ship branch
-
-# 2. Install the package in editable mode from the worktree's subdirectory:
-pip install -e ./trugs-store
-
-# 3. Verify v2 support:
-python -c "from trugs_store.vocabulary import classify_vocabulary; \
-           print(classify_vocabulary({'capabilities': {'vocabularies': ['core_v2.0.0']}}))"
-# -> v2
-```
-
-### Option B — Tag install (consumer rollout)
-
-Use when you are migrating a downstream consumer and want a pinned, reproducible version. Tag-based install survives worktree churn and is the recommended pattern for sister repos in the TRUGS portfolio.
-
-```bash
-# Once a release tag (e.g. v2.0.0) is pushed to TRUGS-STORE-dev:
-pip install "git+https://github.com/TRUGS-LLC/TRUGS-STORE-dev.git@v2.0.0#subdirectory=trugs-store"
-
-# With PostgreSQL extras:
-pip install "git+https://github.com/TRUGS-LLC/TRUGS-STORE-dev.git@v2.0.0#subdirectory=trugs-store[postgres]"
-```
-
-Pin the tag explicitly — never install from `@main` for production consumers, since `main` advances as further sub-phases land.
-
-### Why not Test PyPI or local wheels?
-
-Considered and rejected in AAA #1756 ADR-005:
-
-- **Test PyPI** pollutes the `trugs-store` namespace and breaks the rule that PyPI carries only released versions.
-- **Local wheels** (`pip install dist/trugs_store-2.0.0-py3-none-any.whl`) work mechanically but don't exercise the install-from-spec contract that downstream consumers actually use — they hide install-time mistakes that show up only over the network.
-
-Editable (Option A) gives a tight inner loop; tag install (Option B) gives a reproducible outer loop. Both exercise the real install path.
-
-### Verifying a v2 install
-
-```python
-from trugs_store import JsonFilePersistence
-from trugs_store.vocabulary import classify_vocabulary
-from trugs_store.validation import SI_PREFIX_ORDERING
-
-# Sanity check: v2 vocabulary recognized, validator module loadable, SI prefixes present.
-assert classify_vocabulary({"capabilities": {"vocabularies": ["core_v2.0.0"]}}) == "v2"
-assert "BASE" in SI_PREFIX_ORDERING
-
-# Round-trip a v2 TRUG (e.g. this repo's own folder.trug.json):
-store = JsonFilePersistence().load("folder.trug.json")
-assert store.validate_graph() == []  # this repo self-validates under core_v2.0.0
-print("OK — trugs-store 0.2.x v2 path active")
-```
+> The PyPI release is **2.0.x** (`core_v2.0.0`): vocabulary dispatch on `capabilities.vocabularies`, LEVEL_PREFIX hierarchy validation, inheritance stamping, and canonical re-emit on save. v1 TRUGs (`core_v1.0.0`, `project_v1`) continue to validate unchanged — the upgrade is purely additive.
 
 ## Quick Example
 
