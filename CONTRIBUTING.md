@@ -21,7 +21,7 @@ Run from the repository root (the canonical commands, identical to `AGENT.md`):
 
 ```bash
 pip install -e trugs-store[dev]
-pytest trugs-store/tests/
+pytest trugs-store/tests/ -v
 ```
 
 The canonical language spec lives in [TRUGS-LLC/TRUGS](https://github.com/TRUGS-LLC/TRUGS) —
