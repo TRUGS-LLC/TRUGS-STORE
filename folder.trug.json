@@ -16,11 +16,10 @@
   "name": "TRUGS_STORE Folder",
   "version": "1.0.0",
   "type": "PROJECT",
-  "description": "Graph storage backends for TRUGS specifications \u2014 InMemoryGraphStore, PostgresGraphStore, JsonFilePersistence",
+  "description": "Graph storage backends for TRUGS specifications — InMemoryGraphStore, PostgresGraphStore, JsonFilePersistence",
   "level_directives": [
     "KILO_FOLDER",
     "DEKA_COMPONENT",
-    "BASE_SPECIFICATION",
     "BASE_DOCUMENT"
   ],
   "nodes": [
@@ -55,7 +54,7 @@
       "properties": {
         "file": "trugs-store/",
         "name": "trugs-store",
-        "purpose": "Python package \u2014 InMemoryGraphStore, PostgresGraphStore, JsonFilePersistence",
+        "purpose": "Python package — InMemoryGraphStore, PostgresGraphStore, JsonFilePersistence",
         "github_issue": 844
       },
       "metric_level": "DEKA_COMPONENT",
@@ -95,7 +94,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "AGENT.md",
-        "purpose": "Agent instructions \u2014 TRUG/L conventions, repo navigation, development commands"
+        "purpose": "Agent instructions — TRUG/L conventions, repo navigation, development commands"
       },
       "metric_level": "BASE_DOCUMENT",
       "parent_id": "trugs_store_folder",
@@ -107,7 +106,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "CHANGELOG.md",
-        "purpose": "Version history \u2014 0.1.0 initial release"
+        "purpose": "Version history — 0.1.0 initial release"
       },
       "metric_level": "BASE_DOCUMENT",
       "parent_id": "trugs_store_folder",
@@ -119,7 +118,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "NOTICE",
-        "purpose": "Apache 2.0 attribution notice \u2014 TRUGS LLC copyright"
+        "purpose": "Apache 2.0 attribution notice — TRUGS LLC copyright"
       },
       "metric_level": "BASE_DOCUMENT",
       "parent_id": "trugs_store_folder",

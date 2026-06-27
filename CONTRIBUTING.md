@@ -17,9 +17,11 @@ of a release batch rather than as your individual commit.
 
 ## Development
 
+Run from the repository root (the canonical commands, identical to `AGENT.md`):
+
 ```bash
-pip install -e ".[test]"
-python -m pytest tests/
+pip install -e trugs-store[dev]
+pytest trugs-store/tests/
 ```
 
 The canonical language spec lives in [TRUGS-LLC/TRUGS](https://github.com/TRUGS-LLC/TRUGS) —
