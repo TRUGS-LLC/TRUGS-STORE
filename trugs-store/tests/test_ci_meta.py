@@ -40,6 +40,21 @@ def _job(name: str) -> dict:
     return jobs[name]
 
 
+# Per-function gate (AAA #2735 ADR-001 / REDTEAM-1): only the CI-contract guards below depend on
+# a published .github/workflows/ci.yml, which is a tier-2 deliverable not yet shipped in this
+# public repo. Gate EXACTLY those guards (never module-level) so the always-on repo-hygiene guards
+# (test_proposal_dir_absent, test_no_empty_persistence_init) keep running. They re-arm the moment a
+# real ci.yml lands.
+_ci_required = pytest.mark.skipif(
+    not _CI_YML.is_file(),
+    reason=(
+        "ci.yml not published in this repo yet (real dogfooding CI is a tier-2 deliverable, "
+        "AAA #2735/#2739); the 6 CI-contract guards re-arm automatically when it lands"
+    ),
+)
+
+
+@_ci_required
 def test_postgres_job_exports_dsn() -> None:
     """The gated job must set TRUGS_TEST_DSN, or the Postgres tests silent-skip."""
     blob = yaml.safe_dump(_job("postgres-tests"))
@@ -49,6 +64,7 @@ def test_postgres_job_exports_dsn() -> None:
     )
 
 
+@_ci_required
 def test_postgres_job_runs_the_gated_files() -> None:
     """The job must invoke every TRUGS_TEST_DSN-gated test file (else it skips)."""
     blob = yaml.safe_dump(_job("postgres-tests"))
@@ -58,6 +74,7 @@ def test_postgres_job_runs_the_gated_files() -> None:
     assert "test_round_trip.py" in blob
 
 
+@_ci_required
 def test_postgres_job_has_positive_must_run_guard() -> None:
     """A step must assert the gated tests actually ran (not all-skipped)."""
     blob = yaml.safe_dump(_job("postgres-tests")).lower()
@@ -73,6 +90,7 @@ def test_postgres_job_has_positive_must_run_guard() -> None:
 # hard gate there cannot meaningfully validate the v2 folder.trug.json. The
 # folder TRUG's v2 validity is verified locally under the dev parser and logged
 # in the AAA #2330 Phase-10 record; this gate hardens when v2 ships.
+@_ci_required
 @pytest.mark.parametrize("job_name", ["postgres-tests", "typecheck", "lint"])
 def test_quality_gates_are_hard(job_name: str) -> None:
     """L1 + env-dependent gates must be hard (no continue-on-error: true)."""

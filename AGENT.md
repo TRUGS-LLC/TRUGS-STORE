@@ -6,7 +6,7 @@ This file teaches an LLM agent how to work in this repository.
 
 trugs-store is the graph persistence layer for TRUGS. It provides `InMemoryGraphStore`, `PostgresGraphStore`, `JsonFilePersistence`, and a dual-write bridge. Every tool that reads or writes `.trug.json` files depends on this package.
 
-As of **0.2.0**, trugs-store natively supports **TRUGS 2.0** (`core_v2.0.0`): vocabulary dispatch by declared `capabilities.vocabularies`, LEVEL_PREFIX hierarchy validation in `trugs_store.validation`, inheritance stamping via `BaseGraph._stamp_inherited_metric_levels`, and canonical re-emit on save in the JSON adapter. v1 TRUGs (`core_v1.0.0`, `project_v1`) continue to validate unchanged.
+As of **2.0.0**, trugs-store natively supports **TRUGS 2.0** (`core_v2.0.0`): vocabulary dispatch by declared `capabilities.vocabularies`, LEVEL_PREFIX hierarchy validation in `trugs_store.validation`, inheritance stamping via `BaseGraph._stamp_inherited_metric_levels`, and canonical re-emit on save in the JSON adapter. v1 TRUGs (`core_v1.0.0`, `project_v1`) continue to validate unchanged.
 
 **Package:** `trugs-store` (PyPI)
 **License:** Apache 2.0
@@ -23,8 +23,7 @@ As of **0.2.0**, trugs-store natively supports **TRUGS 2.0** (`core_v2.0.0`): vo
 | `trugs-store/src/trugs_store/persistence/` | Load/save adapters (JSON file, PostgreSQL, dual-write) |
 | `trugs-store/src/trugs_store/vocabulary.py` | v1/v2 dispatch by declared `capabilities.vocabularies` |
 | `trugs-store/src/trugs_store/validation.py` | LEVEL_PREFIX hierarchy invariants for v2 TRUGs |
-| `trugs-store/tests/` | Test suite (157+ tests: vocabulary dispatch, v2 validation, canonical re-emit, self-validation) |
-| `SPEC_844_graphstore_protocol.py` | Full protocol specification |
+| `trugs-store/tests/` | Test suite (207 tests: vocabulary dispatch, v2 validation, canonical re-emit, self-validation) |
 | `folder.trug.json` | Machine-readable graph index of this repo |
 
 ## Development
@@ -45,7 +44,7 @@ mypy trugs-store/src/trugs_store --ignore-missing-imports
 This repo follows the [Dark Code compliance standard](https://github.com/TRUGS-LLC/TRUGS/blob/main/REFERENCE/STANDARD_dark_code_compliance.md):
 
 - Every public `def`/`class` has a function-level TRUG/L comment above it
-- Every test function has an `AGENT SHALL VALIDATE ...` comment
+- Test functions adopt an `AGENT SHALL VALIDATE ...` comment as they are annotated — full four-corner (C2/C4) coverage across all 207 tests is a tier-2 follow-on (AAA #2735/#2739), not yet complete
 - `folder.trug.json` validates against TRUGS CORE rules
 - When writing TRUG/L in prose, always spell it "TRUG/L" — never abbreviate
 

@@ -100,7 +100,7 @@ else:
 ## Documentation
 
 - **TRUGS Specification:** [TRUGS-LLC/TRUGS](https://github.com/TRUGS-LLC/TRUGS) — protocol, language, validator
-- **GraphStore Protocol:** [SPEC_844_graphstore_protocol.py](SPEC_844_graphstore_protocol.py) — full PEP 544 interface
+- **GraphStore Protocol:** [`trugs-store/src/trugs_store/protocol.py`](trugs-store/src/trugs_store/protocol.py) — full PEP 544 interface (22 methods)
 - **TRUG Graph Index:** [folder.trug.json](folder.trug.json) — machine-readable structure of this repo
 - **Dark Code Standard:** [TRUGS-LLC/TRUGS/REFERENCE/STANDARD_dark_code_compliance.md](https://github.com/TRUGS-LLC/TRUGS/blob/main/REFERENCE/STANDARD_dark_code_compliance.md)
 
