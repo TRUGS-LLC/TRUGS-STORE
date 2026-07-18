@@ -8,12 +8,16 @@ from __future__ import annotations
 from collections import deque
 from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional
 
+from trugs_store._optional import OptionalDependencyError
+
 try:
     import psycopg
     from psycopg.rows import dict_row
     from psycopg.types.json import Json
 except ImportError as e:
-    raise ImportError(
+    # The named sentinel lets __init__.py distinguish "psycopg absent" (skip
+    # the optional backend) from a genuine break inside this module (audit #2).
+    raise OptionalDependencyError(
         "PostgreSQL support requires psycopg3: pip install trugs-store[postgres]"
     ) from e
 

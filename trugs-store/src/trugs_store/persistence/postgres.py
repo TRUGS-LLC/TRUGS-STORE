@@ -8,11 +8,14 @@ from __future__ import annotations
 import importlib.resources
 from typing import Any, Dict
 
+from trugs_store._optional import OptionalDependencyError
+
 try:
     import psycopg
     from psycopg.types.json import Json
 except ImportError as e:
-    raise ImportError(
+    # Named sentinel — see trugs_store/_optional.py (audit #2).
+    raise OptionalDependencyError(
         "PostgreSQL support requires psycopg3: pip install trugs-store[postgres]"
     ) from e
 
