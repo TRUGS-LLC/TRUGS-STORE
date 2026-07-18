@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "trugs-store"
-version = "2.0.0"
+version = "2.1.0"
 description = "Graph storage backends for TRUGS specifications — InMemory, PostgreSQL, JSON file persistence. Native TRUGS 2.0 (core_v2.0.0) support: LEVEL_PREFIX hierarchy validation, inheritance stamping, canonical re-emit."
 readme = "README.md"
 license = {text = "Apache-2.0"}
