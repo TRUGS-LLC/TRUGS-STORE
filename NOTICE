@@ -12,3 +12,11 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+PATENT NOTICE
+
+This license does not cover self-developing graph systems. Graph structures or substrates
+that modify themselves during execution are the subject of U.S. patent
+application 19/575,491, owned by William E. Leigh III. Such systems are
+separately licensed from Arek Starr LLC under license from the owner.
+For AGPL 3.0 and commercial licensing, contact hello@arekstarr.ai.
