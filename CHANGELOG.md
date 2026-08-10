@@ -11,7 +11,7 @@ Nothing yet.
 
 ## [2.0.0] — 2026-06-12
 
-Tier-1 release polish for the TRUGS v2.0 launch — [TRUGS-DEVELOPMENT AAA #2330](https://github.com/Xepayac/TRUGS-DEVELOPMENT/blob/main/AAA/AAA_2330_phase7_trugs_store_tier1_polish.md) (Phase 7 Repo 3/4), Sub-phases 1–4 — L1 baseline, L2 structural cleanups, L3 TRL contracts, the STORE↔TOOLS boundary doc, and L4 self-validation. **No public-API change** (the `GraphStore` protocol, package name, and `schema.sql` are all unchanged). One small behavior change: the SI-prefix correctness fix below (`DECA` → `DEKA`).
+Tier-1 release polish for the TRUGS v2.0 launch — TRUGS-DEVELOPMENT AAA #2330 (private) (Phase 7 Repo 3/4), Sub-phases 1–4 — L1 baseline, L2 structural cleanups, L3 TRL contracts, the STORE↔TOOLS boundary doc, and L4 self-validation. **No public-API change** (the `GraphStore` protocol, package name, and `schema.sql` are all unchanged). One small behavior change: the SI-prefix correctness fix below (`DECA` → `DEKA`).
 
 **Version note:** published as **2.0.0** in lockstep with `trugs-tools`/`trugs-folder` 2.0.0 (the TRUGS 2.0 commons kit, per the v2 package manifest). The `[0.2.0]` entry below was repo-internal and never published to PyPI; PyPI jumps 0.1.0 → 2.0.0.
 
@@ -27,7 +27,7 @@ Tier-1 release polish for the TRUGS v2.0 launch — [TRUGS-DEVELOPMENT AAA #2330
 ### Changed
 - `ruff format` + `ruff check` applied across the package; both are now **hard** CI gates (previously soft `continue-on-error`).
 - `folder.trug.json` corrected to validate clean under the v2 CORE-16 validator and folder-governance check: `DECA_COMPONENT` → `DEKA_COMPONENT` (the valid SI prefix) and edge relations lowercased (`CONTAINS`/`IMPLEMENTS` → `contains`/`implements`).
-- CI hardened against env-dependent silent-skip ([store-dev#16](https://github.com/TRUGS-LLC/TRUGS-STORE-dev/issues/16) / AAA #1756 AF-3): the `postgres-tests` job now fails loudly if `TRUGS_TEST_DSN` is unset or the gated tests no-op.
+- CI hardened against env-dependent silent-skip (store-dev#16 (private) / AAA #1756 AF-3): the `postgres-tests` job now fails loudly if `TRUGS_TEST_DSN` is unset or the gated tests no-op.
 - **L3 TRL contracts (SP2):** every concrete public class and function/method now carries a `<trl>` contract block in its docstring (Protocol method stubs excluded — their interface contract lives on the `GraphStore` class docstring). `validation.py` gained a scope-documenting contract recording that it is STORE's *structural* validator, deliberately distinct from the CORE-16 TRL validator in TRUGS-TOOLS.
 
 ### Added
@@ -44,7 +44,7 @@ Tier-1 release polish for the TRUGS v2.0 launch — [TRUGS-DEVELOPMENT AAA #2330
 
 ## [0.2.0] - 2026-05-11
 
-Native support for **TRUGS 2.0** (`core_v2.0.0`) — additive, fully backward compatible. v1 TRUGs (`core_v1.0.0`, `project_v1`) validate unchanged. See [TRUGS-DEVELOPMENT AAA #1756](https://github.com/Xepayac/TRUGS-DEVELOPMENT/blob/main/AAA/AAA_1756_trugs_store_2_0_hierarchy_first_adoption.md) for the full design.
+Native support for **TRUGS 2.0** (`core_v2.0.0`) — additive, fully backward compatible. v1 TRUGs (`core_v1.0.0`, `project_v1`) validate unchanged. See TRUGS-DEVELOPMENT AAA #1756 (private) for the full design.
 
 ### Added
 - `trugs_store.vocabulary` — `classify_vocabulary(metadata)` dispatches load/save on declared `capabilities.vocabularies`. Returns `"v1"` for `core_v1.0.0` / `project_v1` / no declaration; `"v2"` when `core_v2.0.0` is present (v2 wins on mixed declarations).
