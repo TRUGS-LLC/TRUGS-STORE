@@ -4,7 +4,7 @@ This document pins **who owns what** across the two foundational Python packages
 of the TRUGS stack, and records the one place the boundary is easy to
 misread — the **two-validator split**. It is package self-description (an L2
 Tier-1 artifact), authored under
-[TRUGS-DEVELOPMENT AAA #2330](https://github.com/Xepayac/TRUGS-DEVELOPMENT/blob/main/AAA/AAA_2330_phase7_trugs_store_tier1_polish.md)
+TRUGS-DEVELOPMENT AAA #2330 (private)
 (Phase 7 Repo 3/4), Sub-phase 3.
 
 <trl>
@@ -58,7 +58,7 @@ mean?*
 
 There are **two** validators in the stack, and that is **intentional** — a
 deliberate division of responsibility, **not** the kind of duplicate-validator
-*drift* that [TRUGS-TOOLS-dev #2189](https://github.com/Xepayac/TRUGS-DEVELOPMENT/issues/2189)
+*drift* that TRUGS-TOOLS-dev #2189 (private)
 collapsed (two CLI/API copies of the *same* CORE validator that had diverged).
 These two answer **different questions**:
 
