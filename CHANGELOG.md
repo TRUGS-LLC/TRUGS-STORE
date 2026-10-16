@@ -71,6 +71,9 @@ Native support for **TRUGS 2.0** (`core_v2.0.0`) — additive, fully backward co
 
 ### Notes
 - **PyPI publish deferred** until in-house validation completes. During that window, internal consumers install from this repository directly — see [README §"Pre-PyPI install (TRUGS 2.0)"](README.md#pre-pypi-install-trugs-20) for both editable and tag-install patterns.
+
+  Correction, 2026-10-16: The README section and editable/tag-install patterns linked above are absent from this checkout. Current installation instructions are in [README §Install](README.md#install); editable installation is documented in [CONTRIBUTING §Development](CONTRIBUTING.md#development).
+
 - GraphStore Protocol shape unchanged (22 methods, 8 categories). Public API signatures byte-stable across the 0.1.x → 0.2.x bump.
 - Postgres schema unchanged — no migration required.
 - mypy `--strict` clean across all 12 source files.

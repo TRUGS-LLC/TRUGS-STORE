@@ -43,7 +43,7 @@ mypy trugs-store/src/trugs_store --ignore-missing-imports
 
 This repo follows the [Dark Code compliance standard](https://github.com/TRUGS-LLC/TRUGS/blob/main/REFERENCE/STANDARD_dark_code_compliance.md):
 
-- Every public `def`/`class` has a function-level TRUG/L comment above it
+- Every concrete public class and function/method carries a `<trl>` contract in its docstring; Protocol method stubs share the `GraphStore` class contract
 - Test functions adopt an `AGENT SHALL VALIDATE ...` comment as they are annotated — full four-corner (C2/C4) coverage across the test suite is a tier-2 follow-on (AAA (private reference removed)/(private reference removed)), not yet complete
 - `folder.trug.json` validates against TRUGS CORE rules
 - When writing TRUG/L in prose, always spell it "TRUG/L" — never abbreviate

@@ -32,10 +32,10 @@ class PostgresPersistence:
     Recognizes the TRUG's declared vocabulary (`capabilities.vocabularies`
     in graphs.metadata) and dispatches load/save through a single coherent
     code path. v1 graphs behave unchanged (additive guarantee per TRUGS-LLC
-    Spec Evolution Addendum §1.2). v2-specific behavior — LEVEL_PREFIX
-    validation, inheritance stamping, canonical re-emit — lands in
-    AAA (private reference removed) Sub-phase 5.2; in 5.1 the v2 dispatch is a stub passing
-    through to v1.
+    Spec Evolution Addendum §1.2). The v2 save path stamps inherited metric
+    levels on in-memory stores before persisting via COPY. level_directives
+    remain a file-emission concern and are not stored in the database.
+    Hierarchy validation runs when consumers invoke store.validate_graph().
 
     <trl>
     AGENT claude SHALL DEFINE RECORD PostgresPersistence AS A RECORD persistence.
@@ -85,13 +85,10 @@ class PostgresPersistence:
         return PostgresGraphStore(self._conn, graph_id)
 
     # PROCESS _load_v2 SHALL READ RECORD hierarchy_first_graph THEN RETURN RECORD store.
-    # Per AAA (private reference removed) Phase 3 INTERFACE PostgresGraphStore.load_graph SHALL APPLY
-    # DATA same_validation_rules AS JsonFilePersistence.load. The PostgresGraphStore
-    # exposes the same Protocol as InMemoryGraphStore, so `validate_v2_hierarchy`
-    # operates on it via duck-typed `._nodes` access — which Postgres-backed
-    # stores expose lazily via their own internals. Side-effect call only;
-    # violations surface through `store.validate_graph()` for consumers that
-    # invoke it.
+    # Loading returns a SQL-backed store without running hierarchy validation.
+    # PostgresGraphStore has no `._nodes` mapping. Consumer-invoked
+    # `store.validate_graph()` builds an InMemoryGraphStore snapshot and
+    # delegates validation to it, including the declared vocabulary's rules.
     def _load_v2(self, graph_id: str, metadata: Dict[str, Any]) -> PostgresGraphStore:
         store = self._load_v1(graph_id, metadata)
         # validate_v2_hierarchy currently reads `store._nodes`, which the

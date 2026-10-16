@@ -23,10 +23,10 @@ class JsonFilePersistence:
     Recognizes the TRUG's declared vocabulary (`capabilities.vocabularies`)
     and dispatches load/save to the v1 or v2 path. v1 TRUGs preserve parsed
     JSON content through load → save; serialization may change whitespace
-    and formatting. v2-specific behavior — LEVEL_PREFIX
-    validation, inheritance stamping, canonical re-emit — lands in
-    AAA (private reference removed) Sub-phase 5.2; in 5.1 the v2 dispatch path is a stub that
-    behaves identically to v1.
+    and formatting. The v2 load path checks LEVEL_PREFIX hierarchy without
+    raising on violations; consumers obtain violations via validate_graph().
+    The v2 save path stamps inherited metric levels and emits explicit levels
+    and level_directives for canonical re-emit.
 
     <trl>
     AGENT claude SHALL DEFINE RECORD JsonFilePersistence AS A RECORD persistence.

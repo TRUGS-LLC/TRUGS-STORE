@@ -11,8 +11,8 @@ Covers Phase 3 §"Vocabulary dispatch" ASSERTions from
 - ASSERT JsonFilePersistence.load SHALL RECOGNIZE project_v1
 - ASSERT EACH "v1 TRUG" SHALL UNDERGO ROUND_TRIP byte-equivalent
 
-Sub-phase 5.1 v2 path is a stub (passes through to v1). v2-specific
-behavior (LEVEL_PREFIX validation, canonical re-emit) lands in 5.2.
+The v2 path checks LEVEL_PREFIX hierarchy on load and stamps inherited levels
+and emits level_directives on save; successive canonical saves are stable.
 """
 
 from __future__ import annotations
@@ -145,8 +145,8 @@ def test_load_dispatches_v1_for_core_v1_0_0(tmp_path: Path):
 
 # AGENT claude SHALL VALIDATE INTERFACE JsonFilePersistence.load DISPATCHES 'on RECORD vocabulary FOR core_v2_0_0.
 def test_load_dispatches_v2_for_core_v2_0_0(tmp_path: Path):
-    """In Sub-phase 5.1, v2 dispatch is a stub passing through to v1.
-    Behavior should be byte-equivalent to v1 path."""
+    """Loading a v2 graph preserves its nodes through vocabulary dispatch.
+    Hierarchy checks run on load without raising on violations."""
     p = tmp_path / "v2.trug.json"
     p.write_text(json.dumps(_v2_trug_dict()), encoding="utf-8")
     store = JsonFilePersistence().load(str(p))
@@ -197,8 +197,8 @@ def test_v1_trug_round_trips_byte_equivalent(tmp_path: Path, vocab_label, trug_f
 
 # AGENT claude SHALL VALIDATE EACH "v2 TRUG" SHALL UNDERGO ROUND_TRIP BYTE_EQUIVALENT 'in 5.1_stub_mode.
 def test_v2_trug_round_trips_byte_equivalent_in_stub_mode(tmp_path: Path):
-    """In Sub-phase 5.1, v2 path is a stub — round-trip should also be stable.
-    (v2-specific re-emit lands in 5.2; this test guards against drift in 5.1.)"""
+    """Successive v2 saves produce identical canonical output.
+    This checks stability after the first save, not v1 passthrough behavior."""
     src = tmp_path / "src.trug.json"
     src.write_text(
         json.dumps(_v2_trug_dict(), indent=2, ensure_ascii=False) + "\n",
@@ -216,6 +216,6 @@ def test_v2_trug_round_trips_byte_equivalent_in_stub_mode(tmp_path: Path):
     persistence.save(store2, str(rt2))
 
     assert rt1.read_bytes() == rt2.read_bytes(), (
-        "v2 stub round-trip drift in Sub-phase 5.1 — dispatch is supposed to "
-        "be a passthrough; any drift means the stub introduced behavior."
+        "v2 canonical re-emit changed between successive saves; "
+        "output should be stable after the first save."
     )

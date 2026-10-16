@@ -6,7 +6,8 @@
 Per (private reference removed) Sub-phase 5.2 — Phase 3 §"LEVEL_PREFIX
 validation (v2 only)" ASSERTions. Invoked from
 `InMemoryGraphStore.validate_graph` when the TRUG declares `core_v2.0.0`,
-and directly from `JsonFilePersistence._load_v2` / `PostgresPersistence._load_v2`.
+and directly from `JsonFilePersistence._load_v2`. Postgres validation delegates
+through an in-memory snapshot when consumers invoke `store.validate_graph()`.
 
 The single load-bearing invariant: in `SI_PREFIX_ORDERING`, each
 `parent_node.metric_level` must EXCEED `child_node.metric_level`

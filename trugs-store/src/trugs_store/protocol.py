@@ -3,7 +3,7 @@
 
 """GraphStore Protocol — PEP 544 structural interface for TRUGS graph storage.
 
-See TRUGS_STORE/SPEC_graphstore_protocol.py for full design rationale.
+The GraphStore class below defines the storage interface and its contract.
 """
 
 from __future__ import annotations
