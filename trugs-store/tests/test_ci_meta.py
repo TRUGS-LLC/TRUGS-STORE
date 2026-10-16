@@ -3,7 +3,7 @@
 
 """CI-contract meta-tests — guard against silent-skip of env-dependent tests.
 
-Closes TRUGS-LLC/TRUGS-STORE-dev#16 / AAA (private reference removed) AF-3, re-armed under
+Closes (private reference removed) / AAA (private reference removed) AF-3, re-armed under
 (private reference removed) SP1 (ASSERT-8: `env_dependent_test SHALL RUN
 positively AND SHALL_NOT silent_skip`).
 

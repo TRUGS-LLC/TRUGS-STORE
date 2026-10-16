@@ -87,7 +87,7 @@ INTERFACE store_validation SHALL_NOT IMPLEMENT RECORD core16_validation.
 ## Why STORE stays its own package
 
 STORE earns its own package because it has **four independent consumers**
-(TRUGS-TOOLS, (private reference removed), TRUGS_COMPUTATION, and the TRUGS spec repo), each
+(TRUGS-TOOLS, (private reference removed), (private reference removed), and the TRUGS spec repo), each
 importing `trugs_store` directly. A merge into TOOLS was considered and
 rejected (it would create coupling, not remove duplication — TOOLS already
 cleanly extends STORE's `BaseGraph`); a rename was considered and reversed (a
