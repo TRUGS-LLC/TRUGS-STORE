@@ -23,7 +23,7 @@ As of **2.0.0**, trugs-store natively supports **TRUGS 2.0** (`core_v2.0.0`): vo
 | `trugs-store/src/trugs_store/persistence/` | Load/save adapters (JSON file, PostgreSQL, dual-write) |
 | `trugs-store/src/trugs_store/vocabulary.py` | v1/v2 dispatch by declared `capabilities.vocabularies` |
 | `trugs-store/src/trugs_store/validation.py` | LEVEL_PREFIX hierarchy invariants for v2 TRUGs |
-| `trugs-store/tests/` | Test suite (207 tests: vocabulary dispatch, v2 validation, canonical re-emit, self-validation) |
+| `trugs-store/tests/` | Test suite (vocabulary dispatch, v2 validation, canonical re-emit, self-validation) |
 | `folder.trug.json` | Machine-readable graph index of this repo |
 
 ## Development
@@ -43,8 +43,8 @@ mypy trugs-store/src/trugs_store --ignore-missing-imports
 
 This repo follows the [Dark Code compliance standard](https://github.com/TRUGS-LLC/TRUGS/blob/main/REFERENCE/STANDARD_dark_code_compliance.md):
 
-- Every public `def`/`class` has a function-level TRUG/L comment above it
-- Test functions adopt an `AGENT SHALL VALIDATE ...` comment as they are annotated — full four-corner (C2/C4) coverage across all 207 tests is a tier-2 follow-on (AAA (private reference removed)/(private reference removed)), not yet complete
+- Every concrete public class and function/method carries a `<trl>` contract in its docstring; Protocol method stubs share the `GraphStore` class contract
+- Test functions adopt an `AGENT SHALL VALIDATE ...` comment as they are annotated — full four-corner (C2/C4) coverage across the test suite is a tier-2 follow-on (AAA (private reference removed)/(private reference removed)), not yet complete
 - `folder.trug.json` validates against TRUGS CORE rules
 - When writing TRUG/L in prose, always spell it "TRUG/L" — never abbreviate
 

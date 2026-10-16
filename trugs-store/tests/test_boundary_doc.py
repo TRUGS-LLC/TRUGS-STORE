@@ -44,8 +44,8 @@ def test_two_validator_split_framed_as_deliberate_not_drift() -> None:
     assert "deliberate" in text or "intentional" in text, (
         "BOUNDARY.md must frame the two-validator split as deliberate/intentional"
     )
-    assert "#2189" in text, (
-        "BOUNDARY.md must distinguish the deliberate split from the #2189 drift"
+    assert "(private reference removed)" in text, (
+        "BOUNDARY.md must retain the marker for the removed drift reference"
     )
 
 

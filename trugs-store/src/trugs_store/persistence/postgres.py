@@ -32,13 +32,13 @@ class PostgresPersistence:
     Recognizes the TRUG's declared vocabulary (`capabilities.vocabularies`
     in graphs.metadata) and dispatches load/save through a single coherent
     code path. v1 graphs behave unchanged (additive guarantee per TRUGS-LLC
-    Spec Evolution Addendum §1.2). v2-specific behavior — LEVEL_PREFIX
-    validation, inheritance stamping, canonical re-emit — lands in
-    AAA (private reference removed) Sub-phase 5.2; in 5.1 the v2 dispatch is a stub passing
-    through to v1.
+    Spec Evolution Addendum §1.2). The v2 save path stamps inherited metric
+    levels on in-memory stores before persisting via COPY. level_directives
+    are preserved as opaque graphs.metadata JSONB, without a dedicated column.
+    Hierarchy validation runs when consumers invoke store.validate_graph().
 
     <trl>
-    AGENT claude SHALL DEFINE RECORD PostgresPersistence AS A RECORD persistence.
+    AGENT claude SHALL DEFINE RECORD postgres_persistence AS A RECORD persistence.
     </trl>
     """
 
@@ -67,7 +67,7 @@ class PostgresPersistence:
         Raises KeyError if graph_id does not exist.
 
         <trl>
-        PROCESS load SHALL READ RECORD graph THEN DISPATCH 'on RECORD vocabulary THEN RETURN RECORD store.
+        PROCESS load SHALL READ RECORD graph THEN EXECUTE PROCESS vocabulary_dispatch THEN RETURN RECORD store.
         </trl>
         """
         with self._conn.cursor() as cur:
@@ -85,13 +85,10 @@ class PostgresPersistence:
         return PostgresGraphStore(self._conn, graph_id)
 
     # PROCESS _load_v2 SHALL READ RECORD hierarchy_first_graph THEN RETURN RECORD store.
-    # Per AAA (private reference removed) Phase 3 INTERFACE PostgresGraphStore.load_graph SHALL APPLY
-    # DATA same_validation_rules AS JsonFilePersistence.load. The PostgresGraphStore
-    # exposes the same Protocol as InMemoryGraphStore, so `validate_v2_hierarchy`
-    # operates on it via duck-typed `._nodes` access — which Postgres-backed
-    # stores expose lazily via their own internals. Side-effect call only;
-    # violations surface through `store.validate_graph()` for consumers that
-    # invoke it.
+    # Loading returns a SQL-backed store without running hierarchy validation.
+    # PostgresGraphStore has no `._nodes` mapping. Consumer-invoked
+    # `store.validate_graph()` builds an InMemoryGraphStore snapshot and
+    # delegates validation to it, including the declared vocabulary's rules.
     def _load_v2(self, graph_id: str, metadata: Dict[str, Any]) -> PostgresGraphStore:
         store = self._load_v1(graph_id, metadata)
         # validate_v2_hierarchy currently reads `store._nodes`, which the
@@ -108,7 +105,7 @@ class PostgresPersistence:
         Single transaction — all-or-nothing.
 
         <trl>
-        PROCESS save SHALL WRITE RECORD store TO DATA database 'with DISPATCH 'on RECORD vocabulary.
+        PROCESS save SHALL EXECUTE PROCESS vocabulary_dispatch THEN WRITE RECORD store TO DATA database.
         </trl>
         """
         metadata = store.get_metadata()
@@ -191,10 +188,10 @@ class PostgresPersistence:
     # Per AAA (private reference removed) Phase 3 §"Canonical re-emit (v2 only)": stamp inherited
     # metric_level on nodes missing it, then persist via the v1 COPY path
     # (Postgres schema is unchanged — metric_level is already a column).
-    # level_directives are NOT persisted to the database — the level-
-    # stratified rendering is a file-emission concern, not a storage concern
-    # (AAA (private reference removed) ADR — DB does not enforce LEVEL_PREFIX). Consumers that need
-    # directives derive them on demand by scanning `find_nodes()`.
+    # level_directives have no dedicated schema column and are not enforced.
+    # When supplied in metadata, they are preserved as opaque JSONB in
+    # graphs.metadata by the v1 save path. Level-stratified rendering
+    # remains a file-emission concern.
     def _save_v2(self, store: Any, graph_id: str, metadata: Dict[str, Any]) -> None:
         # Stamp only on in-memory stores (Postgres-backed stores write rows
         # directly and the COPY path will read whatever metric_level is set).

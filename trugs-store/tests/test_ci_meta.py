@@ -60,7 +60,7 @@ def test_postgres_job_exports_dsn() -> None:
     blob = yaml.safe_dump(_job("postgres-tests"))
     assert "TRUGS_TEST_DSN" in blob, (
         "postgres-tests must export TRUGS_TEST_DSN; without it the "
-        "skipif-gated Postgres tests would skip-to-green (store-dev#16 / AF-3)"
+        "skipif-gated Postgres tests would skip-to-green (private reference removed)"
     )
 
 
@@ -108,7 +108,7 @@ def test_proposal_dir_absent() -> None:
     """PROPOSAL/ must not graduate to the public-bound package repo (ADR-007)."""
     assert not (_REPO_ROOT / "PROPOSAL").exists(), (
         "PROPOSAL/ planning docs must not live in a public-bound repo "
-        "(ADR-007 / AAA #2330 ADR-003) — archived to TRUGS-DEVELOPMENT instead"
+        "(ADR-007 / AAA #2330 ADR-003) — archived to (private reference removed) instead"
     )
 
 

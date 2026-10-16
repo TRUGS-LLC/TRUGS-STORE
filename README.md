@@ -15,7 +15,7 @@ pip install trugs-store
 pip install trugs-store[postgres]
 ```
 
-> The PyPI release is **2.0.x** (`core_v2.0.0`): vocabulary dispatch on `capabilities.vocabularies`, LEVEL_PREFIX hierarchy validation, inheritance stamping, and canonical re-emit on save. v1 TRUGs (`core_v1.0.0`, `project_v1`) continue to validate unchanged — the upgrade is purely additive.
+> This checkout declares package version **2.1.0** (`core_v2.0.0`): vocabulary dispatch on `capabilities.vocabularies`, LEVEL_PREFIX hierarchy validation, inheritance stamping, and canonical re-emit on save. v1 TRUGs (`core_v1.0.0`, `project_v1`) continue to validate unchanged — the upgrade is purely additive.
 
 ## Quick Example
 
@@ -61,7 +61,7 @@ store = p.load("folder.trug.json")
 functions = store.find_nodes(type="FUNCTION")
 
 # Traverse outgoing edges from a node
-for node, edge, depth in store.traverse("root", direction="outgoing", max_depth=2):
+for node, edge, depth in store.traverse("trugs_store_folder", direction="outgoing", max_depth=2):
     print(f"  {'  ' * depth}{node['id']} via {edge['relation']}")
 ```
 
@@ -106,6 +106,11 @@ else:
 
 ## Status
 
-**Version:** 2.0.0 (TRUGS 2.0 native — first release with `core_v2.0.0` support; lockstep with `trugs-tools`/`trugs-folder` 2.0.0)
+**Version:** 2.1.0 (TRUGS 2.0 native — `core_v2.0.0` support)
 **Phase:** Beta
 **License:** Apache 2.0 — [TRUGS LLC](https://github.com/TRUGS-LLC)
+
+## Scope
+
+This software does not include self-modifying TRUGS: graphs that change their
+own structure while they run.

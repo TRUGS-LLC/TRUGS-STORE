@@ -125,7 +125,8 @@ def read_trug(
 
     Raises:
         FileNotFoundError: If JSON file doesn't exist (when reading JSON).
-        RuntimeError: If DB read fails (when PORT_DSN is set).
+        ImportError: If a DB read is requested but psycopg3 is not installed.
+        Other database and missing-graph errors propagate unchanged.
 
     <trl>
     PROCESS read_trug SHALL READ RECORD trug THEN RETURN RECORD result.
@@ -220,21 +221,22 @@ def import_trug(
 ) -> bool:
     """Import a JSON file into PostgreSQL.
 
-    Reads the JSON file and writes it to the database via write_trug().
+    Reads and rewrites JSON via write_trug(); the database write is best effort.
 
     Args:
         path: Source file path (e.g., (private reference removed)/folder.trug.json).
         db_dsn: PostgreSQL DSN. If None, reads PORT_DSN env var.
 
     Returns:
-        True if imported successfully.
+        True after rewriting the JSON file and attempting the best-effort DB
+        write; database persistence is not guaranteed, even when True is returned.
 
     Raises:
         RuntimeError: If PORT_DSN is not set.
         FileNotFoundError: If JSON file doesn't exist.
 
     <trl>
-    PROCESS import_trug SHALL READ RECORD file THEN WRITE RECORD trug TO DATA database.
+    PROCESS import_trug SHALL READ RECORD file THEN WRITE RECORD trug TO DATA file.
     </trl>
     """
     path = Path(path)

@@ -7,9 +7,11 @@ Pins the 4 ASSERTions of AAA (private reference removed) §"API-surface stabilit
 ((private reference removed)):
 
 1. GraphStore protocol has exactly 22 public methods
-2. Each protocol method's signature is byte-equivalent to v0.1.0
+2. Each protocol method's ordered parameter names match v0.1.0
 3. No public class constructor takes a v2-dispatch opt-in kwarg
-4. Each public class constructor's signature is byte-equivalent to v0.1.0
+4. Each public class constructor's ordered parameter names match v0.1.0
+
+The baseline comparisons do not check parameter kinds, defaults or annotations.
 
 Baseline source: commit 844f5f8 ("chore(import): vendor trugs-store v0.1.0 baseline").
 """
@@ -59,14 +61,14 @@ def test_protocol_method_count_equals_22() -> None:
     )
 
 
-def test_protocol_method_signatures_byte_equivalent_to_baseline() -> None:
+def test_protocol_method_ordered_parameter_names_match_baseline() -> None:
     baseline = _load_baseline()["GraphStore"]
     for method_name in sorted(baseline):
         member = getattr(GraphStore, method_name)
         actual = _param_names(member)
         expected = baseline[method_name]
         assert actual == expected, (
-            f"GraphStore.{method_name} signature drifted from v0.1.0: "
+            f"GraphStore.{method_name} ordered parameter names drifted from v0.1.0: "
             f"baseline={expected}, current={actual}"
         )
 
@@ -87,7 +89,7 @@ def test_no_v2_kwarg_in_any_public_constructor() -> None:
             )
 
 
-def test_public_class_constructor_signatures_byte_equivalent_to_baseline() -> None:
+def test_public_class_constructor_ordered_parameter_names_match_baseline() -> None:
     baseline = _load_baseline()["classes"]
     for class_name in sorted(baseline):
         if class_name not in trugs_store.__all__:
@@ -105,6 +107,6 @@ def test_public_class_constructor_signatures_byte_equivalent_to_baseline() -> No
             continue
         expected = baseline[class_name]
         assert actual == expected, (
-            f"{class_name}.__init__ signature drifted from v0.1.0: "
+            f"{class_name}.__init__ ordered parameter names drifted from v0.1.0: "
             f"baseline={expected}, current={actual}"
         )

@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Nothing yet.
+### Changed
+- `LICENSE` is the official Apache License 2.0 text; `NOTICE` carries the attribution only, its patent
+  paragraph removed; the README gains a Scope section.
 
 ## [2.0.0] — 2026-06-12
 
@@ -26,13 +28,22 @@ Tier-1 release polish for the TRUGS v2.0 launch — (private reference removed) 
 
 ### Changed
 - `ruff format` + `ruff check` applied across the package; both are now **hard** CI gates (previously soft `continue-on-error`).
+
+  Correction, 2026-10-16: This checkout ships no CI workflow, so the lint gates described above are not active here.
+
 - `folder.trug.json` corrected to validate clean under the v2 CORE-16 validator and folder-governance check: `DECA_COMPONENT` → `DEKA_COMPONENT` (the valid SI prefix) and edge relations lowercased (`CONTAINS`/`IMPLEMENTS` → `contains`/`implements`).
 - CI hardened against env-dependent silent-skip ((private reference removed) (private) / AAA (private reference removed) AF-3): the `postgres-tests` job now fails loudly if `TRUGS_TEST_DSN` is unset or the gated tests no-op.
+
+  Correction, 2026-10-16: This checkout ships no CI workflow or active `postgres-tests` job; database tests skip without a test DSN.
+
 - **L3 TRL contracts (SP2):** every concrete public class and function/method now carries a `<trl>` contract block in its docstring (Protocol method stubs excluded — their interface contract lives on the `GraphStore` class docstring). `validation.py` gained a scope-documenting contract recording that it is STORE's *structural* validator, deliberately distinct from the CORE-16 TRL validator in TRUGS-TOOLS.
 
 ### Added
 - **`BOUNDARY.md` (SP3):** package self-description pinning what STORE owns vs what TRUGS-TOOLS owns, and recording the two-validator split (STORE structural vs TOOLS CORE-16) as a deliberate division — not the (private reference removed) drift. Linked from the README.
 - `tests/test_ci_meta.py` — structural CI-contract guard that parses `.github/workflows/ci.yml` and asserts the env-dependent tests can never silent-skip; `pyyaml` added to the `dev` extra.
+
+  Correction, 2026-10-16: This checkout ships no `.github/workflows/ci.yml`; the CI-contract guards skip until a workflow is supplied, and no CI job enforces the Postgres round-trip leg.
+
 - `tests/test_l3_contracts.py` — AST scanner enforcing the L3 contract (every public surface carries a `<trl>` block).
 - `tests/test_round_trip.py` — `store ∘ retrieve = identity` across in-memory / JSON-file / Postgres backends (the load-bearing L3 behavioral law); its Postgres leg is added to the CI must-run gated set.
 - `tests/test_boundary_doc.py` — smoke checks that `BOUNDARY.md` records ownership + the deliberate two-validator split.
@@ -60,6 +71,9 @@ Native support for **TRUGS 2.0** (`core_v2.0.0`) — additive, fully backward co
 
 ### Notes
 - **PyPI publish deferred** until in-house validation completes. During that window, internal consumers install from this repository directly — see [README §"Pre-PyPI install (TRUGS 2.0)"](README.md#pre-pypi-install-trugs-20) for both editable and tag-install patterns.
+
+  Correction, 2026-10-16: The README section and editable/tag-install patterns linked above are absent from this checkout. Current installation instructions are in [README §Install](README.md#install); editable installation is documented in [CONTRIBUTING §Development](CONTRIBUTING.md#development).
+
 - GraphStore Protocol shape unchanged (22 methods, 8 categories). Public API signatures byte-stable across the 0.1.x → 0.2.x bump.
 - Postgres schema unchanged — no migration required.
 - mypy `--strict` clean across all 12 source files.
@@ -78,8 +92,14 @@ Native support for **TRUGS 2.0** (`core_v2.0.0`) — additive, fully backward co
 - `Violation` class — structured validation errors
 - `BaseGraph` — shared factory methods (`from_dict`, `from_json`, `from_file`) and accessors
 - TRUGS CORE graph validation (hierarchy, cycles, dimensions, required fields, edge validity)
+
+  Correction, 2026-10-16: Cycle detection visits only nodes reachable through contains from a node whose parent_id is None; a closed cycle without such a root is not detected.
+
 - 116 tests (InMemory round-trip, conformance, integration, dual-write, benchmarks)
 - CI workflow (pytest + mypy on every PR)
+
+  Correction, 2026-10-16: This checkout ships no CI workflow, so pytest and mypy are not run by repository CI on pull requests.
+
 - Apache 2.0 license under TRUGS LLC
 
 ### Notes

@@ -8,7 +8,7 @@ Tier-1 artifact), authored under
 (Phase 7 Repo 3/4), Sub-phase 3.
 
 <trl>
-RECORD boundary_ownership_doc SHALL RECORD store_ownership AND tools_ownership AND two_validator_split.
+PROCESS boundary_documentation SHALL WRITE RECORD store_ownership THEN WRITE RECORD tools_ownership THEN WRITE RECORD two_validator_split.
 </trl>
 
 ## The layering, in one line
@@ -36,7 +36,7 @@ stored and retrieved?*
 | Storage interface | `protocol.py` (`GraphStore`, `PersistenceAdapter`, `Violation`) | PEP 544 contracts |
 | **Structural** validation | `validation.py` | v2 LEVEL_PREFIX hierarchy invariants |
 | Vocabulary dispatch | `vocabulary.py` | v1/v2 load/save dispatch on declared vocabulary |
-| Type shapes | `types.py` (`Node`, `Edge`) | `TypedDict` graph element shapes |
+| Type shapes | `types.py` (`Node`, `Edge`) | `Dict[str, Any]` aliases for graph elements |
 | SQL schema | `schema.sql` | the canonical table shape (cross-stack contract; frozen) |
 
 ## TOOLS owns (TRUGS-TOOLS, builds on STORE)
@@ -58,7 +58,7 @@ mean?*
 
 There are **two** validators in the stack, and that is **intentional** — a
 deliberate division of responsibility, **not** the kind of duplicate-validator
-*drift* that TRUGS-TOOLS-dev #2189 (private)
+*drift* that (private reference removed)
 collapsed (two CLI/API copies of the *same* CORE validator that had diverged).
 These two answer **different questions**:
 
@@ -67,15 +67,18 @@ These two answer **different questions**:
 | `trugs_store.validation` (`validate_v2_hierarchy`) | **STORE** | structural | *Is this a well-formed **stored graph**?* (v2 LEVEL_PREFIX hierarchy: each parent's `metric_level` strictly coarser than its child's) |
 | `trugs_tools` CORE-16 (`tg validate`) | **TOOLS** | language/spec | *Is this valid **TRL/spec**?* (the canonical 16 structural rules over the TRUG envelope) |
 
-STORE's validator runs at **storage time** (on load/save and via
-`store.validate_graph()`) and knows nothing about TRL grammar. TOOLS' CORE-16
+STORE's structural checks are available via `store.validate_graph()` and
+know nothing about TRL grammar. JSON v2 load also invokes the hierarchy checker
+without rejecting violations; PostgreSQL load defers checks to the consumer.
+Neither save path invokes validation; v2 saves stamp inherited metric levels.
+TOOLS' CORE-16
 validator runs at **author/spec time** and is the single source of truth for
 "valid TRL". Neither duplicates the other; collapsing them would couple the
 persistence layer to the language layer — the opposite of this boundary.
 
 <trl>
-INTERFACE store_validation SHALL CHECK RECORD structural_hierarchy.
-INTERFACE store_validation SHALL_NOT IMPLEMENT RECORD core16_validation.
+PROCESS store_validation SHALL VALIDATE RECORD structural_hierarchy.
+PROCESS store_validation SHALL_NOT IMPLEMENT RECORD core16_validation.
 </trl>
 
 ## What this boundary forbids

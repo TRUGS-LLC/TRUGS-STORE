@@ -66,10 +66,11 @@
       "id": "comp_trugs_store",
       "type": "COMPONENT",
       "properties": {
-        "loc": 1221,
+        "loc": 2459,
         "name": "trugs-store",
         "purpose": "Trugs-Store component",
-        "file_count": 10
+        "file_count": 12,
+        "census_scope": "Tracked Python files under trugs-store/src; loc counts physical lines"
       },
       "metric_level": "DEKA_COMPONENT",
       "parent_id": "trugs_store_folder",
@@ -155,7 +156,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "CONTRIBUTING.md",
-        "purpose": "Contribution guidelines (inbound=outbound Apache-2.0; patent carve-out per NOTICE)"
+        "purpose": "Contribution guidelines (inbound=outbound Apache-2.0; scope note in the README)"
       },
       "metric_level": "BASE_DOCUMENT",
       "parent_id": "trugs_store_folder",

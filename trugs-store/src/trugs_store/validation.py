@@ -6,7 +6,8 @@
 Per (private reference removed) Sub-phase 5.2 — Phase 3 §"LEVEL_PREFIX
 validation (v2 only)" ASSERTions. Invoked from
 `InMemoryGraphStore.validate_graph` when the TRUG declares `core_v2.0.0`,
-and directly from `JsonFilePersistence._load_v2` / `PostgresPersistence._load_v2`.
+and directly from `JsonFilePersistence._load_v2`. Postgres validation delegates
+through an in-memory snapshot when consumers invoke `store.validate_graph()`.
 
 The single load-bearing invariant: in `SI_PREFIX_ORDERING`, each
 `parent_node.metric_level` must EXCEED `child_node.metric_level`
@@ -20,8 +21,8 @@ answers a different question (is this valid TRL?). The two-validator split is
 intentional, not the (private reference removed) drift; see BOUNDARY.md (authored in SP3).
 
 <trl>
-INTERFACE store_validation SHALL CHECK RECORD structural_hierarchy ACROSS ALL v2_node.
-INTERFACE store_validation SHALL_NOT IMPLEMENT RECORD core16_validation.
+PROCESS store_validation SHALL VALIDATE ALL RECORD v2_node SUBJECT_TO RECORD structural_hierarchy.
+PROCESS store_validation SHALL_NOT IMPLEMENT RECORD core16_validation.
 </trl>
 """
 

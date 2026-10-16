@@ -21,21 +21,21 @@ class JsonFilePersistence:
     """Load and save .trug.json files to/from InMemoryGraphStore.
 
     Recognizes the TRUG's declared vocabulary (`capabilities.vocabularies`)
-    and dispatches load/save to the v1 or v2 path. v1 TRUGs round-trip
-    byte-equivalent through load → save (additive guarantee per TRUGS-LLC
-    Spec Evolution Addendum §1.2). v2-specific behavior — LEVEL_PREFIX
-    validation, inheritance stamping, canonical re-emit — lands in
-    AAA (private reference removed) Sub-phase 5.2; in 5.1 the v2 dispatch path is a stub that
-    behaves identically to v1.
+    and dispatches load/save to the v1 or v2 path. v1 TRUGs preserve parsed
+    JSON content through load → save; serialization may change whitespace
+    and formatting. The v2 load path checks LEVEL_PREFIX hierarchy without
+    raising on violations; consumers obtain violations via validate_graph().
+    The v2 save path stamps inherited metric levels and emits explicit levels
+    and level_directives for canonical re-emit.
 
     <trl>
-    AGENT claude SHALL DEFINE RECORD JsonFilePersistence AS A RECORD persistence.
+    AGENT claude SHALL DEFINE RECORD json_file_persistence AS A RECORD persistence.
     </trl>
     """
 
     def load(self, source: str) -> InMemoryGraphStore:
         """<trl>
-        PROCESS load SHALL READ RECORD file THEN DISPATCH 'on RECORD vocabulary THEN RETURN RECORD store.
+        PROCESS load SHALL READ RECORD file THEN EXECUTE PROCESS vocabulary_dispatch THEN RETURN RECORD store.
         </trl>
         """
         path = Path(source)
@@ -47,7 +47,7 @@ class JsonFilePersistence:
 
     def save(self, store: InMemoryGraphStore, destination: str) -> None:
         """<trl>
-        PROCESS save SHALL WRITE RECORD store TO DATA file 'with DISPATCH 'on RECORD vocabulary.
+        PROCESS save SHALL EXECUTE PROCESS vocabulary_dispatch THEN WRITE RECORD store TO DATA file.
         </trl>
         """
         if classify_vocabulary(store.get_metadata()) == "v2":

@@ -34,7 +34,7 @@ class BaseGraph:
     that are identical across all graph model subclasses.
 
     <trl>
-    AGENT claude SHALL DEFINE RECORD BaseGraph AS A RECORD graph.
+    AGENT claude SHALL DEFINE RECORD base_graph AS A RECORD graph.
     </trl>
     """
 
