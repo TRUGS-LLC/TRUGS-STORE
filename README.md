@@ -109,3 +109,8 @@ else:
 **Version:** 2.0.0 (TRUGS 2.0 native — first release with `core_v2.0.0` support; lockstep with `trugs-tools`/`trugs-folder` 2.0.0)
 **Phase:** Beta
 **License:** Apache 2.0 — [TRUGS LLC](https://github.com/TRUGS-LLC)
+
+## Scope
+
+This software does not include self-modifying TRUGS: graphs that change their
+own structure while they run.
