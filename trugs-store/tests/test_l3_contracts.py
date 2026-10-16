@@ -3,7 +3,7 @@
 
 """L3 contract scanner — every concrete public surface carries a <trl> block.
 
-Verifies ASSERT-3 (AAA #2330): `EACH public_function 'in store_pkg SHALL CARRY
+Verifies ASSERT-3 (AAA (private reference removed)): `EACH public_function 'in store_pkg SHALL CARRY
 RECORD trl_contract`, where a contract is a ``<trl>…</trl>`` block in the
 object's docstring (the convention used across trugs-tools).
 

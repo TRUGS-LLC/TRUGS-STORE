@@ -3,7 +3,7 @@
 
 """L4 self-validation — the shipped TRUG validates under the v2 lexicon.
 
-Verifies ASSERT-5 (AAA #2330): `shipped_trug SHALL VALIDATE 'via tg_validate
+Verifies ASSERT-5 (AAA (private reference removed)): `shipped_trug SHALL VALIDATE 'via tg_validate
 SUBJECT_TO v2_lexicon`. The shipped artifact is this repo's own
 `folder.trug.json`; it declares `core_v2.0.0` and must validate clean under the
 v2 LEVEL_PREFIX rules — **non-vacuously**, i.e. every node's `metric_level`
@@ -25,7 +25,7 @@ tests are what hold the contract.
 
 Note on `tg validate`: the TOOLS CORE-16 validator (`tg validate`) confirms the
 same artifact locally under the v2 dev parser (2.0.0a1); its CI enforcement is
-deferred until v2 `trugs-tools` publishes to PyPI (#1660), the same gate as the
+deferred until v2 `trugs-tools` publishes to PyPI ((private reference removed)), the same gate as the
 `trug-check` job. STORE's own structural validator is the deterministic,
 env-independent L4 gate exercised here.
 """

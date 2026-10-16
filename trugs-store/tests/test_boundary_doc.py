@@ -1,12 +1,12 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""Smoke checks for BOUNDARY.md — the package self-description (AAA #2330 SP3).
+"""Smoke checks for BOUNDARY.md — the package self-description (AAA (private reference removed) SP3).
 
 Automatable half of Target 3.1 (the accuracy half is a manual review logged in
 the AAA Phase-10 record). Mirrors the Phase-8 audit recipes:
   PC-3: BOUNDARY.md exists + records STORE-owns / TOOLS-owns / two-validator
-  SC-6: records the two-validator split *as deliberate* (not #2189 drift)
+  SC-6: records the two-validator split *as deliberate* (not (private reference removed) drift)
 Verifies ASSERT-6 (`boundary_ownership_doc SHALL RECORD two_validator_split AS
 deliberate AND SHALL_NOT FRAME 'it AS drift`) at the presence level.
 """
@@ -39,7 +39,7 @@ def test_boundary_doc_records_two_validator_split() -> None:
 
 
 def test_two_validator_split_framed_as_deliberate_not_drift() -> None:
-    """ASSERT-6: the split is recorded as deliberate, distinguished from #2189."""
+    """ASSERT-6: the split is recorded as deliberate, distinguished from (private reference removed)."""
     text = _text().lower()
     assert "deliberate" in text or "intentional" in text, (
         "BOUNDARY.md must frame the two-validator split as deliberate/intentional"

@@ -25,7 +25,7 @@ class JsonFilePersistence:
     byte-equivalent through load → save (additive guarantee per TRUGS-LLC
     Spec Evolution Addendum §1.2). v2-specific behavior — LEVEL_PREFIX
     validation, inheritance stamping, canonical re-emit — lands in
-    AAA #1756 Sub-phase 5.2; in 5.1 the v2 dispatch path is a stub that
+    AAA (private reference removed) Sub-phase 5.2; in 5.1 the v2 dispatch path is a stub that
     behaves identically to v1.
 
     <trl>
@@ -70,7 +70,7 @@ class JsonFilePersistence:
 
     # PROCESS _load_v2 SHALL READ DATA hierarchy_first_trug THEN RETURN RECORD store.
     # Hydrates the store via the v1 path (data shape is unchanged) and
-    # then invokes `validate_v2_hierarchy` per AAA #1756 Phase 3 §"LEVEL_PREFIX
+    # then invokes `validate_v2_hierarchy` per AAA (private reference removed) Phase 3 §"LEVEL_PREFIX
     # validation (v2 only)". Violations surface through `store.validate_graph()`
     # (which now dispatches on declared vocabulary) — the load does not raise
     # on violations; consumers decide how to react.
@@ -92,7 +92,7 @@ class JsonFilePersistence:
             fh.write("\n")
 
     # PROCESS _save_v2 SHALL WRITE RECORD store TO DATA file 'with canonical_reemit.
-    # Canonical re-emit per AAA #1756 Phase 3 §"Canonical re-emit (v2 only)":
+    # Canonical re-emit per AAA (private reference removed) Phase 3 §"Canonical re-emit (v2 only)":
     #   1. Stamp inherited metric_level on any node missing it (ADR-002).
     #   2. Emit every node with metric_level explicit.
     #   3. Emit `level_directives` — an ordered list of metric_level values

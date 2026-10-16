@@ -1,12 +1,12 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""Self-dogfood test — TRUGS-STORE-dev's own folder.trug.json is a valid v2 TRUG.
+"""Self-dogfood test — (private reference removed)'s own folder.trug.json is a valid v2 TRUG.
 
-Covers Phase 3 §"Self-dogfood" ASSERTions from TRUGS-DEVELOPMENT AAA #1756
+Covers Phase 3 §"Self-dogfood" ASSERTions from (private reference removed)
 Sub-phase 5.3:
 
-- ASSERT TRUGS-STORE-dev/folder.trug.json SHALL VALIDATE through validate_graph
+- ASSERT (private reference removed)/folder.trug.json SHALL VALIDATE through validate_graph
   with EMPTY violations
 - ASSERT TEST suite SHALL CONTAIN test 'that READS folder.trug.json AND ASSERTS
   validation_passes

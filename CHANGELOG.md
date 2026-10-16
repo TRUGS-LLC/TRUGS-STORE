@@ -11,12 +11,12 @@ Nothing yet.
 
 ## [2.0.0] — 2026-06-12
 
-Tier-1 release polish for the TRUGS v2.0 launch — TRUGS-DEVELOPMENT AAA #2330 (private) (Phase 7 Repo 3/4), Sub-phases 1–4 — L1 baseline, L2 structural cleanups, L3 TRL contracts, the STORE↔TOOLS boundary doc, and L4 self-validation. **No public-API change** (the `GraphStore` protocol, package name, and `schema.sql` are all unchanged). One small behavior change: the SI-prefix correctness fix below (`DECA` → `DEKA`).
+Tier-1 release polish for the TRUGS v2.0 launch — (private reference removed) (private) (Phase 7 Repo 3/4), Sub-phases 1–4 — L1 baseline, L2 structural cleanups, L3 TRL contracts, the STORE↔TOOLS boundary doc, and L4 self-validation. **No public-API change** (the `GraphStore` protocol, package name, and `schema.sql` are all unchanged). One small behavior change: the SI-prefix correctness fix below (`DECA` → `DEKA`).
 
 **Version note:** published as **2.0.0** in lockstep with `trugs-tools`/`trugs-folder` 2.0.0 (the TRUGS 2.0 commons kit, per the v2 package manifest). The `[0.2.0]` entry below was repo-internal and never published to PyPI; PyPI jumps 0.1.0 → 2.0.0.
 
 ### Added
-- **Commons-kit metadata (TRUGS-DEVELOPMENT AAA #2416 SP5):** `Documentation` and
+- **Commons-kit metadata ((private reference removed) SP5):** `Documentation` and
   `Changelog` URL keys on the package metadata. `trugs-store` 2.0.0 ships as the
   storage tier of the TRUGS 2.0 commons kit — `trugs-tools` 2.0 (`trug`) and
   `trugs-folder` 2.0 (`trug-a-folder`) both sit on it.
@@ -27,11 +27,11 @@ Tier-1 release polish for the TRUGS v2.0 launch — TRUGS-DEVELOPMENT AAA #2330 
 ### Changed
 - `ruff format` + `ruff check` applied across the package; both are now **hard** CI gates (previously soft `continue-on-error`).
 - `folder.trug.json` corrected to validate clean under the v2 CORE-16 validator and folder-governance check: `DECA_COMPONENT` → `DEKA_COMPONENT` (the valid SI prefix) and edge relations lowercased (`CONTAINS`/`IMPLEMENTS` → `contains`/`implements`).
-- CI hardened against env-dependent silent-skip (store-dev#16 (private) / AAA #1756 AF-3): the `postgres-tests` job now fails loudly if `TRUGS_TEST_DSN` is unset or the gated tests no-op.
+- CI hardened against env-dependent silent-skip ((private reference removed) (private) / AAA (private reference removed) AF-3): the `postgres-tests` job now fails loudly if `TRUGS_TEST_DSN` is unset or the gated tests no-op.
 - **L3 TRL contracts (SP2):** every concrete public class and function/method now carries a `<trl>` contract block in its docstring (Protocol method stubs excluded — their interface contract lives on the `GraphStore` class docstring). `validation.py` gained a scope-documenting contract recording that it is STORE's *structural* validator, deliberately distinct from the CORE-16 TRL validator in TRUGS-TOOLS.
 
 ### Added
-- **`BOUNDARY.md` (SP3):** package self-description pinning what STORE owns vs what TRUGS-TOOLS owns, and recording the two-validator split (STORE structural vs TOOLS CORE-16) as a deliberate division — not the #2189 drift. Linked from the README.
+- **`BOUNDARY.md` (SP3):** package self-description pinning what STORE owns vs what TRUGS-TOOLS owns, and recording the two-validator split (STORE structural vs TOOLS CORE-16) as a deliberate division — not the (private reference removed) drift. Linked from the README.
 - `tests/test_ci_meta.py` — structural CI-contract guard that parses `.github/workflows/ci.yml` and asserts the env-dependent tests can never silent-skip; `pyyaml` added to the `dev` extra.
 - `tests/test_l3_contracts.py` — AST scanner enforcing the L3 contract (every public surface carries a `<trl>` block).
 - `tests/test_round_trip.py` — `store ∘ retrieve = identity` across in-memory / JSON-file / Postgres backends (the load-bearing L3 behavioral law); its Postgres leg is added to the CI must-run gated set.
@@ -40,11 +40,11 @@ Tier-1 release polish for the TRUGS v2.0 launch — TRUGS-DEVELOPMENT AAA #2330 
 
 ### Removed
 - Empty `src/trugs_store/persistence/__init__.py` — the persistence subpackage is now an implicit namespace package; public imports unchanged.
-- `PROPOSAL/` — planning docs must not ship in a public-bound repo (ADR-007); the one live doc (a TRUGS 2.0 integration-readiness assessment, since overtaken) was archived to TRUGS-DEVELOPMENT `zzz_ARCHIVE/`.
+- `PROPOSAL/` — planning docs must not ship in a public-bound repo (ADR-007); the one live doc (a TRUGS 2.0 integration-readiness assessment, since overtaken) was archived to (private reference removed) `zzz_ARCHIVE/`.
 
 ## [0.2.0] - 2026-05-11
 
-Native support for **TRUGS 2.0** (`core_v2.0.0`) — additive, fully backward compatible. v1 TRUGs (`core_v1.0.0`, `project_v1`) validate unchanged. See TRUGS-DEVELOPMENT AAA #1756 (private) for the full design.
+Native support for **TRUGS 2.0** (`core_v2.0.0`) — additive, fully backward compatible. v1 TRUGs (`core_v1.0.0`, `project_v1`) validate unchanged. See (private reference removed) (private) for the full design.
 
 ### Added
 - `trugs_store.vocabulary` — `classify_vocabulary(metadata)` dispatches load/save on declared `capabilities.vocabularies`. Returns `"v1"` for `core_v1.0.0` / `project_v1` / no declaration; `"v2"` when `core_v2.0.0` is present (v2 wins on mixed declarations).
@@ -55,7 +55,7 @@ Native support for **TRUGS 2.0** (`core_v2.0.0`) — additive, fully backward co
   - `_save_v2` stamps inherited metric levels, emits every node with `metric_level` explicit, and writes a top-level `level_directives` field listing each `metric_level` at every transition in node order.
 - `PostgresPersistence` v2 path — same dispatch + stamping on save; validation surfaces through `store.validate_graph()` on the consumer side. Postgres schema unchanged.
 - `InMemoryGraphStore.validate_graph` now dispatches on declared vocabulary; when `core_v2.0.0` is declared, appends `validate_v2_hierarchy(self)` violations to the v1 generic checks. v1 TRUGs SKIP the LEVEL_PREFIX checks.
-- Self-dogfood: TRUGS-STORE-dev's own `folder.trug.json` declares `core_v2.0.0` and self-validates clean. Round-trip is byte-equivalent.
+- Self-dogfood: (private reference removed)'s own `folder.trug.json` declares `core_v2.0.0` and self-validates clean. Round-trip is byte-equivalent.
 - New tests: `tests/test_v2_validation.py` (11), `tests/test_canonical_reemit.py` (12), `tests/test_self_validation.py` (6). Total: 157 collected, 134 passing in standard CI (23 Postgres tests need a live DB).
 
 ### Notes
@@ -63,7 +63,7 @@ Native support for **TRUGS 2.0** (`core_v2.0.0`) — additive, fully backward co
 - GraphStore Protocol shape unchanged (22 methods, 8 categories). Public API signatures byte-stable across the 0.1.x → 0.2.x bump.
 - Postgres schema unchanged — no migration required.
 - mypy `--strict` clean across all 12 source files.
-- First-canary consumer migrated: `TRUGS-DEVELOPMENT/AGENT/memory/memory.trug.json` now declares `["core_v1.0.0", "core_v2.0.0"]` and round-trips through trugs-store at 0.2.0 without error. Clean-shell `tg memory recall` against the older trugs-store 0.1.0 still works — backward compat proven through the mixed-vocabulary declaration.
+- First-canary consumer migrated: `(private reference removed)/AGENT/memory/memory.trug.json` now declares `["core_v1.0.0", "core_v2.0.0"]` and round-trips through trugs-store at 0.2.0 without error. Clean-shell `tg memory recall` against the older trugs-store 0.1.0 still works — backward compat proven through the mixed-vocabulary declaration.
 
 ## [0.1.0] - 2026-04-16
 
@@ -85,4 +85,4 @@ Native support for **TRUGS 2.0** (`core_v2.0.0`) — additive, fully backward co
 ### Notes
 - PostgreSQL support requires `pip install trugs-store[postgres]` (psycopg3)
 - Schema created automatically via `PostgresPersistence.ensure_schema()`
-- Migrated from `Xepayac/TRUGS-STORE` to `TRUGS-LLC/TRUGS-STORE` for public release
+- Migrated from `(private reference removed)` to `TRUGS-LLC/TRUGS-STORE` for public release

@@ -3,7 +3,7 @@
 
 """LEVEL_PREFIX hierarchy invariant rules for v2 TRUGs.
 
-Per TRUGS-DEVELOPMENT AAA #1756 Sub-phase 5.2 — Phase 3 §"LEVEL_PREFIX
+Per (private reference removed) Sub-phase 5.2 — Phase 3 §"LEVEL_PREFIX
 validation (v2 only)" ASSERTions. Invoked from
 `InMemoryGraphStore.validate_graph` when the TRUG declares `core_v2.0.0`,
 and directly from `JsonFilePersistence._load_v2` / `PostgresPersistence._load_v2`.
@@ -17,7 +17,7 @@ Scope contract — this module is STORE's *structural* validator (is a stored
 graph well-formed: LEVEL_PREFIX hierarchy?). It is deliberately distinct from
 the CORE-16 TRL/spec validator (`tg validate`), which lives in TRUGS-TOOLS and
 answers a different question (is this valid TRL?). The two-validator split is
-intentional, not the #2189 drift; see BOUNDARY.md (authored in SP3).
+intentional, not the (private reference removed) drift; see BOUNDARY.md (authored in SP3).
 
 <trl>
 INTERFACE store_validation SHALL CHECK RECORD structural_hierarchy ACROSS ALL v2_node.
@@ -36,7 +36,7 @@ if TYPE_CHECKING:
 
 
 # AGENT claude SHALL DEFINE RECORD SI_PREFIX_ORDERING AS A RECORD constant.
-# Per AAA #1756 Phase 3 §Domain comparators: total ordering over the 21
+# Per AAA (private reference removed) Phase 3 §Domain comparators: total ordering over the 21
 # SI prefixes; YOTTA is coarsest, YOCTO finest. EXCEEDS in SI_PREFIX_ORDERING
 # means "earlier in this tuple" (lower index).
 #
@@ -44,7 +44,7 @@ if TYPE_CHECKING:
 # lexicon spelling, matching the CORE-16 validator (`tg validate`) and the
 # folder-governance check. Using "DECA" here is a silent-correctness bug:
 # `prefix_of("DEKA_…")` would return None and the hierarchy check would skip
-# canonically-spelled nodes. (AAA #2330 SP4 — HITM-confirmed 2026-06-08.)
+# canonically-spelled nodes. (AAA (private reference removed) SP4 — HITM-confirmed 2026-06-08.)
 SI_PREFIX_ORDERING: tuple[str, ...] = (
     "YOTTA",
     "ZETTA",
