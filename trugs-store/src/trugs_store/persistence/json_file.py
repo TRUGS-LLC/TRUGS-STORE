@@ -29,13 +29,13 @@ class JsonFilePersistence:
     and level_directives for canonical re-emit.
 
     <trl>
-    AGENT claude SHALL DEFINE RECORD JsonFilePersistence AS A RECORD persistence.
+    AGENT claude SHALL DEFINE RECORD json_file_persistence AS A RECORD persistence.
     </trl>
     """
 
     def load(self, source: str) -> InMemoryGraphStore:
         """<trl>
-        PROCESS load SHALL READ RECORD file THEN DISPATCH 'on RECORD vocabulary THEN RETURN RECORD store.
+        PROCESS load SHALL READ RECORD file THEN EXECUTE PROCESS vocabulary_dispatch THEN RETURN RECORD store.
         </trl>
         """
         path = Path(source)
@@ -47,7 +47,7 @@ class JsonFilePersistence:
 
     def save(self, store: InMemoryGraphStore, destination: str) -> None:
         """<trl>
-        PROCESS save SHALL WRITE RECORD store TO DATA file 'with DISPATCH 'on RECORD vocabulary.
+        PROCESS save SHALL EXECUTE PROCESS vocabulary_dispatch THEN WRITE RECORD store TO DATA file.
         </trl>
         """
         if classify_vocabulary(store.get_metadata()) == "v2":

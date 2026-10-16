@@ -22,7 +22,7 @@ class InMemoryGraphStore:
     """Dict-based GraphStore — O(1) node lookup, O(degree) edge access.
 
     <trl>
-    AGENT claude SHALL DEFINE RECORD InMemoryGraphStore AS A RECORD store.
+    AGENT claude SHALL DEFINE RECORD in_memory_graph_store AS A RECORD store.
     </trl>
     """
 

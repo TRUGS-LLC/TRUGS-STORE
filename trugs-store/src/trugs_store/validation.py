@@ -21,8 +21,8 @@ answers a different question (is this valid TRL?). The two-validator split is
 intentional, not the (private reference removed) drift; see BOUNDARY.md (authored in SP3).
 
 <trl>
-INTERFACE store_validation SHALL CHECK RECORD structural_hierarchy ACROSS ALL v2_node.
-INTERFACE store_validation SHALL_NOT IMPLEMENT RECORD core16_validation.
+PROCESS store_validation SHALL VALIDATE ALL RECORD v2_node SUBJECT_TO RECORD structural_hierarchy.
+PROCESS store_validation SHALL_NOT IMPLEMENT RECORD core16_validation.
 </trl>
 """
 

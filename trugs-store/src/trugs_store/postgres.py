@@ -39,7 +39,7 @@ class PostgresGraphStore:
     Each write method is a self-contained transaction (auto-commit).
 
     <trl>
-    AGENT claude SHALL DEFINE RECORD PostgresGraphStore AS A RECORD store.
+    AGENT claude SHALL DEFINE RECORD postgres_graph_store AS A RECORD store.
     </trl>
     """
 

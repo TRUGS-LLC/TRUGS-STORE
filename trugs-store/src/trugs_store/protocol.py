@@ -17,7 +17,7 @@ class Violation:
     """A single TRUGS CORE validation violation.
 
     <trl>
-    AGENT claude SHALL DEFINE RECORD Violation AS A RECORD validation.
+    AGENT claude SHALL DEFINE RECORD violation AS A RECORD validation.
     </trl>
     """
 
@@ -48,7 +48,7 @@ class GraphStore(Protocol):
     Metadata (2), Validation (1).
 
     <trl>
-    AGENT claude SHALL DEFINE RECORD GraphStore AS A RECORD protocol.
+    AGENT claude SHALL DEFINE RECORD graph_store AS A RECORD protocol.
     </trl>
     """
 
@@ -146,7 +146,7 @@ class PersistenceAdapter(Protocol):
     """Separate protocol for loading/saving graph data (Sans-IO).
 
     <trl>
-    AGENT claude SHALL DEFINE RECORD PersistenceAdapter AS A RECORD protocol.
+    AGENT claude SHALL DEFINE RECORD persistence_adapter AS A RECORD protocol.
     </trl>
     """
 

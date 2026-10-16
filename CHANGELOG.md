@@ -92,6 +92,9 @@ Native support for **TRUGS 2.0** (`core_v2.0.0`) — additive, fully backward co
 - `Violation` class — structured validation errors
 - `BaseGraph` — shared factory methods (`from_dict`, `from_json`, `from_file`) and accessors
 - TRUGS CORE graph validation (hierarchy, cycles, dimensions, required fields, edge validity)
+
+  Correction, 2026-10-16: Cycle detection visits only nodes reachable through contains from a node whose parent_id is None; a closed cycle without such a root is not detected.
+
 - 116 tests (InMemory round-trip, conformance, integration, dual-write, benchmarks)
 - CI workflow (pytest + mypy on every PR)
 

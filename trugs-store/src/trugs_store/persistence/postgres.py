@@ -38,7 +38,7 @@ class PostgresPersistence:
     Hierarchy validation runs when consumers invoke store.validate_graph().
 
     <trl>
-    AGENT claude SHALL DEFINE RECORD PostgresPersistence AS A RECORD persistence.
+    AGENT claude SHALL DEFINE RECORD postgres_persistence AS A RECORD persistence.
     </trl>
     """
 
@@ -67,7 +67,7 @@ class PostgresPersistence:
         Raises KeyError if graph_id does not exist.
 
         <trl>
-        PROCESS load SHALL READ RECORD graph THEN DISPATCH 'on RECORD vocabulary THEN RETURN RECORD store.
+        PROCESS load SHALL READ RECORD graph THEN EXECUTE PROCESS vocabulary_dispatch THEN RETURN RECORD store.
         </trl>
         """
         with self._conn.cursor() as cur:
@@ -105,7 +105,7 @@ class PostgresPersistence:
         Single transaction — all-or-nothing.
 
         <trl>
-        PROCESS save SHALL WRITE RECORD store TO DATA database 'with DISPATCH 'on RECORD vocabulary.
+        PROCESS save SHALL EXECUTE PROCESS vocabulary_dispatch THEN WRITE RECORD store TO DATA database.
         </trl>
         """
         metadata = store.get_metadata()
