@@ -221,7 +221,7 @@ def import_trug(
 ) -> bool:
     """Import a JSON file into PostgreSQL.
 
-    Reads the JSON file and writes it to the database via write_trug().
+    Reads and rewrites JSON via write_trug(); the database write is best effort.
 
     Args:
         path: Source file path (e.g., (private reference removed)/folder.trug.json).
@@ -236,7 +236,7 @@ def import_trug(
         FileNotFoundError: If JSON file doesn't exist.
 
     <trl>
-    PROCESS import_trug SHALL READ RECORD file THEN WRITE RECORD trug TO DATA database.
+    PROCESS import_trug SHALL READ RECORD file THEN WRITE RECORD trug TO DATA file.
     </trl>
     """
     path = Path(path)

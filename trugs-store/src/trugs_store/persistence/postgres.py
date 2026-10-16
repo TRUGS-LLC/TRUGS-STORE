@@ -34,7 +34,7 @@ class PostgresPersistence:
     code path. v1 graphs behave unchanged (additive guarantee per TRUGS-LLC
     Spec Evolution Addendum §1.2). The v2 save path stamps inherited metric
     levels on in-memory stores before persisting via COPY. level_directives
-    remain a file-emission concern and are not stored in the database.
+    are preserved as opaque graphs.metadata JSONB, without a dedicated column.
     Hierarchy validation runs when consumers invoke store.validate_graph().
 
     <trl>
@@ -188,10 +188,10 @@ class PostgresPersistence:
     # Per AAA (private reference removed) Phase 3 §"Canonical re-emit (v2 only)": stamp inherited
     # metric_level on nodes missing it, then persist via the v1 COPY path
     # (Postgres schema is unchanged — metric_level is already a column).
-    # level_directives are NOT persisted to the database — the level-
-    # stratified rendering is a file-emission concern, not a storage concern
-    # (AAA (private reference removed) ADR — DB does not enforce LEVEL_PREFIX). Consumers that need
-    # directives derive them on demand by scanning `find_nodes()`.
+    # level_directives have no dedicated schema column and are not enforced.
+    # When supplied in metadata, they are preserved as opaque JSONB in
+    # graphs.metadata by the v1 save path. Level-stratified rendering
+    # remains a file-emission concern.
     def _save_v2(self, store: Any, graph_id: str, metadata: Dict[str, Any]) -> None:
         # Stamp only on in-memory stores (Postgres-backed stores write rows
         # directly and the COPY path will read whatever metric_level is set).
