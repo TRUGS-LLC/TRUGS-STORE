@@ -34,7 +34,7 @@
       "properties": {"name": "spec_b", "lines": 100},
       "parent_id": "root",
       "contains": ["grandchild"],
-      "metric_level": "BASE_SPECIFICATION",
+      "metric_level": "HECTO_SPECIFICATION",
       "dimension": "test_dim"
     },
     {

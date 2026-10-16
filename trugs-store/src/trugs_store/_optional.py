@@ -14,4 +14,9 @@ backend on real internal breaks).
 
 
 class OptionalDependencyError(ImportError):
-    """An optional third-party dependency is absent (feature stays disabled)."""
+    """An optional third-party dependency is absent (feature stays disabled).
+
+    <trl>
+    PROCESS optional_dependency_guard SHALL REJECT RECORD missing_optional_dependency.
+    </trl>
+    """

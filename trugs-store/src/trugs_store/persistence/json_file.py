@@ -21,9 +21,9 @@ class JsonFilePersistence:
     """Load and save .trug.json files to/from InMemoryGraphStore.
 
     Recognizes the TRUG's declared vocabulary (`capabilities.vocabularies`)
-    and dispatches load/save to the v1 or v2 path. v1 TRUGs round-trip
-    byte-equivalent through load → save (additive guarantee per TRUGS-LLC
-    Spec Evolution Addendum §1.2). v2-specific behavior — LEVEL_PREFIX
+    and dispatches load/save to the v1 or v2 path. v1 TRUGs preserve parsed
+    JSON content through load → save; serialization may change whitespace
+    and formatting. v2-specific behavior — LEVEL_PREFIX
     validation, inheritance stamping, canonical re-emit — lands in
     AAA (private reference removed) Sub-phase 5.2; in 5.1 the v2 dispatch path is a stub that
     behaves identically to v1.

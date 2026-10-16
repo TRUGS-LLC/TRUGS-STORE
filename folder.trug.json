@@ -155,7 +155,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "CONTRIBUTING.md",
-        "purpose": "Contribution guidelines (inbound=outbound Apache-2.0; patent carve-out per NOTICE)"
+        "purpose": "Contribution guidelines (inbound=outbound Apache-2.0; scope note in the README)"
       },
       "metric_level": "BASE_DOCUMENT",
       "parent_id": "trugs_store_folder",
