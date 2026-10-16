@@ -3,7 +3,7 @@
 
 """Round-trip identity — store ∘ retrieve = identity across all three backends.
 
-Verifies ASSERT-4 (AAA #2330): `round_trip_identity SHALL HOLD 'across
+Verifies ASSERT-4 (AAA (private reference removed)): `round_trip_identity SHALL HOLD 'across
 in_memory AND json_file AND postgres backend` — the load-bearing L3 contract.
 
 A graph persisted and reloaded preserves its node and edge sets; re-emission
@@ -12,7 +12,7 @@ inherited `metric_level` + emits `level_directives` — so identity for v2 is th
 idempotent fixed point of the second round-trip, matching
 `test_canonical_reemit.test_v2_second_round_trip_idempotent`.)
 
-The Postgres leg gates on `TRUGS_TEST_DSN`; CI's must-run guard (store-dev#16)
+The Postgres leg gates on `TRUGS_TEST_DSN`; CI's must-run guard ((private reference removed))
 ensures it is not silently skipped there.
 """
 

@@ -34,7 +34,7 @@ class PostgresPersistence:
     code path. v1 graphs behave unchanged (additive guarantee per TRUGS-LLC
     Spec Evolution Addendum §1.2). v2-specific behavior — LEVEL_PREFIX
     validation, inheritance stamping, canonical re-emit — lands in
-    AAA #1756 Sub-phase 5.2; in 5.1 the v2 dispatch is a stub passing
+    AAA (private reference removed) Sub-phase 5.2; in 5.1 the v2 dispatch is a stub passing
     through to v1.
 
     <trl>
@@ -85,7 +85,7 @@ class PostgresPersistence:
         return PostgresGraphStore(self._conn, graph_id)
 
     # PROCESS _load_v2 SHALL READ RECORD hierarchy_first_graph THEN RETURN RECORD store.
-    # Per AAA #1756 Phase 3 INTERFACE PostgresGraphStore.load_graph SHALL APPLY
+    # Per AAA (private reference removed) Phase 3 INTERFACE PostgresGraphStore.load_graph SHALL APPLY
     # DATA same_validation_rules AS JsonFilePersistence.load. The PostgresGraphStore
     # exposes the same Protocol as InMemoryGraphStore, so `validate_v2_hierarchy`
     # operates on it via duck-typed `._nodes` access — which Postgres-backed
@@ -188,12 +188,12 @@ class PostgresPersistence:
                             )
 
     # PROCESS _save_v2 SHALL WRITE RECORD store TO DATA database 'with canonical_reemit.
-    # Per AAA #1756 Phase 3 §"Canonical re-emit (v2 only)": stamp inherited
+    # Per AAA (private reference removed) Phase 3 §"Canonical re-emit (v2 only)": stamp inherited
     # metric_level on nodes missing it, then persist via the v1 COPY path
     # (Postgres schema is unchanged — metric_level is already a column).
     # level_directives are NOT persisted to the database — the level-
     # stratified rendering is a file-emission concern, not a storage concern
-    # (AAA #1756 ADR — DB does not enforce LEVEL_PREFIX). Consumers that need
+    # (AAA (private reference removed) ADR — DB does not enforce LEVEL_PREFIX). Consumers that need
     # directives derive them on demand by scanning `find_nodes()`.
     def _save_v2(self, store: Any, graph_id: str, metadata: Dict[str, Any]) -> None:
         # Stamp only on in-memory stores (Postgres-backed stores write rows

@@ -13,7 +13,7 @@ remain in the subclasses.
 
 Also exposes the internal `_stamp_inherited_metric_levels(store)` utility
 used by v2-path dispatch in `JsonFilePersistence._save_v2` and
-`PostgresPersistence._save_v2` (AAA #1756 ADR-002 — internal, not in
+`PostgresPersistence._save_v2` (AAA (private reference removed) ADR-002 — internal, not in
 `__all__`, not part of the public API).
 """
 
@@ -176,7 +176,7 @@ class BaseGraph:
     def _stamp_inherited_metric_levels(store: InMemoryGraphStore) -> None:
         """Stamp `metric_level` on v2 nodes missing it, inherited one step finer from parent.
 
-        Per AAA #1756 Phase 3 INTERFACE / ADR-002. For every node missing
+        Per AAA (private reference removed) Phase 3 INTERFACE / ADR-002. For every node missing
         `metric_level` whose parent has a metric_level with a recognized
         SI prefix, stamp `<finer_prefix>_<NODE_TYPE>` where `finer_prefix`
         is one step finer than the parent's prefix in `SI_PREFIX_ORDERING`.

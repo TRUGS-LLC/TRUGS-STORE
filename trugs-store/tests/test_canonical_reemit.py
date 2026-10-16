@@ -4,7 +4,7 @@
 """Tests for TRUGS 2.0 canonical re-emit on save.
 
 Covers Phase 3 §"Canonical re-emit (v2 only)" ASSERTions from
-TRUGS-DEVELOPMENT AAA #1756 Sub-phase 5.2:
+(private reference removed) Sub-phase 5.2:
 
 - ASSERT v2 TRUG through load -> stamp -> save SHALL EMIT output where
   EACH node CONTAINS metric_level EXPLICITLY
@@ -345,7 +345,7 @@ def test_stamp_inherited_metric_levels_handles_chain():
     )
     BaseGraph._stamp_inherited_metric_levels(store)
     assert store._nodes["mid"]["metric_level"] == "HECTO_FOLDER"
-    # one step finer than HECTO is DEKA (the canonical 10^1 prefix; AAA #2330 SP4)
+    # one step finer than HECTO is DEKA (the canonical 10^1 prefix; AAA (private reference removed) SP4)
     assert store._nodes["leaf"]["metric_level"] == "DEKA_DOCUMENT"
 
 

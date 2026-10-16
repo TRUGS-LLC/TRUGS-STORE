@@ -4,7 +4,7 @@ This document pins **who owns what** across the two foundational Python packages
 of the TRUGS stack, and records the one place the boundary is easy to
 misread — the **two-validator split**. It is package self-description (an L2
 Tier-1 artifact), authored under
-TRUGS-DEVELOPMENT AAA #2330 (private)
+(private reference removed) (private)
 (Phase 7 Repo 3/4), Sub-phase 3.
 
 <trl>
@@ -87,10 +87,10 @@ INTERFACE store_validation SHALL_NOT IMPLEMENT RECORD core16_validation.
 ## Why STORE stays its own package
 
 STORE earns its own package because it has **four independent consumers**
-(TRUGS-TOOLS, noise-chatbot, TRUGS_COMPUTATION, and the TRUGS spec repo), each
+(TRUGS-TOOLS, (private reference removed), (private reference removed), and the TRUGS spec repo), each
 importing `trugs_store` directly. A merge into TOOLS was considered and
 rejected (it would create coupling, not remove duplication — TOOLS already
 cleanly extends STORE's `BaseGraph`); a rename was considered and reversed (a
 *store* is where TRUGs — graphs — are stored and found, which reads true, and a
 rename would cost a PyPI deprecation plus a four-consumer import migration).
-See AAA #2330 Phase 1–2 for the full decision record.
+See AAA (private reference removed) Phase 1–2 for the full decision record.

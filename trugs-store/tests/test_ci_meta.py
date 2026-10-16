@@ -3,8 +3,8 @@
 
 """CI-contract meta-tests — guard against silent-skip of env-dependent tests.
 
-Closes TRUGS-LLC/TRUGS-STORE-dev#16 / AAA #1756 AF-3, re-armed under
-TRUGS-DEVELOPMENT AAA #2330 SP1 (ASSERT-8: `env_dependent_test SHALL RUN
+Closes (private reference removed) / AAA (private reference removed) AF-3, re-armed under
+(private reference removed) SP1 (ASSERT-8: `env_dependent_test SHALL RUN
 positively AND SHALL_NOT silent_skip`).
 
 The Postgres-backed tests gate on ``TRUGS_TEST_DSN`` via
@@ -40,7 +40,7 @@ def _job(name: str) -> dict:
     return jobs[name]
 
 
-# Per-function gate (AAA #2735 ADR-001 / REDTEAM-1): only the CI-contract guards below depend on
+# Per-function gate (AAA (private reference removed) ADR-001 / REDTEAM-1): only the CI-contract guards below depend on
 # a published .github/workflows/ci.yml, which is a tier-2 deliverable not yet shipped in this
 # public repo. Gate EXACTLY those guards (never module-level) so the always-on repo-hygiene guards
 # (test_proposal_dir_absent, test_no_empty_persistence_init) keep running. They re-arm the moment a
@@ -70,7 +70,7 @@ def test_postgres_job_runs_the_gated_files() -> None:
     blob = yaml.safe_dump(_job("postgres-tests"))
     assert "test_postgres_persistence.py" in blob
     assert "test_postgres_v2.py" in blob
-    # test_round_trip.py's Postgres leg is DSN-gated too (AAA #2330 SP2).
+    # test_round_trip.py's Postgres leg is DSN-gated too (AAA (private reference removed) SP2).
     assert "test_round_trip.py" in blob
 
 
@@ -86,10 +86,10 @@ def test_postgres_job_has_positive_must_run_guard() -> None:
 
 # `trug-check` is intentionally excluded: it stays a SOFT gate until the v2
 # trugs-tools (CORE-16 validator + folder-governance rules) publishes to PyPI
-# (TRUGS-DEVELOPMENT#1660). PyPI `trugs-tools` is still 1.0.0 (pre-v2), so a
+# ((private reference removed)). PyPI `trugs-tools` is still 1.0.0 (pre-v2), so a
 # hard gate there cannot meaningfully validate the v2 folder.trug.json. The
 # folder TRUG's v2 validity is verified locally under the dev parser and logged
-# in the AAA #2330 Phase-10 record; this gate hardens when v2 ships.
+# in the AAA (private reference removed) Phase-10 record; this gate hardens when v2 ships.
 @_ci_required
 @pytest.mark.parametrize("job_name", ["postgres-tests", "typecheck", "lint"])
 def test_quality_gates_are_hard(job_name: str) -> None:
@@ -101,7 +101,7 @@ def test_quality_gates_are_hard(job_name: str) -> None:
         )
 
 
-# --- repo-hygiene guards (AAA #2330 SP1 cleanups: T1.4, T1.5) ----------------
+# --- repo-hygiene guards (AAA (private reference removed) SP1 cleanups: T1.4, T1.5) ----------------
 
 
 def test_proposal_dir_absent() -> None:

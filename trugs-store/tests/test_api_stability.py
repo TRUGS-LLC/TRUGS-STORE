@@ -3,8 +3,8 @@
 
 """Regression-guard tests for trugs-store public API stability vs the v0.1.0 baseline.
 
-Pins the 4 ASSERTions of AAA #1756 §"API-surface stability"
-(TRUGS-LLC/TRUGS-STORE-dev#9):
+Pins the 4 ASSERTions of AAA (private reference removed) §"API-surface stability"
+((private reference removed)):
 
 1. GraphStore protocol has exactly 22 public methods
 2. Each protocol method's signature is byte-equivalent to v0.1.0

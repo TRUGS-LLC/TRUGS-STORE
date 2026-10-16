@@ -4,7 +4,7 @@
 """Tests for TRUGS 2.0 LEVEL_PREFIX hierarchy validation.
 
 Covers Phase 3 §"LEVEL_PREFIX validation (v2 only)" ASSERTions from
-TRUGS-DEVELOPMENT AAA #1756 Sub-phase 5.2:
+(private reference removed) Sub-phase 5.2:
 
 - ASSERT v2 TRUG with valid_hierarchy SHALL PASS validate_graph with EMPTY violations
 - ASSERT v2 TRUG where parent.metric_level DOES_NOT EXCEED child.metric_level
