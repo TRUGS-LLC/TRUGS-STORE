@@ -37,7 +37,7 @@ __all__ = [
 # guards in postgres.py / persistence/postgres.py). Any other ImportError is
 # a genuine break inside the postgres modules and must propagate — the old
 # bare `except ImportError: pass` silently dropped the backend even with
-# psycopg installed (audit #2).
+# psycopg installed.
 try:
     from trugs_store.postgres import PostgresGraphStore  # noqa: F401  (optional re-export)
     from trugs_store.persistence.postgres import PostgresPersistence  # noqa: F401  (optional re-export)

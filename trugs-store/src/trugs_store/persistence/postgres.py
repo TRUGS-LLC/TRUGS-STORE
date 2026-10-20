@@ -14,7 +14,7 @@ try:
     import psycopg
     from psycopg.types.json import Json
 except ImportError as e:
-    # Named sentinel — see trugs_store/_optional.py (audit #2).
+    # Named sentinel — see trugs_store/_optional.py.
     raise OptionalDependencyError(
         "PostgreSQL support requires psycopg3: pip install trugs-store[postgres]"
     ) from e
@@ -185,7 +185,7 @@ class PostgresPersistence:
                             )
 
     # PROCESS _save_v2 SHALL WRITE RECORD store TO DATA database 'with canonical_reemit.
-    # Per AAA (private reference removed) Phase 3 §"Canonical re-emit (v2 only)": stamp inherited
+    # Canonical re-emit (v2 only): stamp inherited
     # metric_level on nodes missing it, then persist via the v1 COPY path
     # (Postgres schema is unchanged — metric_level is already a column).
     # level_directives have no dedicated schema column and are not enforced.

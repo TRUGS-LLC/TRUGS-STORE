@@ -3,8 +3,7 @@
 
 """Tests for TRUGS 2.0 vocabulary recognition + dispatch scaffold.
 
-Covers Phase 3 §"Vocabulary dispatch" ASSERTions from
-(private reference removed) Sub-phase 5.1:
+Covers vocabulary dispatch:
 
 - ASSERT JsonFilePersistence.load SHALL RECOGNIZE core_v2.0.0
 - ASSERT JsonFilePersistence.load SHALL RECOGNIZE core_v1.0.0

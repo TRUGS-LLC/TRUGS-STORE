@@ -70,8 +70,8 @@ class JsonFilePersistence:
 
     # PROCESS _load_v2 SHALL READ DATA hierarchy_first_trug THEN RETURN RECORD store.
     # Hydrates the store via the v1 path (data shape is unchanged) and
-    # then invokes `validate_v2_hierarchy` per AAA (private reference removed) Phase 3 §"LEVEL_PREFIX
-    # validation (v2 only)". Violations surface through `store.validate_graph()`
+    # then invokes `validate_v2_hierarchy` for v2 LEVEL_PREFIX validation.
+    # Violations surface through `store.validate_graph()`
     # (which now dispatches on declared vocabulary) — the load does not raise
     # on violations; consumers decide how to react.
     def _load_v2(self, data: Dict[str, Any]) -> InMemoryGraphStore:
@@ -92,12 +92,12 @@ class JsonFilePersistence:
             fh.write("\n")
 
     # PROCESS _save_v2 SHALL WRITE RECORD store TO DATA file 'with canonical_reemit.
-    # Canonical re-emit per AAA (private reference removed) Phase 3 §"Canonical re-emit (v2 only)":
-    #   1. Stamp inherited metric_level on any node missing it (ADR-002).
+    # Canonical re-emit (v2 only):
+    #   1. Stamp inherited metric_level on any node missing it.
     #   2. Emit every node with metric_level explicit.
     #   3. Emit `level_directives` — an ordered list of metric_level values
     #      marking each transition in the node array (the JSON analogue of
-    #      a TRL `level_directive` line per mem-9cab9a23 / trl_vocabulary.md).
+    #      a TRL `level_directive` line).
     def _save_v2(self, store: InMemoryGraphStore, destination: str) -> None:
         BaseGraph._stamp_inherited_metric_levels(store)
         nodes = list(store._nodes.values())

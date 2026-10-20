@@ -3,8 +3,8 @@
 
 """Round-trip identity — store ∘ retrieve = identity across all three backends.
 
-Verifies ASSERT-4 (AAA (private reference removed)): `round_trip_identity SHALL HOLD 'across
-in_memory AND json_file AND postgres backend` — the load-bearing L3 contract.
+Verifies round-trip identity across the in-memory, JSON-file and Postgres
+backends — the load-bearing behavioral contract.
 
 A graph persisted and reloaded preserves its node and edge sets; re-emission
 reaches a byte-stable fixed point. (The *first* v2 save normalizes — stamps
@@ -12,8 +12,8 @@ inherited `metric_level` + emits `level_directives` — so identity for v2 is th
 idempotent fixed point of the second round-trip, matching
 `test_canonical_reemit.test_v2_second_round_trip_idempotent`.)
 
-The Postgres leg gates on `TRUGS_TEST_DSN`; CI's must-run guard ((private reference removed))
-ensures it is not silently skipped there.
+The Postgres leg gates on the test database DSN. This repository has no CI
+workflow or must-run guard enforcing it; the leg skips without a test DSN.
 """
 
 from __future__ import annotations

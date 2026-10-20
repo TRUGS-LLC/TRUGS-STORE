@@ -3,7 +3,7 @@
 
 """Vocabulary classification — TRUGS 2.0 (`core_v2.0.0`) vs the legacy path.
 
-Per (private reference removed), the package recognizes a TRUG's declared
+The package recognizes a TRUG's declared
 vocabulary in `capabilities.vocabularies` and dispatches load/save through
 a single coherent code path:
 

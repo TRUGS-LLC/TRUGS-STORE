@@ -183,7 +183,7 @@ def export_trug(
     This is the inverse of import_trug().
 
     Args:
-        path: Destination file path (e.g., (private reference removed)/folder.trug.json).
+        path: Destination file path (e.g., folder.trug.json).
         db_dsn: PostgreSQL DSN. If None, reads PORT_DSN env var.
 
     Returns:
@@ -224,7 +224,7 @@ def import_trug(
     Reads and rewrites JSON via write_trug(); the database write is best effort.
 
     Args:
-        path: Source file path (e.g., (private reference removed)/folder.trug.json).
+        path: Source file path (e.g., folder.trug.json).
         db_dsn: PostgreSQL DSN. If None, reads PORT_DSN env var.
 
     Returns:
