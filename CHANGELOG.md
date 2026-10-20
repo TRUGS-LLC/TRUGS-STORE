@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- 2026-10-20: Graph validation detects contains cycles in every component, including self-links,
+  and handles deep hierarchies without recursive traversal. This supersedes the cycle-detection
+  limitation recorded below on 2026-10-16. The API guard compares each parameter's ordered name,
+  kind, default and annotation with the published 0.1.0 wheel. Wheel and source distributions
+  include LICENSE and NOTICE; wheel metadata names both files and declares Apache-2.0.
+
 ### Changed
 - `LICENSE` is the official Apache License 2.0 text; `NOTICE` carries the attribution only, its patent
   paragraph removed; the README gains a Scope section.

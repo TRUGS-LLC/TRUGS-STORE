@@ -383,7 +383,13 @@ class InMemoryGraphStore:
     # === Validation ===
 
     def validate_graph(self) -> List[Violation]:
-        """<trl>
+        """Validate graph structure, including contains cycles in every component.
+
+        Hierarchy traversal uses an explicit stack so depth does not consume the
+        Python call stack. Root-reachable cycles retain their traversal order;
+        remaining components are checked afterwards.
+
+        <trl>
         PROCESS validate_graph SHALL VALIDATE RECORD graph.
         </trl>
         """
@@ -470,25 +476,42 @@ class InMemoryGraphStore:
         path: set[str] = set()
 
         def _detect_cycle(nid: str) -> None:
-            if nid in path:
-                violations.append(
-                    Violation(
-                        nid, "hierarchy_cycle", f"Cycle detected involving node {nid!r}"
-                    )
-                )
-                return
+            """Walk one component in contains order without recursive calls."""
             if nid in visited:
                 return
             visited.add(nid)
             path.add(nid)
-            for child_id in self._nodes.get(nid, {}).get("contains", []):
-                if child_id in self._nodes:
-                    _detect_cycle(child_id)
-            path.discard(nid)
+            stack = [(nid, iter(self._nodes[nid].get("contains", [])))]
+            while stack:
+                current, children = stack[-1]
+                try:
+                    child_id = next(children)
+                except StopIteration:
+                    path.remove(current)
+                    stack.pop()
+                    continue
+                if child_id not in self._nodes:
+                    continue
+                if child_id in path:
+                    violations.append(
+                        Violation(
+                            child_id,
+                            "hierarchy_cycle",
+                            f"Cycle detected involving node {child_id!r}",
+                        )
+                    )
+                elif child_id not in visited:
+                    visited.add(child_id)
+                    path.add(child_id)
+                    stack.append(
+                        (child_id, iter(self._nodes[child_id].get("contains", [])))
+                    )
 
         for nid, node in self._nodes.items():
             if node.get("parent_id") is None:
                 _detect_cycle(nid)
+        for nid in self._nodes:
+            _detect_cycle(nid)
 
         # Edge validation
         for edge in self._edges:
