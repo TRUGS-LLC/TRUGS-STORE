@@ -15,7 +15,7 @@ pip install trugs-store
 pip install trugs-store[postgres]
 ```
 
-> This checkout declares package version **2.1.0** (`core_v2.0.0`): vocabulary dispatch on `capabilities.vocabularies`, LEVEL_PREFIX hierarchy validation, inheritance stamping, and canonical re-emit on save. v1 TRUGs (`core_v1.0.0`, `project_v1`) continue to validate unchanged — the upgrade is purely additive.
+> This checkout declares package version **2.2.0** (`core_v2.0.0`): vocabulary dispatch on `capabilities.vocabularies`, LEVEL_PREFIX hierarchy validation, inheritance stamping, and canonical re-emit on save. v1 TRUGs (`core_v1.0.0`, `project_v1`) load and save as before; since 2.2.0, validation also reports hierarchy cycles that 2.1.0 missed, in graphs of either version.
 
 ## Quick Example
 
@@ -106,7 +106,7 @@ else:
 
 ## Status
 
-**Version:** 2.1.0 (TRUGS 2.0 native — `core_v2.0.0` support)
+**Version:** 2.2.0 (TRUGS 2.0 native — `core_v2.0.0` support)
 **Phase:** Beta
 **License:** Apache 2.0 — [TRUGS LLC](https://github.com/TRUGS-LLC)
 

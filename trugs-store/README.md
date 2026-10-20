@@ -4,7 +4,7 @@
 
 trugs-store is the shared persistence layer for all TRUGS tooling. Every tool that reads or writes `.trug.json` files goes through this package. It supports JSON file storage for development and PostgreSQL for production scale.
 
-As of **2.0.0**, trugs-store natively supports **TRUGS 2.0** (`core_v2.0.0`): vocabulary dispatch on a TRUG's declared `capabilities.vocabularies`, LEVEL_PREFIX hierarchy validation, inheritance stamping, and canonical re-emit on save. v1 TRUGs (`core_v1.0.0`, `project_v1`) continue to validate unchanged — the upgrade is purely additive.
+As of **2.0.0**, trugs-store natively supports **TRUGS 2.0** (`core_v2.0.0`): vocabulary dispatch on a TRUG's declared `capabilities.vocabularies`, LEVEL_PREFIX hierarchy validation, inheritance stamping, and canonical re-emit on save. v1 TRUGs (`core_v1.0.0`, `project_v1`) load and save as before; since 2.2.0, validation also reports hierarchy cycles that 2.1.0 missed, in graphs of either version.
 
 ## Install
 
@@ -105,6 +105,6 @@ else:
 
 ## Status
 
-**Version:** 2.1.0 (TRUGS 2.0 native — `core_v2.0.0` support)
+**Version:** 2.2.0 (TRUGS 2.0 native — `core_v2.0.0` support)
 **Phase:** Beta
 **License:** Apache 2.0 — [TRUGS LLC](https://github.com/TRUGS-LLC)
