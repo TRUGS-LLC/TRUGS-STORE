@@ -3,8 +3,7 @@
 
 """Tests for TRUGS 2.0 canonical re-emit on save.
 
-Covers Phase 3 §"Canonical re-emit (v2 only)" ASSERTions from
-(private reference removed) Sub-phase 5.2:
+Covers canonical re-emit (v2 only):
 
 - ASSERT v2 TRUG through load -> stamp -> save SHALL EMIT output where
   EACH node CONTAINS metric_level EXPLICITLY
@@ -142,7 +141,7 @@ def _roundtrip(
 
 
 # ---------------------------------------------------------------------------
-# Phase 3 ASSERT — metric_level explicit on every node after save
+# metric_level explicit on every node after save
 # ---------------------------------------------------------------------------
 
 
@@ -170,7 +169,7 @@ def test_v2_save_stamps_inherited_metric_level(tmp_path: Path):
 
 
 # ---------------------------------------------------------------------------
-# Phase 3 ASSERT — level_directives at each transition
+# level_directives at each transition
 # ---------------------------------------------------------------------------
 
 
@@ -266,7 +265,7 @@ def test_v1_save_does_not_emit_level_directives(tmp_path: Path):
 
 # AGENT claude SHALL VALIDATE EACH RECORD "v1 TRUG" SHALL UNDERGO ROUND_TRIP BYTE_EQUIVALENT.
 def test_v1_round_trip_byte_equivalent(tmp_path: Path):
-    """v1 TRUG byte-equivalent through load -> save (Phase 3 vocabulary-dispatch ASSERT)."""
+    """v1 TRUG byte-equivalent through load -> save (vocabulary dispatch)."""
     trug = _v1_trug_dict()
     src = tmp_path / "src.trug.json"
     dst = tmp_path / "dst.trug.json"
@@ -345,7 +344,7 @@ def test_stamp_inherited_metric_levels_handles_chain():
     )
     BaseGraph._stamp_inherited_metric_levels(store)
     assert store._nodes["mid"]["metric_level"] == "HECTO_FOLDER"
-    # one step finer than HECTO is DEKA (the canonical 10^1 prefix; AAA (private reference removed) SP4)
+    # one step finer than HECTO is DEKA (the canonical 10^1 prefix)
     assert store._nodes["leaf"]["metric_level"] == "DEKA_DOCUMENT"
 
 

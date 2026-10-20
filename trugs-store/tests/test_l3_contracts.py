@@ -1,11 +1,11 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""L3 contract scanner — every concrete public surface carries a <trl> block.
+"""Contract scanner — every concrete public surface carries a <trl> block.
 
-Verifies ASSERT-3 (AAA (private reference removed)): `EACH public_function 'in store_pkg SHALL CARRY
-RECORD trl_contract`, where a contract is a ``<trl>…</trl>`` block in the
-object's docstring (the convention used across trugs-tools).
+Verifies that every concrete public function or class carries a
+``<trl>…</trl>`` block in its docstring
+(the convention used across trugs-tools).
 
 Scope: public classes + public functions/methods (name not ``_``-prefixed) in
 ``src/trugs_store``. **Stub-bodied functions are excluded** — a function whose

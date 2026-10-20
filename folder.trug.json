@@ -29,8 +29,7 @@
       "properties": {
         "name": "TRUGS_STORE",
         "status": "IN_PROGRESS",
-        "purpose": "Graph storage backends for TRUGS specifications",
-        "github_issue": 844
+        "purpose": "Graph storage backends for TRUGS specifications"
       },
       "metric_level": "KILO_FOLDER",
       "parent_id": null,
@@ -54,8 +53,7 @@
       "properties": {
         "file": "trugs-store/",
         "name": "trugs-store",
-        "purpose": "Python package — InMemoryGraphStore, PostgresGraphStore, JsonFilePersistence",
-        "github_issue": 844
+        "purpose": "Python package — InMemoryGraphStore, PostgresGraphStore, JsonFilePersistence"
       },
       "metric_level": "DEKA_COMPONENT",
       "parent_id": "trugs_store_folder",
@@ -66,7 +64,7 @@
       "id": "comp_trugs_store",
       "type": "COMPONENT",
       "properties": {
-        "loc": 2482,
+        "loc": 2481,
         "name": "trugs-store",
         "purpose": "Trugs-Store component",
         "file_count": 12,
@@ -188,15 +186,6 @@
       "to_id": "comp_trugs_store",
       "relation": "contains",
       "weight": 1.0
-    },
-    {
-      "from_id": "trugs_store_folder",
-      "to_id": "TRUGS_EPIC:epic_tooling",
-      "relation": "implements",
-      "weight": 1.0,
-      "properties": {
-        "description": "Implements EPIC project.trug.json"
-      }
     },
     {
       "from_id": "trugs_store_folder",

@@ -3,9 +3,9 @@
 
 """CI-contract meta-tests — guard against silent-skip of env-dependent tests.
 
-Closes (private reference removed) / AAA (private reference removed) AF-3, re-armed under
-(private reference removed) SP1 (ASSERT-8: `env_dependent_test SHALL RUN
-positively AND SHALL_NOT silent_skip`).
+Checks that workflow-dependent tests run positively instead of silently
+skipping when a workflow is supplied. This repository has no CI workflow;
+the workflow-dependent checks skip until one is present.
 
 The Postgres-backed tests gate on ``TRUGS_TEST_DSN`` via
 ``pytest.mark.skipif`` (see ``conftest.py`` / ``test_postgres_v2.py``). If the
@@ -40,16 +40,16 @@ def _job(name: str) -> dict:
     return jobs[name]
 
 
-# Per-function gate (AAA (private reference removed) ADR-001 / REDTEAM-1): only the CI-contract guards below depend on
-# a published .github/workflows/ci.yml, which is a tier-2 deliverable not yet shipped in this
+# Per-function gate: only the CI-contract guards below depend on
+# a published .github/workflows/ci.yml, which is not shipped in this
 # public repo. Gate EXACTLY those guards (never module-level) so the always-on repo-hygiene guards
 # (test_proposal_dir_absent, test_no_empty_persistence_init) keep running. They re-arm the moment a
 # real ci.yml lands.
 _ci_required = pytest.mark.skipif(
     not _CI_YML.is_file(),
     reason=(
-        "ci.yml not published in this repo yet (real dogfooding CI is a tier-2 deliverable, "
-        "AAA #2735/#2739); the 6 CI-contract guards re-arm automatically when it lands"
+        "ci.yml not published in this repo yet; "
+        "the 6 CI-contract guards re-arm automatically when it lands"
     ),
 )
 
@@ -60,7 +60,7 @@ def test_postgres_job_exports_dsn() -> None:
     blob = yaml.safe_dump(_job("postgres-tests"))
     assert "TRUGS_TEST_DSN" in blob, (
         "postgres-tests must export TRUGS_TEST_DSN; without it the "
-        "skipif-gated Postgres tests would skip-to-green (private reference removed)"
+        "skipif-gated Postgres tests would skip-to-green"
     )
 
 
@@ -70,7 +70,7 @@ def test_postgres_job_runs_the_gated_files() -> None:
     blob = yaml.safe_dump(_job("postgres-tests"))
     assert "test_postgres_persistence.py" in blob
     assert "test_postgres_v2.py" in blob
-    # test_round_trip.py's Postgres leg is DSN-gated too (AAA (private reference removed) SP2).
+    # test_round_trip.py's Postgres leg is DSN-gated too.
     assert "test_round_trip.py" in blob
 
 
@@ -84,16 +84,14 @@ def test_postgres_job_has_positive_must_run_guard() -> None:
     )
 
 
-# `trug-check` is intentionally excluded: it stays a SOFT gate until the v2
-# trugs-tools (CORE-16 validator + folder-governance rules) publishes to PyPI
-# ((private reference removed)). PyPI `trugs-tools` is still 1.0.0 (pre-v2), so a
-# hard gate there cannot meaningfully validate the v2 folder.trug.json. The
-# folder TRUG's v2 validity is verified locally under the dev parser and logged
-# in the AAA (private reference removed) Phase-10 record; this gate hardens when v2 ships.
+# `trug-check` is excluded from the hard-gate assertions below.
+# trugs-tools 2.4.0 supplies the v2 CORE-16 validator; the shipped folder
+# graph can be checked directly with `trug validate folder.trug.json`.
+# This repository has no CI workflow, so no `trug-check` job runs here.
 @_ci_required
 @pytest.mark.parametrize("job_name", ["postgres-tests", "typecheck", "lint"])
 def test_quality_gates_are_hard(job_name: str) -> None:
-    """L1 + env-dependent gates must be hard (no continue-on-error: true)."""
+    """Env-dependent and quality gates must be hard (no continue-on-error: true)."""
     for step in _job(job_name).get("steps", []):
         assert not step.get("continue-on-error", False), (
             f"{job_name} step '{step.get('name', '?')}' is soft "
@@ -101,14 +99,14 @@ def test_quality_gates_are_hard(job_name: str) -> None:
         )
 
 
-# --- repo-hygiene guards (AAA (private reference removed) SP1 cleanups: T1.4, T1.5) ----------------
+# --- repo-hygiene guards -------------------------------------------------------
 
 
 def test_proposal_dir_absent() -> None:
-    """PROPOSAL/ must not graduate to the public-bound package repo (ADR-007)."""
+    """PROPOSAL/ must not graduate to the public-bound package repo."""
     assert not (_REPO_ROOT / "PROPOSAL").exists(), (
-        "PROPOSAL/ planning docs must not live in a public-bound repo "
-        "(ADR-007 / AAA #2330 ADR-003) — archived to (private reference removed) instead"
+        "PROPOSAL/ planning docs must not live in a public-bound repo; "
+        "archive them outside this repository instead"
     )
 
 

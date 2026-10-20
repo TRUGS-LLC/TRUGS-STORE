@@ -433,7 +433,7 @@ class TestReadTrugResilience:
 
     # PROCESS read_trug SHALL READ DATA json WITHOUT error WHEN DATA dsn SHALL_NOT EXISTS.
     def test_no_dsn_reads_json_not_error(self, tmp_path, sample_trug):
-        """No PORT_DSN = JSON-only mode, not an error (ADR-5)."""
+        """No PORT_DSN = JSON-only mode, not an error."""
         out = tmp_path / "FOLDER" / "folder.trug.json"
         out.parent.mkdir()
         write_trug(sample_trug, out)

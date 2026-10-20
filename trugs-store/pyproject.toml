@@ -40,7 +40,7 @@ postgres = [
 dev = [
     "pytest>=7.0",
     "coverage>=7.0",
-    "pyyaml>=6.0",  # test_ci_meta.py parses .github/workflows/ci.yml ((private reference removed) guard)
+    "pyyaml>=6.0",  # test_ci_meta.py parses ci.yml when a workflow is supplied
 ]
 
 [tool.hatch.build.targets.wheel]

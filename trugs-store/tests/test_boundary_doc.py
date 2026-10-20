@@ -1,14 +1,12 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""Smoke checks for BOUNDARY.md — the package self-description (AAA (private reference removed) SP3).
+"""Smoke checks for BOUNDARY.md — the package self-description.
 
-Automatable half of Target 3.1 (the accuracy half is a manual review logged in
-the AAA Phase-10 record). Mirrors the Phase-8 audit recipes:
-  PC-3: BOUNDARY.md exists + records STORE-owns / TOOLS-owns / two-validator
-  SC-6: records the two-validator split *as deliberate* (not (private reference removed) drift)
-Verifies ASSERT-6 (`boundary_ownership_doc SHALL RECORD two_validator_split AS
-deliberate AND SHALL_NOT FRAME 'it AS drift`) at the presence level.
+Presence checks for BOUNDARY.md: it records STORE-owns / TOOLS-owns and
+the two-validator split as deliberate, rather than drift. These tests check
+that the ownership document exists and states the distinction; accuracy
+also requires review against the implementations.
 """
 
 from __future__ import annotations
@@ -39,13 +37,13 @@ def test_boundary_doc_records_two_validator_split() -> None:
 
 
 def test_two_validator_split_framed_as_deliberate_not_drift() -> None:
-    """ASSERT-6: the split is recorded as deliberate, distinguished from (private reference removed)."""
+    """The split is recorded as deliberate, distinguished from drift."""
     text = _text().lower()
     assert "deliberate" in text or "intentional" in text, (
         "BOUNDARY.md must frame the two-validator split as deliberate/intentional"
     )
-    assert "(private reference removed)" in text, (
-        "BOUNDARY.md must retain the marker for the removed drift reference"
+    assert "not drift" in text, (
+        "BOUNDARY.md must describe the deliberate split as not drift"
     )
 
 

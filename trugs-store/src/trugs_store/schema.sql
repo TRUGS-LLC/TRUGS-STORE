@@ -1,5 +1,5 @@
 -- TRUGS_STORE PostgreSQL schema
--- Shared contract between trugs-store (Python) and PORT (Go) — see #686
+-- Shared contract between trugs-store (Python) and PORT (Go)
 
 CREATE TABLE IF NOT EXISTS graphs (
     graph_id    TEXT PRIMARY KEY,

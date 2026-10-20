@@ -1,13 +1,11 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""Self-dogfood test — (private reference removed)'s own folder.trug.json is a valid v2 TRUG.
+"""Self-dogfood test — this repository's own folder.trug.json is a valid v2 TRUG.
 
-Covers Phase 3 §"Self-dogfood" ASSERTions from (private reference removed)
-Sub-phase 5.3:
+Covers self-validation:
 
-- ASSERT (private reference removed)/folder.trug.json SHALL VALIDATE through validate_graph
-  with EMPTY violations
+- folder.trug.json validates through validate_graph with no violations
 - ASSERT TEST suite SHALL CONTAIN test 'that READS folder.trug.json AND ASSERTS
   validation_passes
 
@@ -51,7 +49,7 @@ def test_repo_folder_trug_declares_core_v2():
 
 # AGENT claude SHALL VALIDATE FILE folder.trug.json PASSES validate_graph WITH EMPTY violations.
 def test_repo_folder_trug_self_validates():
-    """Phase 3 §Self-dogfood: store.validate_graph() returns no violations."""
+    """Self-dogfood: store.validate_graph() returns no violations."""
     store = JsonFilePersistence().load(str(_REPO_FOLDER_TRUG))
     violations = store.validate_graph()
     assert violations == [], (
@@ -75,7 +73,7 @@ def test_repo_folder_trug_emits_level_directives():
 
 # AGENT claude SHALL VALIDATE FILE folder.trug.json STAMPS RECORD metric_level 'on EACH node.
 def test_repo_folder_trug_every_node_has_metric_level():
-    """Phase 3 §"Canonical re-emit": every node carries metric_level explicitly."""
+    """Canonical re-emit: every node carries metric_level explicitly."""
     data = json.loads(_REPO_FOLDER_TRUG.read_text(encoding="utf-8"))
     missing = [n["id"] for n in data["nodes"] if not n.get("metric_level")]
     assert missing == [], f"Nodes missing metric_level: {missing}"

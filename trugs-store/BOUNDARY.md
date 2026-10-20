@@ -2,10 +2,7 @@
 
 This document pins **who owns what** across the two foundational Python packages
 of the TRUGS stack, and records the one place the boundary is easy to
-misread — the **two-validator split**. It is package self-description (an L2
-Tier-1 artifact), authored under
-(private reference removed) (private)
-(Phase 7 Repo 3/4), Sub-phase 3.
+misread — the **two-validator split**. It is package self-description.
 
 <trl>
 PROCESS boundary_documentation SHALL WRITE RECORD store_ownership THEN WRITE RECORD tools_ownership THEN WRITE RECORD two_validator_split.
@@ -15,10 +12,9 @@ PROCESS boundary_documentation SHALL WRITE RECORD store_ownership THEN WRITE REC
 
 **TRUGS-TOOLS builds *on* TRUGS-STORE.** STORE is the persistence foundation —
 the graph model, the storage backends, and storage-time *structural*
-validation. TOOLS is everything that operates on stored graphs as
-*language*: the TRL parser, the canonical CORE-16 validator, the audit
-machinery, memory cognition, and the `tg` CLI. STORE depends on nothing in
-TOOLS; TOOLS imports `trugs_store` directly.
+validation. TOOLS operates on graphs as *language*: the TRL parser, the
+canonical CORE-16 validator, the audit machinery, and the `trug` CLI.
+STORE depends on nothing in TOOLS; TOOLS imports `trugs_store` directly.
 
 ## STORE owns (this package)
 
@@ -41,31 +37,31 @@ stored and retrieved?*
 
 ## TOOLS owns (TRUGS-TOOLS, builds on STORE)
 
-The language/cognition layer — *is this valid TRL/spec, and what does it
+The language layer in trugs-tools 2.4.0 — *is this valid TRL/spec, and what does it
 mean?*
 
 | Surface | Module (in `trugs_tools`) | Role |
 |---|---|---|
-| TRL parser | `trl.py` | compile/lint TRUG/L sentences ↔ graph |
-| **CORE-16 validator** | `validate.py`, `validator.py` | the canonical 16-rule TRL/spec validator (`tg validate`) |
-| Audit machinery | `analyzer.py`, `compliance_check.py`, `rules.py`, `errors.py` | Dark-Code + markdown/vocab audits |
-| Memory cognition | `memory_*.py` (render, recall, reorganizer, audit, import) | the weighted-substrate memory system |
-| AAA / EPIC tooling | `aaa_*.py`, `epic_sync.py` | protocol surfaces |
-| Renderers | `renderer.py`, `*_renderer.py`, `trug_graph.py` | views over stored graphs |
-| CLI | `cli.py`, `tg_events.py`, `tget.py`, `tupdate.py`, … | the `tg` command surface |
+| TRL parser | `trl.py` | compile, decompile and lint TRUG/L |
+| **CORE-16 validator** | `validate.py`, `validator.py` | canonical 16-rule TRUG validation (`trug validate`); the library wrapper delegates to it |
+| Graph analysis | `trug_graph.py`, `analyzer.py` | hierarchy and edge accessors over STORE's `BaseGraph`; structural graph analysis |
+| Structural warnings | `rules.py` | supplementary unreachable/dead-node warnings |
+| Validation results | `errors.py` | validation errors, warnings and result formatting |
+| Compliance checks | `compliance_check.py` | Dark Code compliance checks |
+| Markdown and vocabulary audits | `audit/extract_trl.py`, `audit/vocab_scan.py` | extract and compile TRL blocks; scan their vocabulary |
+| CLI | `lang_cli.py`, `tget.py`, `tupdate.py`, `tdelete.py`, `tunlink.py` | the `trug` command surface and explicit-file graph-node operations |
 
 ## The two-validator split — deliberate, not drift
 
 There are **two** validators in the stack, and that is **intentional** — a
-deliberate division of responsibility, **not** the kind of duplicate-validator
-*drift* that (private reference removed)
-collapsed (two CLI/API copies of the *same* CORE validator that had diverged).
+deliberate division of responsibility, distinct from duplicate-validator
+*drift* caused by divergent CLI/API copies of the *same* CORE validator.
 These two answer **different questions**:
 
 | Validator | Lives in | Answers | Question |
 |---|---|---|---|
 | `trugs_store.validation` (`validate_v2_hierarchy`) | **STORE** | structural | *Is this a well-formed **stored graph**?* (v2 LEVEL_PREFIX hierarchy: each parent's `metric_level` strictly coarser than its child's) |
-| `trugs_tools` CORE-16 (`tg validate`) | **TOOLS** | language/spec | *Is this valid **TRL/spec**?* (the canonical 16 structural rules over the TRUG envelope) |
+| `trugs_tools` CORE-16 (`trug validate`) | **TOOLS** | language/spec | *Is this valid **TRL/spec**?* (the canonical 16 structural rules over the TRUG envelope) |
 
 STORE's structural checks are available via `store.validate_graph()` and
 know nothing about TRL grammar. JSON v2 load also invokes the hierarchy checker
@@ -89,11 +85,9 @@ PROCESS store_validation SHALL_NOT IMPLEMENT RECORD core16_validation.
 
 ## Why STORE stays its own package
 
-STORE earns its own package because it has **four independent consumers**
-(TRUGS-TOOLS, (private reference removed), (private reference removed), and the TRUGS spec repo), each
-importing `trugs_store` directly. A merge into TOOLS was considered and
+STORE provides persistence independently of the language tooling; TRUGS-TOOLS
+imports `trugs_store` directly. A merge into TOOLS was considered and
 rejected (it would create coupling, not remove duplication — TOOLS already
 cleanly extends STORE's `BaseGraph`); a rename was considered and reversed (a
 *store* is where TRUGs — graphs — are stored and found, which reads true, and a
-rename would cost a PyPI deprecation plus a four-consumer import migration).
-See AAA (private reference removed) Phase 1–2 for the full decision record.
+rename would cost a PyPI deprecation plus an import migration).

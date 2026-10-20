@@ -16,7 +16,7 @@ try:
     from psycopg.types.json import Json
 except ImportError as e:
     # The named sentinel lets __init__.py distinguish "psycopg absent" (skip
-    # the optional backend) from a genuine break inside this module (audit #2).
+    # the optional backend) from a genuine break inside this module.
     raise OptionalDependencyError(
         "PostgreSQL support requires psycopg3: pip install trugs-store[postgres]"
     ) from e

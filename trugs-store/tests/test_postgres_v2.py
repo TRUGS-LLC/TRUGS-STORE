@@ -1,9 +1,9 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""Runtime guards for the Postgres v2 dispatch path (AAA (private reference removed) §"Postgres parity").
+"""Runtime guards for the Postgres v2 dispatch path.
 
-Closes AF-3 from AAA (private reference removed) Phase 9 Final Audit by exercising:
+Exercises:
 
 1. v2-vocabulary load dispatch through `PostgresPersistence.load`
 2. inherited metric_level stamping in `_save_v2` for in-memory stores
@@ -12,13 +12,11 @@ Closes AF-3 from AAA (private reference removed) Phase 9 Final Audit by exercisi
    (never a schema column; round-trip as opaque JSONB metadata)
 5. consumer-invoked `PostgresGraphStore.validate_graph()` runs the v2
    LEVEL_PREFIX hierarchy rules (deferred at load time per the
-   `persistence/postgres.py:81-87` design comment)
+   `PostgresPersistence._load_v2` design comment)
 
-All tests gate on `TRUGS_TEST_DSN` (the canonical env-var name used by
-`conftest.py`, `test_postgres_persistence.py`, and `test_benchmarks.py`).
-The CI `postgres-tests` job exports `TRUGS_TEST_DSN` so these tests
-actually run; without that fix (landed in the same PR), they would
-silent-skip — the precise failure mode AAA (private reference removed) AF-3 calls out.
+All tests gate on the test database DSN shared with
+`conftest.py`, `test_postgres_persistence.py`, and `test_benchmarks.py`.
+This repository has no CI workflow; these tests skip without a test DSN.
 """
 
 from __future__ import annotations
@@ -176,7 +174,7 @@ def test_postgres_v2_round_trip_with_level_directives(
 ) -> None:
     """`level_directives` is file-emission-only — never a Postgres schema column.
 
-    Two invariants per AAA (private reference removed) ADR + `persistence/postgres.py:170-173`:
+    Two invariants documented by `PostgresPersistence._save_v2`:
     - No `level_directives` column exists in any of the public tables.
     - Round-tripping a v2 store with `level_directives` in its metadata
       preserves it as opaque JSONB (Postgres treats it as untyped meta,
@@ -189,7 +187,7 @@ def test_postgres_v2_round_trip_with_level_directives(
         )
         directive_columns = list(cur.fetchall())
     assert directive_columns == [], (
-        "level_directives is file-emission-only per AAA #1756 ADR; "
+        "level_directives is file-emission-only; "
         f"found unexpected schema column(s): {directive_columns!r}"
     )
 
@@ -214,7 +212,7 @@ def test_postgres_v2_round_trip_with_level_directives(
 def test_postgres_v2_consumer_validate_graph_runs_rules(persistence: Any) -> None:
     """`PostgresGraphStore.validate_graph` runs v2 LEVEL_PREFIX rules.
 
-    AAA (private reference removed) Phase 3 ASSERTion: parent.metric_level must EXCEED child's in
+    The parent's metric_level must EXCEED the child's in
     SI_PREFIX_ORDERING. Setup violates this — parent at BASE_FOLDER (idx 10),
     child at KILO_DOCUMENT (idx 7). KILO is coarser than BASE; parent does
     not exceed child → expect one Violation with rule='level_prefix_hierarchy'.

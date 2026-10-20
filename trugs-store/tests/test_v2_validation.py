@@ -3,8 +3,7 @@
 
 """Tests for TRUGS 2.0 LEVEL_PREFIX hierarchy validation.
 
-Covers Phase 3 §"LEVEL_PREFIX validation (v2 only)" ASSERTions from
-(private reference removed) Sub-phase 5.2:
+Covers LEVEL_PREFIX validation (v2 only):
 
 - ASSERT v2 TRUG with valid_hierarchy SHALL PASS validate_graph with EMPTY violations
 - ASSERT v2 TRUG where parent.metric_level DOES_NOT EXCEED child.metric_level
@@ -137,7 +136,7 @@ def test_prefix_of_returns_none_for_unknown():
 
 
 # ---------------------------------------------------------------------------
-# Phase 3 §LEVEL_PREFIX validation (v2 only) — the three ASSERTions
+# LEVEL_PREFIX validation (v2 only) — the three assertions
 # ---------------------------------------------------------------------------
 
 
@@ -192,7 +191,7 @@ def test_v1_inverted_hierarchy_skips_level_prefix_validation(tmp_path: Path):
 
 # AGENT claude SHALL VALIDATE PROCESS validate_v2_hierarchy IS CALLABLE DIRECTLY 'on RECORD store.
 def test_validate_v2_hierarchy_callable_directly(tmp_path: Path):
-    """The validator is also callable as a free function (per AAA Phase 3 INTERFACE)."""
+    """The validator is also callable as a free function."""
     store = _load_into_store(_v2_trug_valid_hierarchy(), tmp_path)
     assert validate_v2_hierarchy(store) == []
     store2 = _load_into_store(_v2_trug_inverted_hierarchy(), tmp_path)

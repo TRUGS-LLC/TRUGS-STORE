@@ -536,7 +536,7 @@ class InMemoryGraphStore:
                     Violation(tid, "orphan_edge", f"Edge to_id {tid!r} does not exist")
                 )
 
-        # v2-only invariants — dispatched by declared vocabulary (AAA (private reference removed) Sub-phase 5.2).
+        # v2-only invariants — dispatched by declared vocabulary.
         # Imported lazily to keep validation.py optional at the memory-module
         # layer and to avoid any future circular-import surprises if validation
         # ever needs to reference graph.BaseGraph.
