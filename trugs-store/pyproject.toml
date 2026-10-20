@@ -7,7 +7,8 @@ name = "trugs-store"
 version = "2.1.0"
 description = "Graph storage backends for TRUGS specifications — InMemory, PostgreSQL, JSON file persistence. Native TRUGS 2.0 (core_v2.0.0) support: LEVEL_PREFIX hierarchy validation, inheritance stamping, canonical re-emit."
 readme = "README.md"
-license = {text = "Apache-2.0"}
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
 requires-python = ">=3.11"
 dependencies = []
 authors = [
@@ -17,7 +18,6 @@ keywords = ["trugs", "graph", "storage", "json", "postgresql", "persistence"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",

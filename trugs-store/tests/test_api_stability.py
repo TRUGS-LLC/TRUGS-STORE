@@ -1,19 +1,12 @@
 # Copyright 2026 TRUGS LLC
 # SPDX-License-Identifier: Apache-2.0
 
-"""Regression-guard tests for trugs-store public API stability vs the v0.1.0 baseline.
+"""Check public API parameters against the published trugs-store 0.1.0 wheel.
 
-Pins the 4 ASSERTions of AAA (private reference removed) §"API-surface stability"
-((private reference removed)):
-
-1. GraphStore protocol has exactly 22 public methods
-2. Each protocol method's ordered parameter names match v0.1.0
-3. No public class constructor takes a v2-dispatch opt-in kwarg
-4. Each public class constructor's ordered parameter names match v0.1.0
-
-The baseline comparisons do not check parameter kinds, defaults or annotations.
-
-Baseline source: commit 844f5f8 ("chore(import): vendor trugs-store v0.1.0 baseline").
+GraphStore has exactly 22 public methods. For each method and public constructor
+listed in the baseline, compare every parameter's name, kind, default and
+annotation in order. Optional PostgreSQL constructors are checked when available.
+Public constructors also reject vocabulary opt-in parameter names.
 """
 
 from __future__ import annotations
@@ -36,9 +29,9 @@ _V2_KWARG_PATTERN = re.compile(r"v2|vocabulary|core_v2|enable_v2|use_v2")
 _CONDITIONAL_CLASSES = frozenset({"PostgresGraphStore", "PostgresPersistence"})
 
 
-def _load_baseline() -> dict[str, dict[str, list[str]]]:
+def _load_baseline() -> dict[str, dict[str, list[list[str | None]]]]:
     with _FIXTURE.open() as f:
-        data: dict[str, dict[str, list[str]]] = json.load(f)
+        data: dict[str, dict[str, list[list[str | None]]]] = json.load(f)
     return data
 
 
@@ -54,6 +47,19 @@ def _param_names(target: Any) -> list[str]:
     return list(inspect.signature(target).parameters.keys())
 
 
+def _parameters(target: Any) -> list[list[str | None]]:
+    """Represent ordered parameter names, kinds, defaults and annotations."""
+    return [
+        [
+            param.name,
+            param.kind.name,
+            None if param.default is param.empty else repr(param.default),
+            None if param.annotation is param.empty else str(param.annotation),
+        ]
+        for param in inspect.signature(target).parameters.values()
+    ]
+
+
 def test_protocol_method_count_equals_22() -> None:
     methods = _public_method_names(GraphStore)
     assert len(methods) == 22, (
@@ -61,14 +67,14 @@ def test_protocol_method_count_equals_22() -> None:
     )
 
 
-def test_protocol_method_ordered_parameter_names_match_baseline() -> None:
+def test_protocol_method_parameters_match_baseline() -> None:
     baseline = _load_baseline()["GraphStore"]
     for method_name in sorted(baseline):
         member = getattr(GraphStore, method_name)
-        actual = _param_names(member)
+        actual = _parameters(member)
         expected = baseline[method_name]
         assert actual == expected, (
-            f"GraphStore.{method_name} ordered parameter names drifted from v0.1.0: "
+            f"GraphStore.{method_name} parameters drifted from v0.1.0: "
             f"baseline={expected}, current={actual}"
         )
 
@@ -85,11 +91,11 @@ def test_no_v2_kwarg_in_any_public_constructor() -> None:
         for param in params:
             assert _V2_KWARG_PATTERN.search(param) is None, (
                 f"{class_name}.__init__ exposes v2-dispatch kwarg '{param}': "
-                "constructors are byte-stable per AAA #1756 §API-surface stability"
+                "constructors must not require a vocabulary opt-in"
             )
 
 
-def test_public_class_constructor_ordered_parameter_names_match_baseline() -> None:
+def test_public_class_constructor_parameters_match_baseline() -> None:
     baseline = _load_baseline()["classes"]
     for class_name in sorted(baseline):
         if class_name not in trugs_store.__all__:
@@ -98,15 +104,15 @@ def test_public_class_constructor_ordered_parameter_names_match_baseline() -> No
             raise AssertionError(
                 f"Class {class_name} was in v0.1.0 __all__ but is missing "
                 "from current __all__: public-API removal is a stability "
-                "break per AAA #1756 §API-surface stability"
+                "break"
             )
         obj = getattr(trugs_store, class_name)
         try:
-            actual = _param_names(obj.__init__)
-        except (ValueError, TypeError):
-            continue
+            actual = _parameters(obj.__init__)
+        except (ValueError, TypeError) as exc:
+            raise AssertionError(f"Cannot inspect {class_name}.__init__") from exc
         expected = baseline[class_name]
         assert actual == expected, (
-            f"{class_name}.__init__ ordered parameter names drifted from v0.1.0: "
+            f"{class_name}.__init__ parameters drifted from v0.1.0: "
             f"baseline={expected}, current={actual}"
         )
