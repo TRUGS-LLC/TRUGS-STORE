@@ -6,7 +6,7 @@ This file teaches an LLM agent how to work in this repository.
 
 trugs-store is the graph persistence layer for TRUGS. It provides `InMemoryGraphStore`, `PostgresGraphStore`, `JsonFilePersistence`, and a dual-write bridge. Every tool that reads or writes `.trug.json` files depends on this package.
 
-As of **2.0.0**, trugs-store natively supports **TRUGS 2.0** (`core_v2.0.0`): vocabulary dispatch by declared `capabilities.vocabularies`, LEVEL_PREFIX hierarchy validation in `trugs_store.validation`, inheritance stamping via `BaseGraph._stamp_inherited_metric_levels`, and canonical re-emit on save in the JSON adapter. v1 TRUGs (`core_v1.0.0`, `project_v1`) continue to validate unchanged.
+As of **2.0.0**, trugs-store natively supports **TRUGS 2.0** (`core_v2.0.0`): vocabulary dispatch by declared `capabilities.vocabularies`, LEVEL_PREFIX hierarchy validation in `trugs_store.validation`, inheritance stamping via `BaseGraph._stamp_inherited_metric_levels`, and canonical re-emit on save in the JSON adapter. v1 TRUGs (`core_v1.0.0`, `project_v1`) load and save as before; since 2.2.0, validation also reports hierarchy cycles that 2.1.0 missed, in graphs of either version.
 
 **Package:** `trugs-store` (PyPI)
 **License:** Apache 2.0

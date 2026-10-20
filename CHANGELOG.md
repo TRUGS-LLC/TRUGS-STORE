@@ -7,8 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0] — 2026-10-20
+
 ### Changed
-- 2026-10-20: Removed internal provenance from package text; updated the package boundary to trugs-tools 2.4.0; removed unrelated issue references and an external planning edge from the folder graph and refreshed its source census; changed the boundary smoke check to require "not drift". Package version and runtime behavior are unchanged.
+- 2026-10-20: Documentation, comments, docstrings and test messages no longer refer to documents that are not
+  public. `BOUNDARY.md` lists the modules and the `trug` command of trugs-tools 2.4.0. The folder graph no longer
+  carries two issue numbers that are not issues of this repository or an edge to a graph that is not public, and
+  states the current source line count. `tests/test_boundary_doc.py` checks that
+  `BOUNDARY.md` calls the two-validator split "not drift". Runtime behavior is unchanged.
+- The READMEs and `AGENT.md` state that validation reports hierarchy cycles that 2.1.0 missed, in place of
+  "continue to validate unchanged".
+- `LICENSE` is the official Apache License 2.0 text; `NOTICE` carries the attribution only, its patent
+  paragraph removed; the README gains a Scope section.
+
+### Removed
+- `trugs_store.vocabulary.V1_VOCABULARIES`, a constant that no code read; the package root never exported it.
 
 ### Fixed
 - 2026-10-20: Graph validation detects contains cycles in every component, including self-links,
@@ -16,10 +29,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   limitation recorded below on 2026-10-16. The API guard compares each parameter's ordered name,
   kind, default and annotation with the published 0.1.0 wheel. Wheel and source distributions
   include LICENSE and NOTICE; wheel metadata names both files and declares Apache-2.0.
+- The test of the distribution licence files reads the package's own `pyproject.toml`, `LICENSE` and `NOTICE`
+  from beside its tests folder, so it passes against an installed package and a source distribution; in a
+  repository checkout it also compares both files with the repository's root copies.
 
-### Changed
-- `LICENSE` is the official Apache License 2.0 text; `NOTICE` carries the attribution only, its patent
-  paragraph removed; the README gains a Scope section.
+## [2.1.0] — 2026-07-18
+
+### Added
+- `OptionalDependencyError`, exported by `trugs_store` and a subclass of `ImportError`. When psycopg is absent the
+  PostgreSQL modules raise it and the package import catches only it, so a genuine import error inside those modules
+  is no longer hidden; code that catches `ImportError` still catches it.
 
 ## [2.0.0] — 2026-06-12
 

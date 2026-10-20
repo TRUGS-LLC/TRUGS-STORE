@@ -105,7 +105,7 @@
       "type": "DOCUMENT",
       "properties": {
         "name": "CHANGELOG.md",
-        "purpose": "Version history — 0.1.0 initial release"
+        "purpose": "Version history"
       },
       "metric_level": "BASE_DOCUMENT",
       "parent_id": "trugs_store_folder",
