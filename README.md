@@ -4,7 +4,7 @@
 
 trugs-store is the shared persistence layer for all TRUGS tooling. Every tool that reads or writes `.trug.json` files goes through this package. It supports JSON file storage for development and PostgreSQL for production scale.
 
-It is the storage tier of the TRUGS 2.0 commons kit: the language CLI ([trugs-tools](https://github.com/TRUGS-LLC/TRUGS-TOOLS), binary `trug`) and the cartography tool (`trugs-folder`, binary `trug-a-folder`) both sit on it. New to TRUGS? Start with **[GETTING_STARTED.md](https://github.com/TRUGS-LLC/TRUGS/blob/main/GETTING_STARTED.md)**.
+It is the storage tier of the TRUGS 2.0 commons kit: the language CLI ([trugs-tools](https://github.com/TRUGS-LLC/TRUGS-TOOLS), binary `trug`) and the describe tool ([trugs-web](https://github.com/TRUGS-LLC/TRUGS-WEB), binary `trugs-web`) both sit on it. New to TRUGS? Start with **[GETTING_STARTED.md](https://github.com/TRUGS-LLC/TRUGS/blob/main/GETTING_STARTED.md)**.
 
 ## Install
 
